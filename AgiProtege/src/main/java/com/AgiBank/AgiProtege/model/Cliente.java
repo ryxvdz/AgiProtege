@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Entity
@@ -15,6 +12,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Cliente {
 
     @Id
@@ -22,28 +20,28 @@ public class Cliente {
     @Column(name = "id_cliente")
     private Integer idCliente;
 
-    @NotBlank
+//    @NotBlank
     private String nome;
 
     @CPF
     private String cpf;
 
-    @NotBlank
+//    @NotBlank
     private String sexo;
 
-    @Email
+//    @Email
     private String email;
 
-    @NotBlank
+//    @NotBlank
     private String telefone;
 
-    @NotNull
+//    @NotNull
     private Double renda;
 
-    @NotNull
+//    @NotNull
     private Integer idade;
 
-    @NotBlank
+//    @NotBlank
     @Column(name = "estado_Civil")
     private String estadoCivil;
 

@@ -18,6 +18,16 @@ public class ClienteController {
         return cliente;
     }
 
+    @GetMapping("/{id}")
+    public Cliente buscarClientePorId(@PathVariable Integer id) {
+        return clienteService.buscarClientePorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public Cliente atualizarClientePorId(@PathVariable Integer id, @RequestBody Cliente cliente) {
+        return clienteService.atualizarClientePorId(id, cliente);
+    }
+
     @DeleteMapping("/{id}")
     public void deletarClientePorId(@PathVariable Integer id) {
         clienteService.deletarClientePorId(id);
