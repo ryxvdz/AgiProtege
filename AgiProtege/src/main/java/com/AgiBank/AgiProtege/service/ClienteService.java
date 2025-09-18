@@ -1,5 +1,7 @@
 package com.AgiBank.AgiProtege.service;
 
+import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
+import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
@@ -11,37 +13,53 @@ public class ClienteService {
 
     private final ClienteRepository repository;
 
-    public void cadastrarCliente(Cliente clinte) {
-        repository.save(clinte);
+    public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
+        Cliente cliente = new Cliente();
+        cliente.setNome(dto.getNome());
+        cliente.setCpf(dto.getCpf());
+        cliente.setSexo(dto.getSexo());
+        cliente.setEmail(dto.getEmail());
+        cliente.setTelefone(dto.getTelefone());
+        cliente.setRenda(dto.getRenda());
+        cliente.setIdade(dto.getIdade());
+        cliente.setEstadoCivil(dto.getEstadoCivil());
+
+        Cliente clienteCadastrado = repository.save(cliente);
+
+        calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente());
+
+        return toResponseDTO(clienteCadastrado);
     }
 
-    public Cliente buscarClientePorId(Integer id) {
-        return repository.findById(Long.valueOf(id)).orElseThrow(
+    public ClienteResponseDTO buscarClientePorId(Integer id) {
+        Cliente cliente = repository.findById(Long.valueOf(id)).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
+
+        return toResponseDTO(cliente);
     }
 
-    public Cliente atualizarClientePorId(Integer id, Cliente cliente) {
+    public ClienteResponseDTO atualizarClientePorId(Integer id, ClienteRequestDTO dto) {
         Cliente clienteModel = repository.findById(Long.valueOf(id)).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
 
         Cliente clienteAtualizado = Cliente.builder()
-                .nome(cliente.getNome() != null ? cliente.getNome() : clienteModel.getNome())
+                .nome(dto.getNome() != null ? dto.getNome() : clienteModel.getNome())
                 .cpf(clienteModel.getCpf())
-                .sexo(cliente.getSexo() != null ? cliente.getSexo() : clienteModel.getSexo())
-                .email(cliente.getEmail() != null ? cliente.getEmail() : clienteModel.getEmail())
-                .telefone(cliente.getTelefone() != null ? cliente.getTelefone() : clienteModel.getTelefone())
-                .renda(cliente.getRenda() != null ? cliente.getRenda() : clienteModel.getRenda())
-                .idade(cliente.getIdade() != null ? cliente.getIdade() : clienteModel.getIdade())
-                .estadoCivil(cliente.getEstadoCivil() != null ? cliente.getEstadoCivil() : clienteModel.getEstadoCivil())
+                .sexo(dto.getSexo() != null ? dto.getSexo() : clienteModel.getSexo())
+                .email(dto.getEmail() != null ? dto.getEmail() : clienteModel.getEmail())
+                .telefone(dto.getTelefone() != null ? dto.getTelefone() : clienteModel.getTelefone())
+                .renda(dto.getRenda() != null ? dto.getRenda() : clienteModel.getRenda())
+                .idade(dto.getIdade() != null ? dto.getIdade() : clienteModel.getIdade())
+                .estadoCivil(dto.getEstadoCivil() != null ? dto.getEstadoCivil() : clienteModel.getEstadoCivil())
                 .perfilRisco(clienteModel.getPerfilRisco())
                 .idCliente(clienteModel.getIdCliente())
                 .build();
 
         repository.save(clienteAtualizado);
 
-        return clienteAtualizado;
+        return toResponseDTO(clienteAtualizado);
     }
 
     public void deletarClientePorId(Integer id) {
@@ -143,7 +161,7 @@ public class ClienteService {
         return perfilRisco;
     }
 
-    public int perfilRiscoSexo(Cliente cliente) {
+    private int perfilRiscoSexo(Cliente cliente) {
         int perfilRisco = 0;
 
         //masculino maior risco
@@ -157,5 +175,15 @@ public class ClienteService {
         }
 
         return perfilRisco;
+    }
+
+    private ClienteResponseDTO toResponseDTO(Cliente cliente) {
+        ClienteResponseDTO dto = new ClienteResponseDTO();
+        dto.setNome(cliente.getNome());
+        dto.setEmail(cliente.getEmail());
+        dto.setTelefone(cliente.getTelefone());
+        dto.setIdade(cliente.getIdade());
+        dto.setEstadoCivil(cliente.getEstadoCivil());
+        return dto;
     }
 }
