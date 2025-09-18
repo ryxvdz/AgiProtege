@@ -15,6 +15,7 @@ public class ClienteController {
     @PostMapping
     public Cliente cadastrarCliente(@RequestBody Cliente cliente) {
         clienteService.cadastrarCliente(cliente);
+        clienteService.calcularPerfilDeRiscoInical(cliente.getIdCliente());
         return cliente;
     }
 
