@@ -26,6 +26,7 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public Cliente atualizarClientePorId(@PathVariable Integer id, @RequestBody Cliente cliente) {
+        clienteService.calcularPerfilDeRiscoInical(id);
         return clienteService.atualizarClientePorId(id, cliente);
     }
 
