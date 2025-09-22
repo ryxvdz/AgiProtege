@@ -1,21 +1,20 @@
-# 🚨 AgiProtege
+# 🛡️ AgiProtege
 
-**AgiProtege** é um sistema de seguros desenvolvido como parte do programa **Devs Do Agi** do **Agibank**. O objetivo do projeto é proporcionar uma plataforma simples e eficiente para gestão de seguros, clientes e apólices, utilizando tecnologias modernas e escaláveis.
+Sistema de seguros desenvolvido como parte do programa **Devs Do Agi** da Agibank.
 
----
+## 💡 Sobre o Projeto
 
-## 🛠️ Tecnologias Utilizadas
+O **AgiProtege** é um sistema de seguros voltado para as categorias de **carro**, **vida** e **despesas**. O projeto tem caráter **educacional** e **avaliativo**, sendo desenvolvido com tecnologias modernas e práticas de mercado.
+
+O principal objetivo é aplicar conceitos de desenvolvimento backend utilizando ferramentas **escaláveis** e **realistas**, com foco em boas práticas, organização de código e integração com serviços externos.
+
+## 🧱 Tecnologias Utilizadas
+
 - **Java 21**
 - **Spring Boot**
   - Spring Web
   - Spring Data JPA
   - Spring Validation
-  - Lombok
-- **MySQL** hospedado na **Aiven**
+- **Lombok**
+- **MySQL** (hospedado na **Aiven**)
 - **Gradle** para gerenciamento de dependências
-
----
-
-## 🤝 Desenvolvido para AgiBank
-
-Projeto com fins educativos e avaliativos para o desenvolvimento de soluções reais com tecnologias do mercado.
