@@ -31,16 +31,16 @@ public class ClienteService {
         return toResponseDTO(clienteCadastrado);
     }
 
-    public ClienteResponseDTO buscarClientePorId(Integer id) {
-        Cliente cliente = repository.findById(Long.valueOf(id)).orElseThrow(
+    public ClienteResponseDTO buscarClientePorId(Long id) {
+        Cliente cliente = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
 
         return toResponseDTO(cliente);
     }
 
-    public ClienteResponseDTO atualizarClientePorId(Integer id, ClienteRequestDTO dto) {
-        Cliente clienteModel = repository.findById(Long.valueOf(id)).orElseThrow(
+    public ClienteResponseDTO atualizarClientePorId(Long id, ClienteRequestDTO dto) {
+        Cliente clienteModel = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
 
@@ -62,18 +62,18 @@ public class ClienteService {
         return toResponseDTO(clienteAtualizado);
     }
 
-    public void deletarClientePorId(Integer id) {
-        repository.deleteById(Long.valueOf(id));
+    public void deletarClientePorId(Long id) {
+        repository.deleteById(id);
     }
 
-    public void calcularPerfilDeRiscoInical(Integer id) {
+    public void calcularPerfilDeRiscoInical(Long id) {
         int idade;
         int renda;
         int estadoCivil;
         int sexo;
         int perfilRisco;
 
-        Cliente clienteModel = repository.findById(Long.valueOf(id)).orElseThrow(
+        Cliente clienteModel = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
 

@@ -11,12 +11,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Table(name = "seguro_despesa")
 public class DespesasEssenciais {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_seguro_despesa")
-    private Integer idSeguroDespesas;
+    private Long idSeguroDespesas;
 
     private Double gastosMensais;
 }

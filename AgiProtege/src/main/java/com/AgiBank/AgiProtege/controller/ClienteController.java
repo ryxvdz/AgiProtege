@@ -19,18 +19,18 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ClienteResponseDTO buscarClientePorId(@PathVariable Integer id) {
+    public ClienteResponseDTO buscarClientePorId(@PathVariable Long id) {
         return clienteService.buscarClientePorId(id);
     }
 
     @PutMapping("/{id}")
-    public ClienteResponseDTO atualizarClientePorId(@PathVariable Integer id, @RequestBody ClienteRequestDTO dto) {
+    public ClienteResponseDTO atualizarClientePorId(@PathVariable Long id, @RequestBody ClienteRequestDTO dto) {
         clienteService.calcularPerfilDeRiscoInical(id);
         return clienteService.atualizarClientePorId(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public void deletarClientePorId(@PathVariable Integer id) {
+    public void deletarClientePorId(@PathVariable Long id) {
         clienteService.deletarClientePorId(id);
     }
 }
