@@ -1,12 +1,4 @@
 package com.AgiBank.AgiProtege.dto;
 
-import lombok.Data;
-
-@Data
-public class ClienteResponseDTO {
-    private String nome;
-    private String email;
-    private String telefone;
-    private Integer idade;
-    private String estadoCivil;
+public record ClienteResponseDTO(String nome, String email, String telefone, Integer idade, String estadoCivil) {
 }

@@ -15,14 +15,14 @@ public class ClienteService {
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
         Cliente cliente = new Cliente();
-        cliente.setNome(dto.getNome());
-        cliente.setCpf(dto.getCpf());
-        cliente.setSexo(dto.getSexo());
-        cliente.setEmail(dto.getEmail());
-        cliente.setTelefone(dto.getTelefone());
-        cliente.setRenda(dto.getRenda());
-        cliente.setIdade(dto.getIdade());
-        cliente.setEstadoCivil(dto.getEstadoCivil());
+        cliente.setNome(dto.nome());
+        cliente.setCpf(dto.cpf());
+        cliente.setSexo(dto.sexo());
+        cliente.setEmail(dto.email());
+        cliente.setTelefone(dto.telefone());
+        cliente.setRenda(dto.renda());
+        cliente.setIdade(dto.idade());
+        cliente.setEstadoCivil(dto.estadoCivil());
 
         Cliente clienteCadastrado = repository.save(cliente);
 
@@ -45,14 +45,14 @@ public class ClienteService {
         );
 
         Cliente clienteAtualizado = Cliente.builder()
-                .nome(dto.getNome() != null ? dto.getNome() : clienteModel.getNome())
+                .nome(dto.nome() != null ? dto.nome() : clienteModel.getNome())
                 .cpf(clienteModel.getCpf())
-                .sexo(dto.getSexo() != null ? dto.getSexo() : clienteModel.getSexo())
-                .email(dto.getEmail() != null ? dto.getEmail() : clienteModel.getEmail())
-                .telefone(dto.getTelefone() != null ? dto.getTelefone() : clienteModel.getTelefone())
-                .renda(dto.getRenda() != null ? dto.getRenda() : clienteModel.getRenda())
-                .idade(dto.getIdade() != null ? dto.getIdade() : clienteModel.getIdade())
-                .estadoCivil(dto.getEstadoCivil() != null ? dto.getEstadoCivil() : clienteModel.getEstadoCivil())
+                .sexo(dto.sexo() != null ? dto.sexo() : clienteModel.getSexo())
+                .email(dto.email() != null ? dto.email() : clienteModel.getEmail())
+                .telefone(dto.telefone() != null ? dto.telefone() : clienteModel.getTelefone())
+                .renda(dto.renda() != null ? dto.renda() : clienteModel.getRenda())
+                .idade(dto.idade() != null ? dto.idade() : clienteModel.getIdade())
+                .estadoCivil(dto.estadoCivil() != null ? dto.estadoCivil() : clienteModel.getEstadoCivil())
                 .perfilRisco(clienteModel.getPerfilRisco())
                 .idCliente(clienteModel.getIdCliente())
                 .build();
@@ -178,12 +178,12 @@ public class ClienteService {
     }
 
     private ClienteResponseDTO toResponseDTO(Cliente cliente) {
-        ClienteResponseDTO dto = new ClienteResponseDTO();
-        dto.setNome(cliente.getNome());
-        dto.setEmail(cliente.getEmail());
-        dto.setTelefone(cliente.getTelefone());
-        dto.setIdade(cliente.getIdade());
-        dto.setEstadoCivil(cliente.getEstadoCivil());
-        return dto;
+        return new ClienteResponseDTO(
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getIdade(),
+                cliente.getEstadoCivil()
+        );
     }
 }
