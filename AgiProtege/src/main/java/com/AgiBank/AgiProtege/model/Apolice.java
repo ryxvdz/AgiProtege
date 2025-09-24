@@ -39,6 +39,6 @@ public class Apolice {
     @Column(name = "id_seguro_automovel")
     private Long idSeguroAutomovel;
 
-    @Column(name = "id_seguro_despesa")
-    private Long idSeguroDespesas;
+    @OneToOne(mappedBy = "apolice", cascade = CascadeType.ALL)
+    private DespesasEssenciais despesasEssenciais;
 }
