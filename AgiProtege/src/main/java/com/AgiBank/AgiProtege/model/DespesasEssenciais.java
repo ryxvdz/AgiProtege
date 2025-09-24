@@ -18,6 +18,7 @@ public class DespesasEssenciais {
     @Column(name = "id_seguro_despesa")
     private Long idSeguroDespesas;
 
+    @Column(name = "gastos_mensais")
     private Double gastosMensais;
 }
 
