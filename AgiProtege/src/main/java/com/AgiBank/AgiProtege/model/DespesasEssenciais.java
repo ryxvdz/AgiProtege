@@ -20,5 +20,9 @@ public class DespesasEssenciais {
 
     @Column(name = "gastos_mensais")
     private Double gastosMensais;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn(name = "id_seguro_despesa")
+    private Apolice apolice;
 }
 
