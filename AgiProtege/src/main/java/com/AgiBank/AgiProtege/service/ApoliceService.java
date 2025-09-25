@@ -30,10 +30,13 @@ public class ApoliceService {
 
     private ApoliceResponseDTO toResponseDTO(Apolice apolice) {
         return new ApoliceResponseDTO(
+                apolice.getCliente().getNome(),
+                apolice.getCliente().getEmail(),
                 apolice.getDataInicio(),
                 apolice.getDataFim(),
                 apolice.getParcela(),
                 apolice.getTipoSeguro()
+
         );
     }
 }
