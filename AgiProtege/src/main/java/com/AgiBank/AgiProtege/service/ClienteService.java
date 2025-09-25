@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository repository;
+
+    public ClienteService(ClienteRepository repository) {
+        this.repository = repository;
+    }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
         Cliente cliente = new Cliente();

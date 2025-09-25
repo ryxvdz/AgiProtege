@@ -8,10 +8,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 
 public class DespesasService {
     private final DespesasRepository repository;
+
+    public DespesasService(DespesasRepository repository) {
+        this.repository = repository;
+    }
 
     public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
         DespesasEssenciais despesas = new DespesasEssenciais();
