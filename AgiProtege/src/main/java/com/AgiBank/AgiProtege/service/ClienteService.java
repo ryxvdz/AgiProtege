@@ -7,6 +7,8 @@ import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class ClienteService {
@@ -31,7 +33,7 @@ public class ClienteService {
         return toResponseDTO(clienteCadastrado);
     }
 
-    public ClienteResponseDTO buscarClientePorId(Long id) {
+    public ClienteResponseDTO buscarClientePorId(UUID id) {
         Cliente cliente = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
@@ -39,7 +41,7 @@ public class ClienteService {
         return toResponseDTO(cliente);
     }
 
-    public ClienteResponseDTO atualizarClientePorId(Long id, ClienteRequestDTO dto) {
+    public ClienteResponseDTO atualizarClientePorId(UUID id, ClienteRequestDTO dto) {
         Cliente clienteModel = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
@@ -53,7 +55,6 @@ public class ClienteService {
                 .renda(dto.renda() != null ? dto.renda() : clienteModel.getRenda())
                 .idade(dto.idade() != null ? dto.idade() : clienteModel.getIdade())
                 .estadoCivil(dto.estadoCivil() != null ? dto.estadoCivil() : clienteModel.getEstadoCivil())
-                .perfilRisco(clienteModel.getPerfilRisco())
                 .idCliente(clienteModel.getIdCliente())
                 .build();
 
@@ -62,11 +63,11 @@ public class ClienteService {
         return toResponseDTO(clienteAtualizado);
     }
 
-    public void deletarClientePorId(Long id) {
+    public void deletarClientePorId(UUID id) {
         repository.deleteById(id);
     }
 
-    public void calcularPerfilDeRiscoInical(Long id) {
+    public void calcularPerfilDeRiscoInical(UUID id) {
         int idade;
         int renda;
         int estadoCivil;

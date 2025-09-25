@@ -6,6 +6,8 @@ import com.AgiBank.AgiProtege.service.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/cliente")
 @AllArgsConstructor
@@ -19,18 +21,19 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ClienteResponseDTO buscarClientePorId(@PathVariable Long id) {
+    public ClienteResponseDTO buscarClientePorId(@PathVariable UUID id) {
         return clienteService.buscarClientePorId(id);
     }
 
     @PutMapping("/{id}")
-    public ClienteResponseDTO atualizarClientePorId(@PathVariable Long id, @RequestBody ClienteRequestDTO dto) {
+    public ClienteResponseDTO atualizarClientePorId(@PathVariable UUID id, @RequestBody ClienteRequestDTO dto) {
+        clienteService.atualizarClientePorId(id, dto);
         clienteService.calcularPerfilDeRiscoInical(id);
-        return clienteService.atualizarClientePorId(id, dto);
+        return clienteService.buscarClientePorId(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deletarClientePorId(@PathVariable Long id) {
+    public void deletarClientePorId(@PathVariable UUID id) {
         clienteService.deletarClientePorId(id);
     }
 }
