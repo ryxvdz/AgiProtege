@@ -1,11 +1,12 @@
 package com.AgiBank.AgiProtege.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,9 +17,9 @@ import org.hibernate.validator.constraints.br.CPF;
 public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_cliente")
-    private Long idCliente;
+    private UUID idCliente;
 
 //    @NotBlank
     private String nome;
@@ -47,4 +48,7 @@ public class Cliente {
 
     @Column(name = "perfil_risco")
     private String perfilRisco;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Apolice> apolices = new ArrayList<>();
 }

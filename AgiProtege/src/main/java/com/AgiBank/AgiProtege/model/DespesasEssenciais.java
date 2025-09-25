@@ -12,17 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "seguro_despesa")
-public class DespesasEssenciais {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_seguro_despesa")
-    private Long idSeguroDespesas;
+@PrimaryKeyJoinColumn(name = "id_seguro_despesa")
+public class DespesasEssenciais extends Apolice {
 
     @Column(name = "gastos_mensais")
     private Double gastosMensais;
-
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "id_seguro_despesa")
-    private Apolice apolice;
 }
 

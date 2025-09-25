@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,9 +17,9 @@ import java.time.LocalDate;
 public class Sinistro {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id_sinistro")
-    private Long idSinistro;
+    private UUID idSinistro;
 
     @Column(name = "data_ocorrencia")
     private LocalDate dataOcorrencia;
@@ -30,6 +31,8 @@ public class Sinistro {
 
     private String status;
 
-    @Column(name = "id_apolice")
-    private Long idApolice;
+    //obrigatoriamente 1 apolice
+    @ManyToOne
+    @JoinColumn(name = "id_apolice", nullable = false)
+    private Apolice apolice;
 }
