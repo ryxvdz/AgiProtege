@@ -32,14 +32,46 @@ public class DespesasService {
         despesas.setGastosMensais(dto.gastosMensais());
         despesas.setTipoSeguro("DESPESA");
         despesas.setDataFim(LocalDate.now().plusYears(1));
+        despesas.setParcela(calcularParcela(dto));
 
         DespesasEssenciais despesaCadastrada = repository.save(despesas);
         return toResponseDTO (despesaCadastrada);
     }
 
+    public Double calcularParcela(DespesasRequestDTO dto) {
+        Double porcentagemParcela = 0.0;
+        Double porcentagemTempoTrabalho = 0.0;
+
+        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+                () -> new RuntimeException("Cliente nao encontrado!")
+        );
+
+        if(cliente.getPerfilRisco().equals("Baixo")) {
+            porcentagemParcela = 0.06;
+        }
+
+        if(cliente.getPerfilRisco().equals("Medio")) {
+            porcentagemParcela = 0.07;
+        }
+
+        if(cliente.getPerfilRisco().equals("Alto")) {
+            porcentagemParcela = 0.08;
+        }
+
+        Double parcela = (dto.gastosMensais() * 12) * porcentagemParcela / 12;
+
+        if(dto.tempoRegistro() < 6) {
+            porcentagemTempoTrabalho = 0.15;
+            parcela = parcela + parcela * porcentagemTempoTrabalho;
+        }
+
+        return parcela;
+    }
+
     private DespesasResponseDTO toResponseDTO(DespesasEssenciais despesasEssenciais){
         return new DespesasResponseDTO(
-                despesasEssenciais.getGastosMensais()
+                despesasEssenciais.getGastosMensais(),
+                despesasEssenciais.getParcela()
         );
     }
 }

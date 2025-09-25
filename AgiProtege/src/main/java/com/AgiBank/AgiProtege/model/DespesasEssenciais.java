@@ -17,5 +17,8 @@ public class DespesasEssenciais extends Apolice {
 
     @Column(name = "gastos_mensais")
     private Double gastosMensais;
+
+    @Column(name = "tempo_registro")
+    private Double tempoRegistro;
 }
 
