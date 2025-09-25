@@ -17,8 +17,9 @@ public class DespesasService {
     private final DespesasRepository repository;
     private final ClienteRepository clienteRepository;
 
-    public DespesasService(DespesasRepository repository) {
+    public DespesasService(DespesasRepository repository, ClienteRepository clienteRepository) {
         this.repository = repository;
+        this.clienteRepository = clienteRepository;
     }
 
     public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
