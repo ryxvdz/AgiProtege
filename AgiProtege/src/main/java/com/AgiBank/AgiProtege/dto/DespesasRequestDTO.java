@@ -1,4 +1,6 @@
 package com.AgiBank.AgiProtege.dto;
 
-public record DespesasRequestDTO(Double gastosMensais) {
+import java.util.UUID;
+
+public record DespesasRequestDTO(UUID idCliente, Double gastosMensais) {
 }
