@@ -30,6 +30,7 @@ public class DespesasService {
         DespesasEssenciais despesas = new DespesasEssenciais();
         despesas.setCliente(cliente);
         despesas.setGastosMensais(dto.gastosMensais());
+        despesas.setTempoRegistro(dto.tempoRegistro());
         despesas.setTipoSeguro("DESPESA");
         despesas.setDataFim(LocalDate.now().plusYears(1));
         despesas.setParcela(calcularParcela(dto));
@@ -40,7 +41,7 @@ public class DespesasService {
 
     public Double calcularParcela(DespesasRequestDTO dto) {
         Double porcentagemParcela = 0.0;
-        Double porcentagemTempoTrabalho = 0.0;
+        Double porcentagemTempoTrabalho;
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
                 () -> new RuntimeException("Cliente nao encontrado!")
