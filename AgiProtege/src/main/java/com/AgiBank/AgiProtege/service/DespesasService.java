@@ -27,6 +27,14 @@ public class DespesasService {
                 () -> new RuntimeException("Cliente não encontrado!")
         );
 
+        //Verifica se o cliente já possui algum seguro despesa
+        boolean possuiSeguroDespesa = cliente.getApolices().stream()
+                .anyMatch(apolice -> "DESPESA".equalsIgnoreCase(apolice.getTipoSeguro()));
+
+        if(possuiSeguroDespesa) {
+            throw new RuntimeException("O cliente já possui um Seguro despesa");
+        }
+
         DespesasEssenciais despesas = new DespesasEssenciais();
         despesas.setCliente(cliente);
         despesas.setGastosMensais(dto.gastosMensais());
