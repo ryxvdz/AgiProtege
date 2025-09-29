@@ -25,8 +25,6 @@ public class Vida extends Apolice {
 
     private Double altura;
 
-    private Double imc=peso/(altura*altura);
-
     private Boolean fumante;
 
     private String profissao;

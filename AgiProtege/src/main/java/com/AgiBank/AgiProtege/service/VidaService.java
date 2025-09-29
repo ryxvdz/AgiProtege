@@ -6,9 +6,11 @@ import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import com.AgiBank.AgiProtege.repository.VidaRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Service
 public class VidaService {
     private final VidaRepository vidaRepository;
     private final ClienteRepository clienteRepository;
@@ -80,7 +82,6 @@ public class VidaService {
     public VidaResponseDTO toResponseDTO(Vida vida) {
         return new VidaResponseDTO(
                 vida.getProfissao(),
-                vida.getImc(),
                 vida.getFumante(),
                 vida.getValorIndenizacaoMorte()
         );
