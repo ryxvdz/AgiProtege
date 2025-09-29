@@ -27,6 +27,8 @@ public class Vida extends Apolice {
 
     private Boolean fumante;
 
+    private Double patrimonio;
+
     private String profissao;
 
     @OneToMany(mappedBy = "seguroVida", cascade = CascadeType.ALL)

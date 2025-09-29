@@ -88,7 +88,8 @@ public class AutomovelService {
                 automovel.getTabelaFipe(),
                 automovel.getModelo(),
                 automovel.getAno(),
-                automovel.getCategoria()
+                automovel.getCategoria(),
+                automovel.getParcela()
         );
     }
 }

@@ -34,47 +34,77 @@ public class VidaService {
 
         Vida vida = new Vida();
         vida.setCliente(cliente);
-        vida.setValorIndenizacaoMorte(dto.valorIndenizacaoMorte());
+        vida.setValorIndenizacaoMorte(calculaValorIndenizacaoMorte(cliente, dto));
         vida.setPeso(dto.peso());
         vida.setAltura(dto.altura());
         vida.setFumante(dto.fumante());
         vida.setProfissao(dto.profissao());
         vida.setTipoSeguro("VIDA");
         vida.setDataFim(LocalDate.now().plusYears(1));
-        vida.setParcela(calcularParcela(dto));
+        vida.setParcela(calcularParcela(dto, vida));
+        vida.setPatrimonio(dto.patrimonio());
 
         Vida vidaCadastrada = vidaRepository.save(vida);
         return toResponseDTO(vidaCadastrada);
     }
 
-    public Double calcularParcela(VidaRequestDTO dto) {
-        Double porcentagemParcela = 0.0;
+    public Double calculaValorIndenizacaoMorte(Cliente cliente, VidaRequestDTO dto) {
+        Double indenizacao = 0.0;
+
+        //Calcula o valor da indenização de acordo com o perfil de risco e patrimonio
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Alto")) {
+           indenizacao = (cliente.getRenda() * 12 * 5) + (dto.patrimonio() * 0.5);
+        }
+
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Medio")) {
+            indenizacao = (cliente.getRenda() * 12 * 8) + (dto.patrimonio() * 0.75);
+        }
+
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Baixo")) {
+            indenizacao = (cliente.getRenda() * 12 * 12) + dto.patrimonio();
+        }
+
+        return indenizacao;
+    }
+
+    public Double calcularParcela(VidaRequestDTO dto, Vida vida) {
+        Double parcela = 0.0;
         Double imc = dto.peso() / (dto.altura() * dto.altura());
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
                 () -> new RuntimeException("Cliente nao encontrado!")
         );
 
-        // Para cliente que durante cadastro gerou Perfil de Risco "Baixo"
-        if(cliente.getPerfilRisco().equals("Médio")) {
-            porcentagemParcela = 0.05;
+        //calculo valor da parcela baseado no perfil de risco do cliente
+        if (cliente.getPerfilRisco().equalsIgnoreCase("Alto")) {
+            parcela = vida.getValorIndenizacaoMorte() * 0.0005;
         }
 
-        if(cliente.getPerfilRisco().equals("Médio")) {
-            porcentagemParcela = 0.1;
+        if (cliente.getPerfilRisco().equalsIgnoreCase("Medio")) {
+            parcela = vida.getValorIndenizacaoMorte() * 0.0004;
         }
 
-        // Para cliente que gerou IMC maior que 30, assim adiciona 10% na parcela apenas de "Obesidade" para cima
-        if(imc >= 30) {
-            porcentagemParcela += 0.1;
+        if (cliente.getPerfilRisco().equalsIgnoreCase("Baixo")) {
+            parcela = vida.getValorIndenizacaoMorte() * 0.0003;
         }
 
-        // Para fumantes é adicionado 15%
+        //verifica se o cliente é fumante
         if(dto.fumante()) {
-            porcentagemParcela += 0.15;
+            parcela = parcela + parcela * 0.15;
         }
 
-        Double parcela = dto.valorIndenizacaoMorte() * porcentagemParcela / 12;
+        //calcula de acordo com o IMC do cliente
+        if(imc < 18.5) {
+            parcela = parcela + parcela * 0.1;
+        }
+
+        if (imc >= 25 && imc < 30) {
+            parcela = parcela + parcela * 0.1;
+        }
+
+        if(imc >= 30) {
+            parcela = parcela + parcela * 0.2;
+        }
 
         return parcela;
     }
@@ -83,7 +113,8 @@ public class VidaService {
         return new VidaResponseDTO(
                 vida.getProfissao(),
                 vida.getFumante(),
-                vida.getValorIndenizacaoMorte()
+                vida.getValorIndenizacaoMorte(),
+                vida.getParcela()
         );
     }
 }
