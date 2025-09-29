@@ -37,9 +37,49 @@ public class AutomovelService {
         automovel.setCategoria(dto.categoria());
         automovel.setTipoSeguro("AUTO");
         automovel.setDataFim(LocalDate.now().plusYears(1));
+        automovel.setParcela(calcularParcela(dto));
 
         Automovel automovelCadastrado = automovelRepository.save(automovel);
         return toResponseDTO(automovelCadastrado);
+    }
+
+    public Double calcularParcela(AutomovelRequestDTO dto) {
+        Double porcentagemTabelFipe = 0.0;
+
+        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado!")
+        );
+
+        //porcentagem anual da tabela fipe de acordo com o perfil de risco
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Baixo")) {
+            porcentagemTabelFipe = 0.03;
+        }
+
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Medio")) {
+            porcentagemTabelFipe = 0.04;
+        }
+
+        if(cliente.getPerfilRisco().equalsIgnoreCase("Alto")) {
+            porcentagemTabelFipe = 0.05;
+        }
+
+        //calculo parcela inical
+        Double parcela = (dto.tabelaFipe() * porcentagemTabelFipe) / 12;
+
+        //calculo parcela de acordo com a categoria do carro
+        if(dto.categoria().equalsIgnoreCase("Sedan")) {
+            parcela = parcela + parcela * 0.05;
+        }
+
+        if(dto.categoria().equalsIgnoreCase("SUV")) {
+            parcela = parcela + parcela * 0.15;
+        }
+
+        if(dto.categoria().equalsIgnoreCase("Esportivo")) {
+            parcela = parcela + parcela * 0.30;
+        }
+
+        return parcela;
     }
 
     private AutomovelResponseDTO toResponseDTO(Automovel automovel) {
