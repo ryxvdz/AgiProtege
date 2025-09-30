@@ -24,7 +24,7 @@ public class SinistroService {
     @Autowired
     private ApoliceRepository apoliceRepository;
 
-    //caminho onde os arquivos enviados serão salvos asuhasiuhdaiushdaius SOCORROOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    //caminho onde os arquivos enviados serão salvos asuhasiuhdaiushdaius SOCORROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOooooo
     private static final String UPLOAD_DIR = "C:/uploads";
 
     public SinistroResponseDTO criarSinistro(SinistroRequestDTO request) {
