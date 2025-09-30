@@ -2,9 +2,9 @@ package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
 import com.AgiBank.AgiProtege.service.ApoliceService;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,6 +20,11 @@ public class ApoliceController {
     @GetMapping("/{id}")
     public ApoliceResponseDTO buscarApolicePorId(UUID id) {
         return service.buscarApolicePorId(id);
+    }
+
+    @GetMapping("/apolicesUsuario/{cpf}")
+    public List<ApoliceResponseDTO> buscarApolicesPorCpf(@PathVariable String cpf) {
+        return service.buscarApolicesPorCpf(cpf);
     }
 
     @DeleteMapping("/{id}")
