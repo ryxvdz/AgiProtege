@@ -28,7 +28,7 @@ public class ClienteController {
     @PutMapping("/{id}")
     public ClienteResponseDTO atualizarClientePorId(@PathVariable UUID id, @RequestBody ClienteRequestDTO dto) {
         clienteService.atualizarClientePorId(id, dto);
-        clienteService.calcularPerfilDeRiscoInical(id);
+        clienteService.calcularPerfilDeRiscoInical(id, dto);
         return clienteService.buscarClientePorId(id);
     }
 

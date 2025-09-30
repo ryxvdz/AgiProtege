@@ -26,9 +26,6 @@ public class Sinistro {
 
     private String descricao;
 
-    @Column(name = "valor_reembolsado")
-    private Double valorReembolsado;
-
     private String status;
 
     //obrigatoriamente 1 apolice
