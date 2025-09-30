@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class Cliente {
     private Double renda;
 
 //    @NotNull
-    private Integer idade;
+    private LocalDate idade;
 
 //    @NotBlank
     @Column(name = "estado_Civil")
