@@ -24,7 +24,7 @@ public class SinistroService {
     @Autowired
     private ApoliceRepository apoliceRepository;
 
-    //comentario
+    //comentario SOCORROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO AAAAAAHHHHHH
     private static final String UPLOAD_DIR = "C:/uploads";
 
     public SinistroResponseDTO criarSinistro(SinistroRequestDTO request) {
