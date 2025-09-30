@@ -28,6 +28,10 @@ public class AutomovelService {
                 ()-> new RuntimeException("Cliente não encontrado!")
         );
 
+        if(automovelRepository.existsByPlaca(dto.placa())) {
+            throw new IllegalArgumentException("Placa já cadastrada");
+        }
+
         Automovel automovel = new Automovel();
         automovel.setCliente(cliente);
         automovel.setPlaca(dto.placa());
@@ -38,6 +42,9 @@ public class AutomovelService {
         automovel.setTipoSeguro("AUTO");
         automovel.setDataFim(LocalDate.now().plusYears(1));
         automovel.setParcela(calcularParcela(dto));
+        automovel.setAssistencia24(dto.asistencia24());
+        automovel.setCarroReserva(dto.carroReserva());
+        automovel.setDesastresNaturais(dto.desastresNaturais());
 
         Automovel automovelCadastrado = automovelRepository.save(automovel);
         return toResponseDTO(automovelCadastrado);
@@ -77,6 +84,21 @@ public class AutomovelService {
 
         if(dto.categoria().equalsIgnoreCase("Esportivo")) {
             parcela = parcela + parcela * 0.30;
+        }
+
+        //assistencia 24 horas
+        if(dto.asistencia24()) {
+            parcela = parcela + parcela * 0.04;
+        }
+
+        //carro reserva
+        if(dto.carroReserva()) {
+            parcela = parcela + parcela * 0.05;
+        }
+
+        //desastres naturais
+        if(dto.desastresNaturais()) {
+            parcela = parcela + parcela * 0.04;
         }
 
         return parcela;

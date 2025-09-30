@@ -28,4 +28,13 @@ public class Automovel extends Apolice {
     private Integer ano;
 
     private String categoria;
+
+    @Column(name = "desastres_naturais")
+    private Boolean desastresNaturais;
+
+    @Column(name = "carro_reserva")
+    private Boolean carroReserva;
+
+    @Column(name = "assistencia_24")
+    private Boolean assistencia24;
 }
