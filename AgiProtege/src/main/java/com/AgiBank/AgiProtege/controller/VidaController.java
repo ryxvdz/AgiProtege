@@ -19,6 +19,8 @@ public class VidaController {
     @PostMapping
 
     public VidaResponseDTO criarSeguroVida(@RequestBody VidaRequestDTO dto){
+
+
         return vidaService.criarSeguroVida(dto);
     }
 }
