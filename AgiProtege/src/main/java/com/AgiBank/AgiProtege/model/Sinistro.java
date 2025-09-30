@@ -26,10 +26,9 @@ public class Sinistro {
 
     private String descricao;
 
-    @Column(name = "valor_reembolsado")
-    private Double valorReembolsado;
-
     private String status;
+
+    private String documento; // Caminho ou nome do arquivo enviado como prova
 
     //obrigatoriamente 1 apolice
     @ManyToOne
