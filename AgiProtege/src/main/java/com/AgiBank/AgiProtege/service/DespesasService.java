@@ -69,6 +69,7 @@ public class DespesasService {
                 () -> new RuntimeException("Cliente nao encontrado!")
         );
 
+        //valor de acordo com o perfil de risco
         if(cliente.getPerfilRisco().equals("Baixo")) {
             porcentagemParcela = 0.06;
         }
@@ -83,6 +84,7 @@ public class DespesasService {
 
         Double parcela = (dto.gastosMensais() * 12) * porcentagemParcela / 12;
 
+        //variavel do tempo de registro de trabalho
         if(dto.tempoRegistro() < 6) {
             porcentagemTempoTrabalho = 0.15;
             parcela = parcela + parcela * porcentagemTempoTrabalho;

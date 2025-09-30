@@ -43,6 +43,8 @@ public class VidaService {
         vida.setDataFim(LocalDate.now().plusYears(1));
         vida.setParcela(calcularParcela(dto, vida));
         vida.setPatrimonio(dto.patrimonio());
+        vida.setCoberturaHospitalar(dto.coberturaHospitalar());
+        vida.setHistoricoFamiliarDoencas(dto.historicoFamiliarDoencas());
 
         Vida vidaCadastrada = vidaRepository.save(vida);
         return toResponseDTO(vidaCadastrada);
@@ -104,6 +106,16 @@ public class VidaService {
 
         if(imc >= 30) {
             parcela = parcela + parcela * 0.2;
+        }
+
+        //aumento devido ao historico familiar
+        if(dto.historicoFamiliarDoencas()) {
+            parcela = parcela + parcela * 0.1;
+        }
+
+        //aumento devido a cobertura hospitalar
+        if(dto.coberturaHospitalar()) {
+            parcela = parcela + parcela * 0.07;
         }
 
         return parcela;
