@@ -4,7 +4,6 @@ import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
