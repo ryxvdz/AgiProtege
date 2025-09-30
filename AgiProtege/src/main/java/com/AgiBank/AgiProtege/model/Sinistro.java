@@ -26,10 +26,10 @@ public class Sinistro {
 
     private String descricao;
 
-    @Column(name = "valor_reembolsado")
-    private Double valorReembolsado;
-
     private String status;
+
+    // Caminho do documento enviado pelo cliente
+    private String documento;
 
     //obrigatoriamente 1 apolice
     @ManyToOne
