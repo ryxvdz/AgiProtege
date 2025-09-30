@@ -28,8 +28,14 @@ public class AutomovelService {
                 ()-> new RuntimeException("Cliente não encontrado!")
         );
 
+        //verifica se o carro ja posui seguro
         if(automovelRepository.existsByPlaca(dto.placa())) {
             throw new IllegalArgumentException("Placa já cadastrada");
+        }
+
+        //verifica a idade do carro, se oferecemos serviço
+        if(LocalDate.now().getYear() - dto.ano() > 12) {
+            throw new RuntimeException("Serviço indisponivel! O carro possui mais de 12 anos!");
         }
 
         Automovel automovel = new Automovel();
