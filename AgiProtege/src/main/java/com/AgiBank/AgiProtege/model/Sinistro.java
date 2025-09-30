@@ -28,6 +28,8 @@ public class Sinistro {
 
     private String status;
 
+    private String documento; // Caminho ou nome do arquivo enviado como prova
+
     //obrigatoriamente 1 apolice
     @ManyToOne
     @JoinColumn(name = "id_apolice", nullable = false)
