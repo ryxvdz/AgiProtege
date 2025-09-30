@@ -35,6 +35,20 @@ public class DespesasService {
             throw new RuntimeException("O cliente já possui um Seguro despesa");
         }
 
+        //verifica se a renda do cliente é maior do que os gastos
+        if(cliente.getRenda() < dto.gastosMensais()) {
+            throw new RuntimeException("Serviço indisponivel! Gastos maior que renda mensal!");
+        }
+
+        //gasto minimo e maximo para contratar o seguro
+        if(dto.gastosMensais() < 500) {
+            throw new RuntimeException("Serviço indisponivel! Gasto minimo R$ 500");
+        }
+
+        if(dto.gastosMensais() > 5000) {
+            throw new RuntimeException("Serviço indisponivel! Gasto maximo R$ 5000");
+        }
+
         DespesasEssenciais despesas = new DespesasEssenciais();
         despesas.setCliente(cliente);
         despesas.setGastosMensais(dto.gastosMensais());

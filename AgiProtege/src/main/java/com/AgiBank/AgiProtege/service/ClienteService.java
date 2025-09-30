@@ -19,6 +19,10 @@ public class ClienteService {
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
+        if(dto.idade() < 18) {
+            throw new RuntimeException("ERRO! Idade minima 18 anos!");
+        }
+
         Cliente cliente = new Cliente();
         cliente.setNome(dto.nome());
         cliente.setCpf(dto.cpf());
