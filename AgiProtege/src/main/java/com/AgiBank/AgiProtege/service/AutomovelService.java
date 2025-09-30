@@ -28,6 +28,10 @@ public class AutomovelService {
                 ()-> new RuntimeException("Cliente não encontrado!")
         );
 
+        if(automovelRepository.existsByPlaca(dto.placa())) {
+            throw new IllegalArgumentException("Placa já cadastrada");
+        }
+
         Automovel automovel = new Automovel();
         automovel.setCliente(cliente);
         automovel.setPlaca(dto.placa());
