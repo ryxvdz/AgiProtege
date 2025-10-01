@@ -25,15 +25,18 @@ public class Cliente {
     private String nome;
 
     @CPF
+    @Column(unique = true)
     private String cpf;
 
 //    @NotBlank
     private String sexo;
 
 //    @Email
+    @Column(unique = true)
     private String email;
 
 //    @NotBlank
+    @Column(unique = true)
     private String telefone;
 
 //    @NotNull
