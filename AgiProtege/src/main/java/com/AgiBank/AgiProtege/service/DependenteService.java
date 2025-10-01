@@ -30,13 +30,14 @@ public class DependenteService {
 
 
     public DependenteResponseDTO adicionarDependente(DependenteRequestDTO dto) {
-        //verifica se o cliente tem seguro de vida
-        Vida seguroVida = vidaRepository.findById(dto.seguroVida().getIdApolice()).orElseThrow(
+        //verifica se o seguro de vida existe
+        Vida seguroVida = vidaRepository.findById(dto.seguroVida()).orElseThrow(
                 () -> new RuntimeException("Seguro de vida não encontrado!"));
 
         Dependente dependente = new Dependente();
         dependente.setNome(dto.nome());
         dependente.setParentesco(dto.parentesco());
+        dependente.setSeguroVida(seguroVida);
 
         Dependente dependeCastrado = repository.save(dependente);
 
@@ -48,7 +49,6 @@ public class DependenteService {
     public DependenteResponseDTO toResponseDTO(Dependente dependente) {
         return new DependenteResponseDTO(
 
-                dependente.getSeguroVida(),
                 dependente.getNome(),
                 dependente.getParentesco()
 

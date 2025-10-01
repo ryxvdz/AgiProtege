@@ -1,6 +1,6 @@
 package com.AgiBank.AgiProtege.dto;
 
-import com.AgiBank.AgiProtege.model.Vida;
+import java.util.UUID;
 
-public record DependenteRequestDTO( Vida seguroVida, String nome, String parentesco) {
+public record DependenteRequestDTO(UUID seguroVida, String nome, String parentesco) {
 }
