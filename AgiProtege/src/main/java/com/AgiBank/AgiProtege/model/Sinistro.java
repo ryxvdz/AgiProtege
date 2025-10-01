@@ -28,6 +28,9 @@ public class Sinistro {
 
     private String status;
 
+    // Caminho do documento enviado pelo cliente
+    private String documento;
+
     //obrigatoriamente 1 apolice
     @ManyToOne
     @JoinColumn(name = "id_apolice", nullable = false)
