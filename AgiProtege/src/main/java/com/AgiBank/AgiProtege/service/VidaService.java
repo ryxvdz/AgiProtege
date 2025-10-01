@@ -1,5 +1,6 @@
 package com.AgiBank.AgiProtege.service;
 
+import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
 import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
 import com.AgiBank.AgiProtege.model.Cliente;
@@ -9,6 +10,7 @@ import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VidaService {
@@ -43,6 +45,8 @@ public class VidaService {
         vida.setDataFim(LocalDate.now().plusYears(1));
         vida.setParcela(calcularParcela(dto, vida));
         vida.setPatrimonio(dto.patrimonio());
+        vida.setCoberturaHospitalar(dto.coberturaHospitalar());
+        vida.setHistoricoFamiliarDoencas(dto.historicoFamiliarDoencas());
 
         Vida vidaCadastrada = vidaRepository.save(vida);
         return toResponseDTO(vidaCadastrada);
@@ -106,15 +110,32 @@ public class VidaService {
             parcela = parcela + parcela * 0.2;
         }
 
+        //aumento devido ao historico familiar
+        if(dto.historicoFamiliarDoencas()) {
+            parcela = parcela + parcela * 0.1;
+        }
+
+        //aumento devido a cobertura hospitalar
+        if(dto.coberturaHospitalar()) {
+            parcela = parcela + parcela * 0.07;
+        }
+
         return parcela;
     }
 
     public VidaResponseDTO toResponseDTO(Vida vida) {
+        // converte cada Dependente para DependenteResponseDTO
+        List<DependenteResponseDTO> dependentesDTO = vida.getDependentes()
+                .stream()
+                .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco()))
+                .toList();
+
         return new VidaResponseDTO(
                 vida.getProfissao(),
                 vida.getFumante(),
                 vida.getValorIndenizacaoMorte(),
-                vida.getParcela()
+                vida.getParcela(),
+                dependentesDTO
         );
     }
 }

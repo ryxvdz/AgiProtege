@@ -31,6 +31,12 @@ public class Vida extends Apolice {
 
     private String profissao;
 
+    @Column(name = "historico_familiar_doencas")
+    private Boolean historicoFamiliarDoencas;
+
+    @Column(name = "cobertura_hospitalar")
+    private Boolean coberturaHospitalar;
+
     @OneToMany(mappedBy = "seguroVida", cascade = CascadeType.ALL)
     private List<Dependente> dependentes = new ArrayList<>();
 }
