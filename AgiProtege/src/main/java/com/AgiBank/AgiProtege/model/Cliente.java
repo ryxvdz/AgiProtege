@@ -54,4 +54,8 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Apolice> apolices = new ArrayList<>();
+
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private Endereco endereco;
 }
