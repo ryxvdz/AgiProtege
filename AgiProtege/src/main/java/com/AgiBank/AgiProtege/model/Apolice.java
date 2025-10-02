@@ -40,4 +40,5 @@ public class Apolice {
 
     @OneToMany(mappedBy = "apolice", cascade = CascadeType.ALL)
     private List<Sinistro> sinistros = new ArrayList<>();
+
 }
