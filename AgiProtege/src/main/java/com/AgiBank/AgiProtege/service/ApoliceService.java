@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Apolice;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
@@ -25,7 +26,7 @@ public class ApoliceService {
 
     public ApoliceResponseDTO buscarApolicePorId(UUID id) {
         Apolice apolice = apoliceRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Usuario não encontrado!")
+                () -> new ResourceNotFoundException("Usuario não encontrado!")
         );
 
         return toResponseDTO(apolice);
@@ -33,7 +34,7 @@ public class ApoliceService {
 
     public List<ApoliceResponseDTO> buscarApolicesPorCpf(String cpf) {
         Cliente cliente = clienteRepository.findByCpf(cpf).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         return cliente.getApolices().stream()

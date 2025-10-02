@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class ClienteService {
 
     public ClienteResponseDTO buscarClientePorId(UUID id) {
         Cliente cliente = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         return toResponseDTO(cliente);
@@ -49,7 +50,7 @@ public class ClienteService {
 
     public ClienteResponseDTO atualizarClientePorId(UUID id, ClienteRequestDTO dto) {
         Cliente clienteModel = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         Cliente clienteAtualizado = Cliente.builder()
@@ -81,7 +82,7 @@ public class ClienteService {
         int perfilRisco;
 
         Cliente clienteModel = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         idade = perfilRiscoIdade(clienteModel);

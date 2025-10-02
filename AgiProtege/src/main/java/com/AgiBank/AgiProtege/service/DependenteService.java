@@ -3,6 +3,7 @@ package com.AgiBank.AgiProtege.service;
 import com.AgiBank.AgiProtege.dto.DependenteRequestDTO;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Dependente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.DependenteRepository;
@@ -32,7 +33,7 @@ public class DependenteService {
     public DependenteResponseDTO adicionarDependente(DependenteRequestDTO dto) {
         //verifica se o seguro de vida existe
         Vida seguroVida = vidaRepository.findById(dto.seguroVida()).orElseThrow(
-                () -> new RuntimeException("Seguro de vida não encontrado!"));
+                () -> new ResourceNotFoundException("Seguro de vida não encontrado!"));
 
         Dependente dependente = new Dependente();
         dependente.setNome(dto.nome());
