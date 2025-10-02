@@ -3,6 +3,7 @@ package com.AgiBank.AgiProtege.service;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
 import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
@@ -24,7 +25,7 @@ public class VidaService {
 
     public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto) {
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         boolean possuiSeguroVida = cliente.getApolices().stream()
@@ -76,7 +77,7 @@ public class VidaService {
         Double imc = dto.peso() / (dto.altura() * dto.altura());
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente nao encontrado!")
+                () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 
         //calculo valor da parcela baseado no perfil de risco do cliente

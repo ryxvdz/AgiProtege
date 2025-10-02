@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.AutomovelRequestDTO;
 import com.AgiBank.AgiProtege.dto.AutomovelResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Automovel;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.AutomovelRepository;
@@ -25,7 +26,7 @@ public class AutomovelService {
     public AutomovelResponseDTO criarSeguroAutomovel(AutomovelRequestDTO dto){
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                ()-> new RuntimeException("Cliente não encontrado!")
+                ()-> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         //verifica se o carro ja posui seguro
@@ -60,7 +61,7 @@ public class AutomovelService {
         Double porcentagemTabelFipe = 0.0;
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         //porcentagem anual da tabela fipe de acordo com o perfil de risco

@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.DespesasRequestDTO;
 import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.DespesasEssenciais;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
@@ -24,7 +25,7 @@ public class DespesasService {
 
     public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         //Verifica se o cliente já possui algum seguro despesa
@@ -66,7 +67,7 @@ public class DespesasService {
         Double porcentagemTempoTrabalho;
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente nao encontrado!")
+                () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 
         //valor de acordo com o perfil de risco
