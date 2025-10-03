@@ -2,7 +2,9 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.AutomovelRequestDTO;
 import com.AgiBank.AgiProtege.dto.AutomovelResponseDTO;
+import com.AgiBank.AgiProtege.exception.ExistingResourceException;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
+import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Automovel;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.AutomovelRepository;
@@ -31,12 +33,12 @@ public class AutomovelService {
 
         //verifica se o carro ja posui seguro
         if(automovelRepository.existsByPlaca(dto.placa())) {
-            throw new IllegalArgumentException("Placa já cadastrada");
+            throw new ExistingResourceException("Placa já cadastrada");
         }
 
         //verifica a idade do carro, se oferecemos serviço
         if(LocalDate.now().getYear() - dto.ano() > 12) {
-            throw new RuntimeException("Serviço indisponivel! O carro possui mais de 12 anos!");
+            throw new ServiceUnavaliable("Serviço indisponivel! O carro possui mais de 12 anos!");
         }
 
         Automovel automovel = new Automovel();

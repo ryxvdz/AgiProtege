@@ -3,6 +3,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.client.ViaCepClient;
 import com.AgiBank.AgiProtege.dto.EnderecoResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Endereco;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
@@ -27,7 +28,7 @@ public class EnderecoService {
 
     public EnderecoResponseDTO adicionarEnderecoAoCliente(UUID idCliente, String cep, String numero) {
         Cliente cliente = clienteRepository.findById(idCliente)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado!"));
 
         EnderecoResponseDTO enderecoViaCep = viaCepClient.buscarEndereco(cep);
 
@@ -49,7 +50,7 @@ public class EnderecoService {
 
     public EnderecoResponseDTO buscarEnderecoporId(UUID id) {
         Endereco endereco = enderecoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Endereço não cadastrado!"));
+                .orElseThrow(() -> new ResourceNotFoundException("Endereço não cadastrado!"));
         return toResponseDTO(endereco);
     }
 

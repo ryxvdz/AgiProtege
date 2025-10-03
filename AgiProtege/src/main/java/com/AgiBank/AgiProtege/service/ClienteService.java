@@ -3,6 +3,7 @@ package com.AgiBank.AgiProtege.service;
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
+import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class ClienteService {
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
         if(dto.idade() < 18) {
-            throw new RuntimeException("ERRO! Idade minima 18 anos!");
+            throw new ServiceUnavaliable("ERRO! Idade minima 18 anos!");
         }
 
         Cliente cliente = new Cliente();

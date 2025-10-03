@@ -23,6 +23,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
+    @ExceptionHandler(ExistingResourceException.class)
+    public ResponseEntity<ErrorResponseDTO> handleExistingResource(ExistingResourceException ex, HttpServletRequest request) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(ServiceUnavaliable.class)
+    public ResponseEntity<ErrorResponseDTO> handleServiceUnavaliable(ServiceUnavaliable ex, HttpServletRequest request) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                ex.getMessage(),
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                request.getRequestURI()
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric (Exception ex, HttpServletRequest request) {
         ErrorResponseDTO error = new ErrorResponseDTO(
