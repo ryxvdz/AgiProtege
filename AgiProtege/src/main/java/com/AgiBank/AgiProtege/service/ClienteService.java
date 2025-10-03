@@ -1,9 +1,16 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
-import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.Enum.EstadoCivil;
+import com.AgiBank.AgiProtege.Enum.Sexo;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
+import com.AgiBank.AgiProtege.Enum.StatusSeguros;
+import com.AgiBank.AgiProtege.dto.Cliente.RequestDTO.ClienteRequestDTO;
+import com.AgiBank.AgiProtege.dto.Cliente.ResponseDTO.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.model.Cliente;
+import com.AgiBank.AgiProtege.repository.AutomovelRepository;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
+import com.AgiBank.AgiProtege.repository.DespesasRepository;
+import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,10 +19,21 @@ import java.util.UUID;
 public class ClienteService {
 
     private final ClienteRepository repository;
+    private final DespesasRepository despesasRepository;
+    private final VidaRepository vidaRepository;
+    private final AutomovelRepository automovelRepository;
 
-    public ClienteService(ClienteRepository repository) {
+    public ClienteService(ClienteRepository repository,
+                          DespesasRepository despesasRepository,
+                          VidaRepository vidaRepository,
+                          AutomovelRepository automovelRepository) {
         this.repository = repository;
+        this.despesasRepository = despesasRepository;
+        this.vidaRepository = vidaRepository;
+        this.automovelRepository = automovelRepository;
     }
+
+
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
         if(dto.idade() < 18) {
@@ -31,6 +49,7 @@ public class ClienteService {
         cliente.setRenda(dto.renda());
         cliente.setIdade(dto.idade());
         cliente.setEstadoCivil(dto.estadoCivil());
+        cliente.ativar();
 
         Cliente clienteCadastrado = repository.save(cliente);
 
@@ -51,6 +70,9 @@ public class ClienteService {
         Cliente clienteModel = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
+        if (clienteModel.getStatusCliente() == StatusCliente.INATIVO){
+            throw new RuntimeException("Cliente inativo!");
+        }
 
         Cliente clienteAtualizado = Cliente.builder()
                 .nome(dto.nome() != null ? dto.nome() : clienteModel.getNome())
@@ -62,6 +84,7 @@ public class ClienteService {
                 .idade(dto.idade() != null ? dto.idade() : clienteModel.getIdade())
                 .estadoCivil(dto.estadoCivil() != null ? dto.estadoCivil() : clienteModel.getEstadoCivil())
                 .idCliente(clienteModel.getIdCliente())
+                .statusCliente(StatusCliente.ATIVO)
                 .build();
 
         repository.save(clienteAtualizado);
@@ -70,7 +93,14 @@ public class ClienteService {
     }
 
     public void deletarClientePorId(UUID id) {
-        repository.deleteById(id);
+       Cliente cliente = repository.findById(id)
+               .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
+
+       if (validarSeguro(id)) {
+
+           cliente.inativar();
+           repository.save(cliente);
+       }
     }
 
     public void calcularPerfilDeRiscoInical(UUID id) {
@@ -83,6 +113,11 @@ public class ClienteService {
         Cliente clienteModel = repository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
+
+        if (clienteModel.getStatusCliente() == StatusCliente.INATIVO){
+            throw new RuntimeException("Cliente inativo!");
+        }
+
 
         idade = perfilRiscoIdade(clienteModel);
 
@@ -156,12 +191,12 @@ public class ClienteService {
         int perfilRisco = 0;
 
         //solteiro maior risco
-        if(cliente.getEstadoCivil().equalsIgnoreCase("solteiro")) {
+        if(cliente.getEstadoCivil().equals(EstadoCivil.SOLTEIRO)) {
             perfilRisco = perfilRisco + 20;
         }
 
         //casado menor risco
-        if(cliente.getEstadoCivil().equalsIgnoreCase("casado")) {
+        if(cliente.getEstadoCivil().equals(EstadoCivil.CASADO)) {
             perfilRisco = perfilRisco + 10;
         }
 
@@ -172,12 +207,12 @@ public class ClienteService {
         int perfilRisco = 0;
 
         //masculino maior risco
-        if(cliente.getSexo().equalsIgnoreCase("Masculino")) {
+        if(cliente.getSexo().equals(Sexo.MASCULINO)) {
             perfilRisco = perfilRisco + 10;
         }
 
         //femenino menor risco
-        if (cliente.getSexo().equalsIgnoreCase("Femenino")) {
+        if (cliente.getSexo().equals(Sexo.FEMENINO)) {
             perfilRisco = perfilRisco + 5;
         }
 
@@ -193,4 +228,19 @@ public class ClienteService {
                 cliente.getEstadoCivil()
         );
     }
+        private boolean validarSeguro(UUID id) {
+            boolean temAutomovelAtivo = automovelRepository.existsByClienteIdAndStatus(id, StatusSeguros.CONTRATOATIVO);
+            boolean temVidaAtivo = vidaRepository.existsByClienteIdAndStatus(id, StatusSeguros.CONTRATOATIVO);
+            boolean temDespesasAtivo = despesasRepository.existsByClienteIdAndStatus(id, StatusSeguros.CONTRATOATIVO);
+
+            if (temAutomovelAtivo || temVidaAtivo || temDespesasAtivo) {
+                throw new RuntimeException("Cliente possui contratos ativos, Não pode ser inativado!");
+
+            }else{
+
+                return true;
+            }
+
+
+        }
 }
