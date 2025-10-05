@@ -1,5 +1,6 @@
 package com.AgiBank.AgiProtege.model;
 
+import com.AgiBank.AgiProtege.Enum.StatusSeguros;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,9 @@ public class Vida extends Apolice {
 
     private String profissao;
 
+    @Enumerated(EnumType.STRING)
+    private StatusSeguros statusSeguros;
+
     @Column(name = "historico_familiar_doencas")
     private Boolean historicoFamiliarDoencas;
 
@@ -39,4 +43,15 @@ public class Vida extends Apolice {
 
     @OneToMany(mappedBy = "seguroVida", cascade = CascadeType.ALL)
     private List<Dependente> dependentes = new ArrayList<>();
+
+    public void inativa(){
+        this.statusSeguros = StatusSeguros.CONTRATOINATIVO;
+    }
+
+    public void ativa(){
+        this.statusSeguros = StatusSeguros.CONTRATOATIVO;
+    }
+
+
+
 }

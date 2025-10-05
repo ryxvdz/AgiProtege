@@ -1,18 +1,23 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
-import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
-import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
+import com.AgiBank.AgiProtege.dto.Dependente.ResponseDTO.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.dto.VIda.RequestDTO.VidaRequestDTO;
+import com.AgiBank.AgiProtege.dto.VIda.ResponseDTO.VidaResponseDTO;
+import com.AgiBank.AgiProtege.model.Automovel;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@Transactional
 public class VidaService {
     private final VidaRepository vidaRepository;
     private final ClienteRepository clienteRepository;
@@ -26,6 +31,10 @@ public class VidaService {
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
+        if (cliente.getStatusCliente() == StatusCliente.INATIVO) {
+            throw new RuntimeException("Cliente está inativo e não pode contratar seguros.");
+        }
+
 
         boolean possuiSeguroVida = cliente.getApolices().stream()
                 .anyMatch(apolice -> "VIDA".equalsIgnoreCase(apolice.getTipoSeguro()));
@@ -33,6 +42,7 @@ public class VidaService {
         if(possuiSeguroVida) {
             throw new RuntimeException("O cliente já possui um Seguro de vida");
         }
+
 
         Vida vida = new Vida();
         vida.setCliente(cliente);
@@ -47,6 +57,7 @@ public class VidaService {
         vida.setPatrimonio(dto.patrimonio());
         vida.setCoberturaHospitalar(dto.coberturaHospitalar());
         vida.setHistoricoFamiliarDoencas(dto.historicoFamiliarDoencas());
+        vida.ativa();
 
         Vida vidaCadastrada = vidaRepository.save(vida);
         return toResponseDTO(vidaCadastrada);
@@ -85,7 +96,7 @@ public class VidaService {
         }
 
         if (cliente.getPerfilRisco().equalsIgnoreCase("Medio")) {
-            parcela = vida.getValorIndenizacaoMorte() * 0.0004;
+
         }
 
         if (cliente.getPerfilRisco().equalsIgnoreCase("Baixo")) {
@@ -137,5 +148,13 @@ public class VidaService {
                 vida.getParcela(),
                 dependentesDTO
         );
+    }
+
+    public void deletar(UUID id){
+        Vida vida = vidaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Automovel nao encontrado!"));
+         vida.inativa();
+        vidaRepository.save(vida);
+
     }
 }
