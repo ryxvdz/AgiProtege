@@ -1,7 +1,7 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.SinistroRequestDTO;
-import com.AgiBank.AgiProtege.dto.SinistroResponseDTO;
+import com.AgiBank.AgiProtege.dto.Sinistro.RequestDTO.SinistroRequestDTO;
+import com.AgiBank.AgiProtege.dto.Sinistro.ResponseDTO.SinistroResponseDTO;
 import com.AgiBank.AgiProtege.model.Apolice;
 import com.AgiBank.AgiProtege.model.Sinistro;
 import com.AgiBank.AgiProtege.repository.ApoliceRepository;
