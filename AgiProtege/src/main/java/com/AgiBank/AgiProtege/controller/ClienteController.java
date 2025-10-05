@@ -1,7 +1,7 @@
 package com.AgiBank.AgiProtege.controller;
 
-import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
-import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.dto.Cliente.RequestDTO.ClienteRequestDTO;
+import com.AgiBank.AgiProtege.dto.Cliente.ResponseDTO.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.service.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,9 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.AutomovelRequestDTO;
-import com.AgiBank.AgiProtege.dto.AutomovelResponseDTO;
+import com.AgiBank.AgiProtege.Enum.Categoria;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
+import com.AgiBank.AgiProtege.dto.Automovel.RequestDTO.AutomovelRequestDTO;
+import com.AgiBank.AgiProtege.dto.Automovel.ResponseDTO.AutomovelResponseDTO;
 import com.AgiBank.AgiProtege.model.Automovel;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.AutomovelRepository;
@@ -9,6 +11,7 @@ import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 public class AutomovelService {
@@ -27,6 +30,10 @@ public class AutomovelService {
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
                 ()-> new RuntimeException("Cliente não encontrado!")
         );
+
+        if (cliente.getStatusCliente() == StatusCliente.INATIVO) {
+            throw new RuntimeException("Cliente está inativo e não pode contratar seguros.");
+        }
 
         //verifica se o carro ja posui seguro
         if(automovelRepository.existsByPlaca(dto.placa())) {
@@ -51,6 +58,7 @@ public class AutomovelService {
         automovel.setAssistencia24(dto.asistencia24());
         automovel.setCarroReserva(dto.carroReserva());
         automovel.setDesastresNaturais(dto.desastresNaturais());
+        automovel.ativar();
 
         Automovel automovelCadastrado = automovelRepository.save(automovel);
         return toResponseDTO(automovelCadastrado);
@@ -80,15 +88,15 @@ public class AutomovelService {
         Double parcela = (dto.tabelaFipe() * porcentagemTabelFipe) / 12;
 
         //calculo parcela de acordo com a categoria do carro
-        if(dto.categoria().equalsIgnoreCase("Sedan")) {
+        if(dto.categoria().equals(Categoria.SEDAN)) {
             parcela = parcela + parcela * 0.05;
         }
 
-        if(dto.categoria().equalsIgnoreCase("SUV")) {
+        if(dto.categoria().equals(Categoria.SUV)) {
             parcela = parcela + parcela * 0.15;
         }
 
-        if(dto.categoria().equalsIgnoreCase("Esportivo")) {
+        if(dto.categoria().equals(Categoria.ESPORTIVO)) {
             parcela = parcela + parcela * 0.30;
         }
 
@@ -112,6 +120,7 @@ public class AutomovelService {
 
     private AutomovelResponseDTO toResponseDTO(Automovel automovel) {
         return new AutomovelResponseDTO(
+
                 automovel.getPlaca(),
                 automovel.getTabelaFipe(),
                 automovel.getModelo(),
@@ -120,4 +129,12 @@ public class AutomovelService {
                 automovel.getParcela()
         );
     }
-}
+    public void deletar(UUID id){
+       Automovel automovel = automovelRepository.findById(id)
+               .orElseThrow(() -> new RuntimeException("Automovel nao encontrado!"));
+       automovel.inativa();
+        automovelRepository.save(automovel);
+
+    }
+
+    }

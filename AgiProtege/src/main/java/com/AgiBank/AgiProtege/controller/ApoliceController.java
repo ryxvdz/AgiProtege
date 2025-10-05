@@ -1,6 +1,6 @@
 package com.AgiBank.AgiProtege.controller;
 
-import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
+import com.AgiBank.AgiProtege.dto.Apolice.ResponseDTO.ApoliceResponseDTO;
 import com.AgiBank.AgiProtege.service.ApoliceService;
 import org.springframework.web.bind.annotation.*;
 

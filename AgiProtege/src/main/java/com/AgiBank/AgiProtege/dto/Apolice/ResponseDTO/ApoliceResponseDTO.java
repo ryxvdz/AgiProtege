@@ -1,6 +1,6 @@
-package com.AgiBank.AgiProtege.dto;
+package com.AgiBank.AgiProtege.dto.Apolice.ResponseDTO;
 
-import com.AgiBank.AgiProtege.model.Dependente;
+import com.AgiBank.AgiProtege.dto.Dependente.ResponseDTO.DependenteResponseDTO;
 
 import java.time.LocalDate;
 import java.util.List;

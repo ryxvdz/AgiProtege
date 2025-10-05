@@ -1,13 +1,14 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
-import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.dto.Apolice.ResponseDTO.ApoliceResponseDTO;
+import com.AgiBank.AgiProtege.dto.Dependente.ResponseDTO.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.model.Apolice;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ApoliceRepository;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class ApoliceService {
 
         return toResponseDTO(apolice);
     }
-
+@Transactional
     public List<ApoliceResponseDTO> buscarApolicesPorCpf(String cpf) {
         Cliente cliente = clienteRepository.findByCpf(cpf).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
@@ -82,5 +83,12 @@ public class ApoliceService {
                 apolice.getTipoSeguro(),
                 dependentesDTO
         );
+
+        //TOODO FAZER ENUM ATIVO OU INATIVO DOS CLIENTES E DOS SEGUROS
+        // IMPLEMENTAR ENUM DOS CLIENTES NA SERVICE USANDO A LOGICA DE ATIVO E INATIVO
+        //IMPLEMENTAR ENUM DOS SEGUROS NA SERVICE USANDO A LOGICA DE ATIVO E INATIVO
+        // CRIAR UM METODO PARA INATIVAR UM SEGURO
+        // CRIAR UM METODO PARA INATIVAR CLIENTE
+
     }
 }

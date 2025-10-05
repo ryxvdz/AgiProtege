@@ -1,4 +1,4 @@
-package com.AgiBank.AgiProtege.dto;
+package com.AgiBank.AgiProtege.dto.Apolice.RequestDTO;
 
 import java.util.UUID;
 

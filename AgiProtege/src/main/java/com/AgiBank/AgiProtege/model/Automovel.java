@@ -1,9 +1,9 @@
 package com.AgiBank.AgiProtege.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
+import com.AgiBank.AgiProtege.Enum.Categoria;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
+import com.AgiBank.AgiProtege.Enum.StatusSeguros;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,10 @@ public class Automovel extends Apolice {
 
     private Integer ano;
 
-    private String categoria;
+    private Categoria categoria;
+
+    @Enumerated(EnumType.STRING)
+    private StatusSeguros statusSeguros;
 
     @Column(name = "desastres_naturais")
     private Boolean desastresNaturais;
@@ -37,4 +40,13 @@ public class Automovel extends Apolice {
 
     @Column(name = "assistencia_24")
     private Boolean assistencia24;
+
+    public void ativar(){
+        this.statusSeguros = StatusSeguros.CONTRATOATIVO;
+    }
+    public void inativa(){
+        this.statusSeguros = StatusSeguros.CONTRATOINATIVO;
+    }
+
+
 }

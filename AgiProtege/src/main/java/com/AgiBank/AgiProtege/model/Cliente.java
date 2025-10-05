@@ -1,5 +1,8 @@
 package com.AgiBank.AgiProtege.model;
 
+import com.AgiBank.AgiProtege.Enum.EstadoCivil;
+import com.AgiBank.AgiProtege.Enum.Sexo;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -28,7 +31,8 @@ public class Cliente {
     private String cpf;
 
 //    @NotBlank
-    private String sexo;
+    @Enumerated(EnumType.STRING)
+    private Sexo sexo;
 
 //    @Email
     private String email;
@@ -42,13 +46,27 @@ public class Cliente {
 //    @NotNull
     private Integer idade;
 
+    @Enumerated(EnumType.STRING)
+    private StatusCliente statusCliente;
+
 //    @NotBlank
     @Column(name = "estado_Civil")
-    private String estadoCivil;
+    @Enumerated(EnumType.STRING)
+    private EstadoCivil estadoCivil;
 
     @Column(name = "perfil_risco")
     private String perfilRisco;
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Apolice> apolices = new ArrayList<>();
+
+    public void ativar(){
+        this.statusCliente = StatusCliente.ATIVO;
+    }
+
+    public void inativar(){
+        this.statusCliente = StatusCliente.INATIVO;
+    }
+
+
 }
