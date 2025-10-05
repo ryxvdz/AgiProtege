@@ -1,13 +1,14 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.DependenteRequestDTO;
-import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
-import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.dto.Dependente.RequestDTO.DependenteRequestDTO;
+import com.AgiBank.AgiProtege.dto.Dependente.ResponseDTO.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.model.Dependente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.DependenteRepository;
 import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 
@@ -39,6 +40,7 @@ public class DependenteService {
         dependente.setParentesco(dto.parentesco());
         dependente.setSeguroVida(seguroVida);
 
+
         Dependente dependeCastrado = repository.save(dependente);
 
         return toResponseDTO(dependeCastrado);
@@ -54,4 +56,9 @@ public class DependenteService {
 
         );
     }
+    public void deletarDependente(UUID idDependente) {
+        repository.deleteById(idDependente);
+
+    }
+
 }

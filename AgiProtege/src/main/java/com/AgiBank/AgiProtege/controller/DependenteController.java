@@ -1,13 +1,12 @@
 package com.AgiBank.AgiProtege.controller;
 
-import com.AgiBank.AgiProtege.dto.DependenteRequestDTO;
-import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.dto.Dependente.RequestDTO.DependenteRequestDTO;
+import com.AgiBank.AgiProtege.dto.Dependente.ResponseDTO.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.service.DependenteService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/dependente")
@@ -21,5 +20,9 @@ public class DependenteController {
     public DependenteResponseDTO adicionarDependente(@RequestBody DependenteRequestDTO dto){
 
         return dependenteService.adicionarDependente(dto);
+    }
+    @DeleteMapping
+    public void deletar(@PathVariable UUID idDependente){
+        dependenteService.deletarDependente(idDependente);
     }
 }

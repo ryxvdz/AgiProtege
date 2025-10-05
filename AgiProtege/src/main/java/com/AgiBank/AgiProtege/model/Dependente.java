@@ -1,5 +1,6 @@
 package com.AgiBank.AgiProtege.model;
 
+import com.AgiBank.AgiProtege.Enum.StatusSeguros;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,4 +30,5 @@ public class Dependente {
     private String nome;
 
     private String parentesco;
+
 }
