@@ -1,4 +1,4 @@
 package com.AgiBank.AgiProtege.dto;
 
-public record MarcaFIPE() {
+public record MarcaFipeDTO(Integer codigo, String nome) {
 }
