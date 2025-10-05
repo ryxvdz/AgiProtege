@@ -1,15 +1,17 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.dto.DespesasRequestDTO;
-import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.Enum.StatusCliente;
+import com.AgiBank.AgiProtege.dto.Despesas.RequestDTO.DespesasRequestDTO;
+import com.AgiBank.AgiProtege.dto.Despesas.ResponseDTO.DespesasResponseDTO;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.DespesasEssenciais;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import com.AgiBank.AgiProtege.repository.DespesasRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 
@@ -22,10 +24,16 @@ public class DespesasService {
         this.clienteRepository = clienteRepository;
     }
 
+    @Transactional
     public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado!")
         );
+        if (cliente.getStatusCliente() == StatusCliente.INATIVO) {
+            throw new RuntimeException("Cliente está inativo e não pode contratar seguros.");
+        }
+
+
 
         //Verifica se o cliente já possui algum seguro despesa
         boolean possuiSeguroDespesa = cliente.getApolices().stream()
@@ -56,6 +64,7 @@ public class DespesasService {
         despesas.setTipoSeguro("DESPESA");
         despesas.setDataFim(LocalDate.now().plusYears(1));
         despesas.setParcela(calcularParcela(dto));
+        despesas.ativa();
 
         DespesasEssenciais despesaCadastrada = repository.save(despesas);
         return toResponseDTO (despesaCadastrada);
@@ -96,7 +105,15 @@ public class DespesasService {
     private DespesasResponseDTO toResponseDTO(DespesasEssenciais despesasEssenciais){
         return new DespesasResponseDTO(
                 despesasEssenciais.getGastosMensais(),
-                despesasEssenciais.getParcela()
+                despesasEssenciais.getParcela(),
+                despesasEssenciais.getStatusSeguros()
+
         );
+    }
+    public void deletar(UUID id){
+        DespesasEssenciais despesasEssenciais = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Despesas nao encontrado!"));
+        despesasEssenciais.inativa();
+        repository.save(despesasEssenciais);
     }
 }

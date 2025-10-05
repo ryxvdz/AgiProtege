@@ -1,13 +1,12 @@
 package com.AgiBank.AgiProtege.controller;
 
-import com.AgiBank.AgiProtege.dto.DespesasRequestDTO;
-import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.dto.Despesas.RequestDTO.DespesasRequestDTO;
+import com.AgiBank.AgiProtege.dto.Despesas.ResponseDTO.DespesasResponseDTO;
 import com.AgiBank.AgiProtege.service.DespesasService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/seguroDespesa")
@@ -19,5 +18,10 @@ public class DespesasController {
     @PostMapping
     public DespesasResponseDTO criarSeguroDespesas(@RequestBody DespesasRequestDTO dto){
         return despesasService.criarSeguroDespesas(dto);
+    }
+
+    @DeleteMapping
+    public void deletar(@PathVariable UUID id) {
+        despesasService.deletar(id);
     }
 }
