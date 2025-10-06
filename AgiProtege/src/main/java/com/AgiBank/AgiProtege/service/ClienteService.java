@@ -3,6 +3,8 @@ package com.AgiBank.AgiProtege.service;
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.dto.LoginRequestDTO;
+import com.AgiBank.AgiProtege.enums.StatusApolice;
+import com.AgiBank.AgiProtege.enums.StatusCliente;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Cliente;
@@ -49,6 +51,7 @@ public class ClienteService {
 
         Cliente clienteCadastrado = repository.save(cliente);
 
+
         calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente(), dto);
 
         String token = tokenService.generateToken(clienteCadastrado);
@@ -60,6 +63,10 @@ public class ClienteService {
         Cliente cliente = repository.findByCpf(dto.cpf()).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
+
+        if(cliente.getStatus()== StatusCliente.Inativo) {
+            throw new ServiceUnavaliable("Conta inexistente!");
+        }
 
         if (passwordEncoder.matches(dto.senha(), cliente.getSenha())) {
             String token = this.tokenService.generateToken(cliente);
@@ -103,8 +110,20 @@ public class ClienteService {
         return toResponseDTO(clienteAtualizado, null);
     }
 
-    public void deletarClientePorId(UUID id) {
-        repository.deleteById(id);
+    public void inativarClientePorId(UUID id) {
+        Cliente cliente = repository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
+        );
+
+        boolean possuiApoliceAtiva = cliente.getApolices().stream()
+                .anyMatch(apolice -> apolice.getStatus() == StatusApolice.Ativo);
+
+        if (possuiApoliceAtiva) {
+            throw new ServiceUnavaliable("Não é possível inativar o cliente. Existem apólices ativas.");
+        }
+
+        cliente.setStatus(StatusCliente.Inativo);
+        repository.save(cliente);
     }
 
     public void calcularPerfilDeRiscoInical(UUID id, ClienteRequestDTO dto) {
@@ -222,6 +241,7 @@ public class ClienteService {
         return new ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getEmail(),
+                cliente.getStatus(),
                 cliente.getTelefone(),
                 cliente.getIdade(),
                 cliente.getEstadoCivil(),

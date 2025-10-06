@@ -1,7 +1,5 @@
 package com.AgiBank.AgiProtege.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.UUID;
 
 public record AutomovelRequestDTO(UUID idCliente, String placa, Double tabelaFipe, String modelo,

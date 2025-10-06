@@ -27,8 +27,8 @@ public class ApoliceController {
         return service.buscarApolicesPorCpf(cpf);
     }
 
-    @DeleteMapping("/{id}")
-    public void deletarApolicePorId(UUID id) {
-        service.deletarApolicePorId(id);
+    @PatchMapping("/{id}/inativarApolice")
+    public void inativarApolice(UUID id) {
+        service.inativarApolicePorId(id);
     }
 }

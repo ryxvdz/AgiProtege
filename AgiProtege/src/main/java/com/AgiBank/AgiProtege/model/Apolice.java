@@ -1,6 +1,7 @@
 package com.AgiBank.AgiProtege.model;
 
 
+import com.AgiBank.AgiProtege.enums.StatusApolice;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,5 +41,11 @@ public class Apolice {
 
     @OneToMany(mappedBy = "apolice", cascade = CascadeType.ALL)
     private List<Sinistro> sinistros = new ArrayList<>();
+
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_apolice")
+    private StatusApolice status = StatusApolice.Ativo;
 
 }

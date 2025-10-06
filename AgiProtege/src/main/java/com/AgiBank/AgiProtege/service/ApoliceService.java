@@ -2,12 +2,15 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.enums.StatusApolice;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
+import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Apolice;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ApoliceRepository;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,9 +62,18 @@ public class ApoliceService {
                 })
                 .toList();
     }
+@Transactional
+    public void inativarApolicePorId(UUID id) {
+        Apolice apolice = apoliceRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Apólice não encontrada!")
+        );
 
-    public void deletarApolicePorId(UUID id) {
-        apoliceRepository.deleteById(id);
+        if (apolice.getStatus() == StatusApolice.Inativo) {
+            throw new ServiceUnavaliable("Apólice já está inativa.");
+        }
+
+        apolice.setStatus(StatusApolice.Inativo);
+        apoliceRepository.save(apolice);
     }
 
     public ApoliceResponseDTO toResponseDTO(Apolice apolice) {
