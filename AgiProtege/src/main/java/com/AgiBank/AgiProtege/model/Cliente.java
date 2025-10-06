@@ -58,4 +58,6 @@ public class Cliente {
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Endereco endereco;
+
+    private String senha;
 }
