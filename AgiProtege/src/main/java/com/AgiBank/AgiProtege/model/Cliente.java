@@ -1,5 +1,7 @@
 package com.AgiBank.AgiProtege.model;
 
+import com.AgiBank.AgiProtege.enums.StatusApolice;
+import com.AgiBank.AgiProtege.enums.StatusCliente;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
@@ -61,4 +63,8 @@ public class Cliente {
     private Endereco endereco;
 
     private String senha;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_cliente")
+    private StatusCliente status = StatusCliente.Ativo;
 }

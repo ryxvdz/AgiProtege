@@ -36,9 +36,9 @@ public class ClienteController {
         return clienteService.buscarClientePorId(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deletarClientePorId(@PathVariable UUID id) {
-        clienteService.deletarClientePorId(id);
+    @PatchMapping("/{id}/inativarCliente")
+    public void inativarCliente(@PathVariable UUID id) {
+        clienteService.inativarClientePorId(id);
     }
 
 
