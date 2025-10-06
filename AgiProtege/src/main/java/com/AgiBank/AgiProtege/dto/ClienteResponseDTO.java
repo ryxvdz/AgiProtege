@@ -1,6 +1,4 @@
 package com.AgiBank.AgiProtege.dto;
 
-import java.time.LocalDate;
-
-public record ClienteResponseDTO(String nome, String email, String telefone, LocalDate idade, String estadoCivil) {
+public record ClienteResponseDTO(String nome, String email, String telefone, Integer idade, String estadoCivil, String token) {
 }

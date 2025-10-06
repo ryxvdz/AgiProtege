@@ -2,10 +2,13 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.dto.LoginRequestDTO;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
+import com.AgiBank.AgiProtege.security.TokenService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,8 +20,14 @@ public class ClienteService {
 
     private final ClienteRepository repository;
 
-    public ClienteService(ClienteRepository repository) {
+    private final PasswordEncoder passwordEncoder;
+
+    private final TokenService tokenService;
+
+    public ClienteService(ClienteRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
@@ -36,12 +45,28 @@ public class ClienteService {
         cliente.setRenda(dto.renda());
         cliente.setIdade(dto.idade());
         cliente.setEstadoCivil(dto.estadoCivil());
+        cliente.setSenha(passwordEncoder.encode(dto.senha()));          //guarda a senha criptografada no banco
 
         Cliente clienteCadastrado = repository.save(cliente);
 
         calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente(), dto);
 
-        return toResponseDTO(clienteCadastrado);
+        String token = tokenService.generateToken(clienteCadastrado);
+
+        return toResponseDTO(clienteCadastrado, token);
+    }
+
+    public ClienteResponseDTO login(LoginRequestDTO dto) {
+        Cliente cliente = repository.findByCpf(dto.cpf()).orElseThrow(
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
+        );
+
+        if (passwordEncoder.matches(dto.senha(), cliente.getSenha())) {
+            String token = this.tokenService.generateToken(cliente);
+            return toResponseDTO(cliente, token);
+        }
+
+        throw new RuntimeException("Usuario ou senha incorreta!");
     }
 
     private int calcularIdadeCliente(LocalDate idade) {
@@ -53,7 +78,7 @@ public class ClienteService {
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
-        return toResponseDTO(cliente);
+        return toResponseDTO(cliente, null);
     }
 
     public ClienteResponseDTO atualizarClientePorId(UUID id, ClienteRequestDTO dto) {
@@ -75,7 +100,7 @@ public class ClienteService {
 
         repository.save(clienteAtualizado);
 
-        return toResponseDTO(clienteAtualizado);
+        return toResponseDTO(clienteAtualizado, null);
     }
 
     public void deletarClientePorId(UUID id) {
@@ -193,13 +218,14 @@ public class ClienteService {
         return perfilRisco;
     }
 
-    private ClienteResponseDTO toResponseDTO(Cliente cliente) {
+    private ClienteResponseDTO toResponseDTO(Cliente cliente, String token) {
         return new ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getEmail(),
                 cliente.getTelefone(),
                 cliente.getIdade(),
-                cliente.getEstadoCivil()
+                cliente.getEstadoCivil(),
+                token
         );
     }
 }
