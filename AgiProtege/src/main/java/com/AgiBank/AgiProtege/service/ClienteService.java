@@ -8,6 +8,8 @@ import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.UUID;
 
 @Service
@@ -20,7 +22,8 @@ public class ClienteService {
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
-        if(dto.idade() < 18) {
+
+        if(calcularIdadeCliente(dto.idade()) < 18) {
             throw new ServiceUnavaliable("ERRO! Idade minima 18 anos!");
         }
 
@@ -36,9 +39,13 @@ public class ClienteService {
 
         Cliente clienteCadastrado = repository.save(cliente);
 
-        calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente());
+        calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente(), dto);
 
         return toResponseDTO(clienteCadastrado);
+    }
+
+    private int calcularIdadeCliente(LocalDate idade) {
+        return Period.between(idade, LocalDate.now()).getYears();
     }
 
     public ClienteResponseDTO buscarClientePorId(UUID id) {
@@ -75,7 +82,7 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
-    public void calcularPerfilDeRiscoInical(UUID id) {
+    public void calcularPerfilDeRiscoInical(UUID id, ClienteRequestDTO dto) {
         int idade;
         int renda;
         int estadoCivil;
@@ -86,7 +93,7 @@ public class ClienteService {
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
-        idade = perfilRiscoIdade(clienteModel);
+        idade = perfilRiscoIdade(clienteModel, dto);
 
         renda = perfilRiscoRenda(clienteModel);
 
@@ -112,21 +119,21 @@ public class ClienteService {
         }
     }
 
-    private int perfilRiscoIdade(Cliente cliente) {
+    private int perfilRiscoIdade(Cliente cliente, ClienteRequestDTO dto) {
         int perfilRisco = 0;
 
         //Idade risco alto
-        if(cliente.getIdade() <= 25 || cliente.getIdade() > 60) {
+        if(calcularIdadeCliente(dto.idade()) <= 25 || calcularIdadeCliente(dto.idade()) > 60) {
             perfilRisco = perfilRisco + 25;
         }
 
         //Idade risco medio
-        if(cliente.getIdade() > 25 && cliente.getIdade() <=40) {
+        if(calcularIdadeCliente(dto.idade()) > 25 && calcularIdadeCliente(dto.idade()) <=40) {
             perfilRisco = perfilRisco + 15;
         }
 
         //Idade risco Baixo
-        if(cliente.getIdade() > 40 && cliente.getIdade() <=60) {
+        if(calcularIdadeCliente(dto.idade()) > 40 && calcularIdadeCliente(dto.idade()) <=60) {
             perfilRisco = perfilRisco + 10;
         }
 
