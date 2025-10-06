@@ -2,7 +2,10 @@ package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.dto.EnderecoResponseDTO;
+import com.AgiBank.AgiProtege.model.Endereco;
 import com.AgiBank.AgiProtege.service.ClienteService;
+import com.AgiBank.AgiProtege.service.EnderecoService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,7 @@ import java.util.UUID;
 public class ClienteController {
 
     private final ClienteService clienteService;
+    private final EnderecoService enderecoService;
 
     @PostMapping
     public ClienteResponseDTO cadastrarCliente(@RequestBody ClienteRequestDTO dto) {
@@ -36,4 +40,21 @@ public class ClienteController {
     public void deletarClientePorId(@PathVariable UUID id) {
         clienteService.deletarClientePorId(id);
     }
+
+
+    @PostMapping("/{id}/endereco")
+    public EnderecoResponseDTO adicionarEnderecoAoCliente(
+            @PathVariable UUID id,
+            @RequestParam String cep,
+            @RequestParam String numero) {
+        return enderecoService.adicionarEnderecoAoCliente(id, cep, numero);
+    }
+
+    @GetMapping("/endereco/{id}")
+    public EnderecoResponseDTO buscarEnderecoporId(@PathVariable UUID id) {
+        return enderecoService.buscarEnderecoporId(id);
+    }
 }
+
+
+

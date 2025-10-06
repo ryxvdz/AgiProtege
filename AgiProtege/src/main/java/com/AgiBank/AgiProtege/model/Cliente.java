@@ -26,15 +26,18 @@ public class Cliente {
     private String nome;
 
     @CPF
+    @Column(unique = true)
     private String cpf;
 
 //    @NotBlank
     private String sexo;
 
 //    @Email
+    @Column(unique = true)
     private String email;
 
 //    @NotBlank
+    @Column(unique = true)
     private String telefone;
 
 //    @NotNull
@@ -52,4 +55,8 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Apolice> apolices = new ArrayList<>();
+
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private Endereco endereco;
 }

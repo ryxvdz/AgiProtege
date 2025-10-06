@@ -2,6 +2,9 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.DespesasRequestDTO;
 import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.exception.ExistingResourceException;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
+import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.DespesasEssenciais;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
@@ -24,7 +27,7 @@ public class DespesasService {
 
     public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         //Verifica se o cliente já possui algum seguro despesa
@@ -32,21 +35,21 @@ public class DespesasService {
                 .anyMatch(apolice -> "DESPESA".equalsIgnoreCase(apolice.getTipoSeguro()));
 
         if(possuiSeguroDespesa) {
-            throw new RuntimeException("O cliente já possui um Seguro despesa");
+            throw new ExistingResourceException("O cliente já possui um Seguro despesa");
         }
 
         //verifica se a renda do cliente é maior do que os gastos
         if(cliente.getRenda() < dto.gastosMensais()) {
-            throw new RuntimeException("Serviço indisponivel! Gastos maior que renda mensal!");
+            throw new ServiceUnavaliable("Serviço indisponivel! Gastos maior que renda mensal!");
         }
 
         //gasto minimo e maximo para contratar o seguro
         if(dto.gastosMensais() < 500) {
-            throw new RuntimeException("Serviço indisponivel! Gasto minimo R$ 500");
+            throw new ServiceUnavaliable("Serviço indisponivel! Gasto minimo R$ 500");
         }
 
         if(dto.gastosMensais() > 5000) {
-            throw new RuntimeException("Serviço indisponivel! Gasto maximo R$ 5000");
+            throw new ServiceUnavaliable("Serviço indisponivel! Gasto maximo R$ 5000");
         }
 
         DespesasEssenciais despesas = new DespesasEssenciais();
@@ -66,7 +69,7 @@ public class DespesasService {
         Double porcentagemTempoTrabalho;
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente nao encontrado!")
+                () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 
         //valor de acordo com o perfil de risco

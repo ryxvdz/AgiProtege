@@ -1,7 +1,10 @@
 package com.AgiBank.AgiProtege.service;
 
+import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
 import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
+import com.AgiBank.AgiProtege.exception.ExistingResourceException;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
@@ -9,6 +12,7 @@ import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class VidaService {
@@ -22,14 +26,14 @@ public class VidaService {
 
     public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto) {
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         boolean possuiSeguroVida = cliente.getApolices().stream()
                 .anyMatch(apolice -> "VIDA".equalsIgnoreCase(apolice.getTipoSeguro()));
 
         if(possuiSeguroVida) {
-            throw new RuntimeException("O cliente já possui um Seguro de vida");
+            throw new ExistingResourceException("O cliente já possui um Seguro de vida");
         }
 
         Vida vida = new Vida();
@@ -74,7 +78,7 @@ public class VidaService {
         Double imc = dto.peso() / (dto.altura() * dto.altura());
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
-                () -> new RuntimeException("Cliente nao encontrado!")
+                () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 
         //calculo valor da parcela baseado no perfil de risco do cliente
@@ -122,11 +126,18 @@ public class VidaService {
     }
 
     public VidaResponseDTO toResponseDTO(Vida vida) {
+        // converte cada Dependente para DependenteResponseDTO
+        List<DependenteResponseDTO> dependentesDTO = vida.getDependentes()
+                .stream()
+                .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco()))
+                .toList();
+
         return new VidaResponseDTO(
                 vida.getProfissao(),
                 vida.getFumante(),
                 vida.getValorIndenizacaoMorte(),
-                vida.getParcela()
+                vida.getParcela(),
+                dependentesDTO
         );
     }
 }

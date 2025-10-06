@@ -2,9 +2,10 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
+import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
+import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
 import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,8 +22,9 @@ public class ClienteService {
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
+
         if(calcularIdadeCliente(dto.idade()) < 18) {
-            throw new RuntimeException("ERRO! Idade minima 18 anos!");
+            throw new ServiceUnavaliable("ERRO! Idade minima 18 anos!");
         }
 
         Cliente cliente = new Cliente();
@@ -48,7 +50,7 @@ public class ClienteService {
 
     public ClienteResponseDTO buscarClientePorId(UUID id) {
         Cliente cliente = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         return toResponseDTO(cliente);
@@ -56,7 +58,7 @@ public class ClienteService {
 
     public ClienteResponseDTO atualizarClientePorId(UUID id, ClienteRequestDTO dto) {
         Cliente clienteModel = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         Cliente clienteAtualizado = Cliente.builder()
@@ -88,7 +90,7 @@ public class ClienteService {
         int perfilRisco;
 
         Cliente clienteModel = repository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado!")
+                () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
         idade = perfilRiscoIdade(clienteModel, dto);
