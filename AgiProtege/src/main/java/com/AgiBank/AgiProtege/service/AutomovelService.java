@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.AutomovelRequestDTO;
 import com.AgiBank.AgiProtege.dto.AutomovelResponseDTO;
+import com.AgiBank.AgiProtege.dto.FipeDTO;
 import com.AgiBank.AgiProtege.exception.ExistingResourceException;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
@@ -13,17 +14,24 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import static com.AgiBank.AgiProtege.dto.AutomovelRequestDTO.converterValorFipe;
+
 @Service
 public class AutomovelService {
 
     private final AutomovelRepository automovelRepository;
     private final ClienteRepository clienteRepository;
+    private final FipeService fipeService;
 
-    public AutomovelService(AutomovelRepository automovelRepository, ClienteRepository clienteRepository) {
+    public AutomovelService(AutomovelRepository automovelRepository, ClienteRepository clienteRepository, FipeService fipeService) {
         this.automovelRepository = automovelRepository;
-        this.clienteRepository= clienteRepository;
+        this.clienteRepository = clienteRepository;
+        this.fipeService = fipeService;
     }
-
+    public AutomovelRequestDTO preencherComDadosFipe(AutomovelRequestDTO request) {
+        FipeDTO fipeDTO = fipeService.buscarPorNome(request.marca(), request.modelo(), String.valueOf(request.ano()));
+        return AutomovelRequestDTO.dadosFIPE(request, fipeDTO);
+    }
 
     public AutomovelResponseDTO criarSeguroAutomovel(AutomovelRequestDTO dto){
 
@@ -118,6 +126,7 @@ public class AutomovelService {
                 automovel.getPlaca(),
                 automovel.getTabelaFipe(),
                 automovel.getModelo(),
+                automovel.getMarca(),
                 automovel.getAno(),
                 automovel.getCategoria(),
                 automovel.getParcela()
