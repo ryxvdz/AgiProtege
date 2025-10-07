@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - AgiProtege</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+        }
+
+        .cadastro-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0D47A1;
+        }
+
+        label {
+            font-weight: bold;
+            color: #0D47A1;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px 0;
+            border: 1px solid #1976D2;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #mensagem {
+            text-align: center;
+            margin-top: 10px;
+            color: red;
+        }
+
+        @media (max-width: 500px) {
+            .cadastro-container {
+                padding: 30px 20px;
+            }
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px 20px; /* linha x coluna */
+           }
+
+        .form-grid div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btn-voltar {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0D47A1; /* azul */
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-voltar:hover {
+            background-color: #1976D2; /* azul mais claro ao passar o mouse */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="cadastro-container">
+    <h2>Cadastro</h2>
+
+    <form id="cadastroForm">
+        <div class="form-grid">
+            <div>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+            </div>
+            <div>
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+            </div>
+            <div>
+                <label for="sexo">Sexo:</label>
+                <select id="sexo" name="sexo" required>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+            </div>
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+            </div>
+            <div>
+                <label for="telefone">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" required>
+            </div>
+            <div>
+                <label for="renda">Renda:</label>
+                <input type="number" id="renda" name="renda" placeholder="Digite sua renda" required>
+            </div>
+            <div>
+                <label for="idade">Data de nascimento:</label>
+                <input type="date" id="idade" name="idade" required>
+            </div>
+            <div>
+                <label for="estadoCivil">Estado civil:</label>
+                <select id="estadoCivil" name="estadoCivil" required>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="Solteiro">Solteiro</option>
+                    <option value="Casado">Casado</option>
+                </select>
+            </div>
+            <div style="grid-column: 1 / -1;">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+            </div>
+        </div>
+
+        <button type="submit">Cadastrar</button>
+
+        <p style="text-align: center; margin-top: 15px;">
+            <a href="/login" class="btn-voltar">Voltar ao login</a>
+        </p>
+    </form>
+
+
+    <p id="mensagem"></p>
+</div>
+
+<script>
+    // Máscara simples de CPF
+    const cpfInput = document.getElementById('cpf');
+    cpfInput.addEventListener('input', function() {
+        let value = cpfInput.value.replace(/\D/g, '');
+        if(value.length > 11) value = value.slice(0,11);
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        cpfInput.value = value;
+    });
+
+    // Submissão do formulário
+    document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const dto = {
+            nome: document.getElementById('nome').value,
+            cpf: document.getElementById('cpf').value,
+            sexo: document.getElementById('sexo').value,
+            email: document.getElementById('email').value,
+            telefone: document.getElementById('telefone').value,
+            renda: parseFloat(document.getElementById('renda').value),
+            idade: document.getElementById('idade').value,
+            estadoCivil: document.getElementById('estadoCivil').value,
+            senha: document.getElementById('senha').value
+        };
+
+        const response = await fetch('/auth/cadastrar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dto)
+        });
+
+        const mensagem = document.getElementById('mensagem');
+
+        if(response.ok) {
+            mensagem.style.color = 'green';
+            mensagem.textContent = "Cadastro realizado com sucesso!";
+            // opcional: limpar form
+            // document.getElementById('cadastroForm').reset();
+        } else {
+            const erro = await response.json();
+            mensagem.style.color = 'red';
+            mensagem.textContent = erro.message || "Erro ao cadastrar!";
+        }
+    });
+</script>
+
+</body>
+</html>

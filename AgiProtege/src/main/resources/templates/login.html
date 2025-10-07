@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - AgiProtege</title>
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0D47A1;
+        }
+
+        label {
+            font-weight: bold;
+            color: #0D47A1;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px 0;
+            border: 1px solid #1976D2;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #mensagemErro {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+
+        .btn-cadastro {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0D47A1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cadastro:hover {
+            background-color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login</h2>
+
+    <form id="loginForm">
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
+
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+        <button type="submit">Entrar</button>
+
+        <p style="text-align:center; margin-top:15px;">
+            <a href="/cadastrar" class="btn-cadastro">Não tem conta? Cadastre-se</a>
+        </p>
+    </form>
+
+    <p id="mensagemErro"></p>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        //salva os dados enviados pelo usuario no form
+        const cpf = document.getElementById('cpf').value;
+        const senha = document.getElementById('senha').value;
+
+        //gera o JSON para a API
+        const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cpf, senha })
+        });
+
+        if (response.ok) {
+            const dados = await response.json();
+
+            //salva o token
+            localStorage.setItem("token", dados.token);
+
+            alert("Login bem-sucedido! Bem-vindo, " + dados.nome);
+
+        } else {
+            document.getElementById('mensagemErro').textContent = "CPF ou senha inválidos!";
+        }
+    });
+</script>
+
+</body>
+</html>
