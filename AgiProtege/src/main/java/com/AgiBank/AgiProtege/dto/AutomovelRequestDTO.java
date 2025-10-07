@@ -2,7 +2,7 @@ package com.AgiBank.AgiProtege.dto;
 
 import java.util.UUID;
 
-public record AutomovelRequestDTO(UUID idCliente, String placa, Double tabelaFipe, String marca, String modelo,
+public record AutomovelRequestDTO(UUID idCliente, String placa, String marca, String modelo,
                                   Integer ano, String categoria, Boolean desastresNaturais,
                                   Boolean carroReserva, Boolean asistencia24) {
 
@@ -11,7 +11,6 @@ public record AutomovelRequestDTO(UUID idCliente, String placa, Double tabelaFip
         return new AutomovelRequestDTO(
                 dto.idCliente(),
                 dto.placa(),
-                valorConvertido,      // passa o double convertido
                 fipe.marca(),
                 fipe.modelo(),
                 fipe.ano(),

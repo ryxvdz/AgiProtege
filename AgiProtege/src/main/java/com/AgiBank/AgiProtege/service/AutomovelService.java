@@ -28,10 +28,6 @@ public class AutomovelService {
         this.clienteRepository = clienteRepository;
         this.fipeService = fipeService;
     }
-    public AutomovelRequestDTO preencherComDadosFipe(AutomovelRequestDTO request) {
-        FipeDTO fipeDTO = fipeService.buscarPorNome(request.marca(), request.modelo(), String.valueOf(request.ano()));
-        return AutomovelRequestDTO.dadosFIPE(request, fipeDTO);
-    }
 
     public AutomovelResponseDTO criarSeguroAutomovel(AutomovelRequestDTO dto){
 
@@ -49,16 +45,20 @@ public class AutomovelService {
             throw new ServiceUnavaliable("Serviço indisponivel! O carro possui mais de 12 anos!");
         }
 
+        FipeDTO fipeDTO = fipeService.buscarPorNome(dto.marca(), dto.modelo(), String.valueOf(dto.ano()));
+        double valorTabela = AutomovelRequestDTO.converterValorFipe(fipeDTO.valor());
+
         Automovel automovel = new Automovel();
         automovel.setCliente(cliente);
         automovel.setPlaca(dto.placa());
-        automovel.setTabelaFipe(dto.tabelaFipe());
-        automovel.setModelo(dto.modelo());
+        automovel.setTabelaFipe(valorTabela);
+        automovel.setModelo(fipeDTO.modelo());
+        automovel.setMarca(fipeDTO.marca());
         automovel.setAno(dto.ano());
         automovel.setCategoria(dto.categoria());
         automovel.setTipoSeguro("AUTO");
         automovel.setDataFim(LocalDate.now().plusYears(1));
-        automovel.setParcela(calcularParcela(dto));
+        automovel.setParcela(calcularParcela(dto, valorTabela));
         automovel.setAssistencia24(dto.asistencia24());
         automovel.setCarroReserva(dto.carroReserva());
         automovel.setDesastresNaturais(dto.desastresNaturais());
@@ -67,7 +67,7 @@ public class AutomovelService {
         return toResponseDTO(automovelCadastrado);
     }
 
-    public Double calcularParcela(AutomovelRequestDTO dto) {
+    public Double calcularParcela(AutomovelRequestDTO dto, double valorTabelFipe) {
         Double porcentagemTabelFipe = 0.0;
 
         Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
@@ -88,7 +88,7 @@ public class AutomovelService {
         }
 
         //calculo parcela inical
-        Double parcela = (dto.tabelaFipe() * porcentagemTabelFipe) / 12;
+        Double parcela = (valorTabelFipe * porcentagemTabelFipe) / 12;
 
         //calculo parcela de acordo com a categoria do carro
         if(dto.categoria().equalsIgnoreCase("Sedan")) {
@@ -125,8 +125,8 @@ public class AutomovelService {
         return new AutomovelResponseDTO(
                 automovel.getPlaca(),
                 automovel.getTabelaFipe(),
-                automovel.getModelo(),
                 automovel.getMarca(),
+                automovel.getModelo(),
                 automovel.getAno(),
                 automovel.getCategoria(),
                 automovel.getParcela()

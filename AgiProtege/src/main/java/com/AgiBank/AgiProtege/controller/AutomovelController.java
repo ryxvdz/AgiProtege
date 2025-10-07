@@ -17,11 +17,6 @@ public class AutomovelController {
 
     @PostMapping
     public AutomovelResponseDTO criarSeguroAutomovel(@RequestBody AutomovelRequestDTO dto) {
-        AutomovelRequestDTO completo = service.preencherComDadosFipe(dto);
-        AutomovelResponseDTO response = service.criarSeguroAutomovel(completo);
-
-        // Cria o seguro usando os dados preenchidos
-        return response;
-
+        return service.criarSeguroAutomovel(dto);
     }
 }

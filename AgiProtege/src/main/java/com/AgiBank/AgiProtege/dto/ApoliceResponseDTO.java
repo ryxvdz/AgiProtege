@@ -1,7 +1,5 @@
 package com.AgiBank.AgiProtege.dto;
 
-import com.AgiBank.AgiProtege.model.Dependente;
-
 import java.time.LocalDate;
 import java.util.List;
 
