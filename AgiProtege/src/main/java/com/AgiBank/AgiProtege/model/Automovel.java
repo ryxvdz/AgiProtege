@@ -20,6 +20,8 @@ public class Automovel extends Apolice {
     @Column(name = "tabela_fipe")
     private Double tabelaFipe;
 
+    private String marca;
+
     private String modelo;
 
     private Integer ano;
