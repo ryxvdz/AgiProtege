@@ -107,6 +107,7 @@
 
         <button type="submit">Entrar</button>
 
+
         <p style="text-align:center; margin-top:15px;">
             <a href="/cadastrar" class="btn-cadastro">Não tem conta? Cadastre-se</a>
         </p>
@@ -119,11 +120,11 @@
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        //salva os dados enviados pelo usuario no form
+        // Pega os dados do formulário
         const cpf = document.getElementById('cpf').value;
         const senha = document.getElementById('senha').value;
 
-        //gera o JSON para a API
+        // Faz o login
         const response = await fetch('/auth/login', {
             method: 'POST',
             headers: {
@@ -135,11 +136,13 @@
         if (response.ok) {
             const dados = await response.json();
 
-            //salva o token
+            // Salva o token no navegador
             localStorage.setItem("token", dados.token);
 
             alert("Login bem-sucedido! Bem-vindo, " + dados.nome);
 
+            // ✅ Redireciona para a página protegida (Spring Boot)
+            window.location.href = "/gerenciarApolices";
         } else {
             document.getElementById('mensagemErro').textContent = "CPF ou senha inválidos!";
         }

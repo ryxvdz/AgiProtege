@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciar Apólices</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<h1>Bem-vindo(a), <span th:text="${#authentication.principal.nome}">Usuário</span>!</h1>
+<p>Veja abaixo suas apólices cadastradas:</p>
+
+<!-- Apólices Ativas -->
+<h2>Apólices Ativas</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Número</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="apolice : ${apolicesAtivas}">
+        <td th:text="${apolice.numero}">123</td>
+        <td th:text="${apolice.tipo}">Residencial</td>
+        <td th:text="${apolice.valor}">1000.00</td>
+        <td th:text="${apolice.status}">ATIVO</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(apolicesAtivas)}">
+        <td colspan="4">Nenhuma apólice ativa encontrada.</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Apólices Inativas -->
+<h2>Apólices Inativas</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Número</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="apolice : ${apolicesInativas}">
+        <td th:text="${apolice.numero}">123</td>
+        <td th:text="${apolice.tipo}">Auto</td>
+        <td th:text="${apolice.valor}">1000.00</td>
+        <td th:text="${apolice.status}">INATIVO</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(apolicesInativas)}">
+        <td colspan="4">Nenhuma apólice inativa encontrada.</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Botão de voltar ou logout -->
+<a th:href="@{/logout}">Sair</a>
+
+</body>
+</html>

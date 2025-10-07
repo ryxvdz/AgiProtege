@@ -1,7 +1,11 @@
 package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
+import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.service.ApoliceService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

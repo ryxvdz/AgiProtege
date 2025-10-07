@@ -76,6 +76,14 @@ public class ApoliceService {
         apoliceRepository.save(apolice);
     }
 
+    public List<Apolice> buscarAtivasPorCliente(Cliente cliente) {
+        return apoliceRepository.findByClienteAndStatus(cliente, StatusApolice.Ativo);
+    }
+
+    public List<Apolice> buscarInativasPorCliente(Cliente cliente) {
+        return apoliceRepository.findByClienteAndStatus(cliente, StatusApolice.Inativo);
+    }
+
     public ApoliceResponseDTO toResponseDTO(Apolice apolice) {
         List<DependenteResponseDTO> dependentesDTO = null;
 
