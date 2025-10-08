@@ -91,28 +91,56 @@
         .btn-cadastro:hover {
             background-color: #1976D2;
         }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pagina-login {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .titulo h1 {
+            font-size: 46px;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="login-container">
-    <h2>Login</h2>
+<div class="pagina-login">
+    <div class="titulo">
+        <h1>
+            <span style="color: white;">Agi</span><span style="color: #4CAF50;">Protege</span>
+        </h1>
+    </div>
 
-    <form id="loginForm">
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
+    <div class="login-container">
+        <h2>Login</h2>
 
-        <label for="senha">Senha:</label>
-        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+        <form id="loginForm">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
 
-        <button type="submit">Entrar</button>
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
 
-        <p style="text-align:center; margin-top:15px;">
-            <a href="/cadastrar" class="btn-cadastro">Não tem conta? Cadastre-se</a>
-        </p>
-    </form>
+            <button type="submit">Entrar</button>
 
-    <p id="mensagemErro"></p>
+            <p style="text-align:center; margin-top:15px;">
+                <a href="/cadastrar" class="btn-cadastro">Não tem conta? Cadastre-se</a>
+            </p>
+        </form>
+
+        <p id="mensagemErro"></p>
+    </div>
 </div>
 
 <script>
