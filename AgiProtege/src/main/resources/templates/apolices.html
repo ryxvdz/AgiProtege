@@ -21,6 +21,7 @@
             color: white;
             text-align: center;
             margin-bottom: 30px;
+            font-size: 40px;
         }
 
         .container {
@@ -104,7 +105,7 @@
 </head>
 <body>
 
-<h2>Minhas Apólices</h2>
+<h2>Meus Contratos</h2>
 
 <div class="container" id="cardsContainer"></div>
 
@@ -147,9 +148,15 @@
                 card.className = "card";
                 card.innerHTML = `
                     <h3>${apolice.tipoSeguro}</h3>
-                    <p><strong>Nome:</strong> ${apolice.nome}</p>
-                    <p><strong>Email:</strong> ${apolice.email}</p>
                     <p><strong>Início:</strong> ${apolice.dataInicio}</p>
+                    <p><strong>Fim:</strong> ${apolice.dataFim}</p>
+                    <p>
+                        <strong>Status:</strong>
+                        <span style="color: ${apolice.status === 'Ativo' ? 'green' : 'red'};">
+                            ${apolice.status}
+                        </span>
+                    </p>
+
                 `;
 
                 card.addEventListener("click", () => {

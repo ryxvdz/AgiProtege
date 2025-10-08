@@ -57,7 +57,8 @@ public class ApoliceService {
                             apolice.getDataFim(),
                             apolice.getParcela(),
                             apolice.getTipoSeguro(),
-                            dependentesDTO // pode ser null ou lista preenchida
+                            dependentesDTO, // pode ser null ou lista preenchida
+                            apolice.getStatus()
                     );
                 })
                 .toList();
@@ -93,7 +94,8 @@ public class ApoliceService {
                 apolice.getDataFim(),
                 apolice.getParcela(),
                 apolice.getTipoSeguro(),
-                dependentesDTO
+                dependentesDTO,
+                apolice.getStatus()
         );
     }
 }
