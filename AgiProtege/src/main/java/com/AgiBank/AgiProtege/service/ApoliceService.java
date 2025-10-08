@@ -146,7 +146,8 @@ public class ApoliceService {
                 dependentesDTO,
                 gastosMensais,
                 tempoRegistro,
-                apolice.getStatus()
+                apolice.getStatus(),
+                apolice.getIdApolice()
         );
     }
 }

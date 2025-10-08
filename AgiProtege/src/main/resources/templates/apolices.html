@@ -211,6 +211,17 @@
                         detalhes += `<p><strong>Valor indenizacao:</strong> ${apolice.valorIndenizacao}</p>`;
                     }
 
+                    // Botão de cancelar apólice (só se ainda estiver ativa)
+                    if (apolice.status === "Ativo") {
+                        detalhes += `
+                            <button
+                                onclick="cancelarApolice('${apolice.idApolice}')"
+                                style="margin-top: 20px; padding: 10px 20px; background-color: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Cancelar Apólice
+                            </button>
+                        `;
+                    }
+
                     conteudoModal.innerHTML = detalhes;
                     modal.style.display = "block";
                 });
@@ -223,6 +234,27 @@
             cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar apólices.</p>";
         });
     }
+
+    function cancelarApolice(id) {
+        if (!confirm("Tem certeza que deseja cancelar esta apólice?")) return;
+
+        fetch(`/apolice/${id}/inativarApolice`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Erro ao cancelar apólice");
+            alert("Apólice cancelada com sucesso.");
+            location.reload(); // recarrega a página para atualizar a lista
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erro ao cancelar apólice.");
+        });
+    }
+
 
     fecharModal.onclick = () => {
         modal.style.display = "none";

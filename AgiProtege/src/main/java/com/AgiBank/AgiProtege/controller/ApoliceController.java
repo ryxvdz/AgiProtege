@@ -38,7 +38,7 @@ public class ApoliceController {
     }
 
     @PatchMapping("/{id}/inativarApolice")
-    public void inativarApolice(UUID id) {
+    public void inativarApolice(@PathVariable UUID id) {
         service.inativarApolicePorId(id);
     }
 }

@@ -5,6 +5,7 @@ import com.AgiBank.AgiProtege.enums.StatusApolice;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 public record ApoliceResponseDTO (String nome,
@@ -40,5 +41,6 @@ public record ApoliceResponseDTO (String nome,
                                   List<DependenteResponseDTO> dependentes,
                                   Double gastosMensais,
                                   Double tempoRegistro,
-                                  StatusApolice status){
+                                  StatusApolice status,
+                                  UUID idApolice){
 }
