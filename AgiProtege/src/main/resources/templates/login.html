@@ -138,7 +138,7 @@
             //salva o token
             localStorage.setItem("token", dados.token);
 
-            alert("Login bem-sucedido! Bem-vindo, " + dados.nome);
+            window.location.href = "/apolices";
 
         } else {
             document.getElementById('mensagemErro').textContent = "CPF ou senha inválidos!";

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro - AgiProtege</title>
+    <title>Cadastro</title>
     <style>
         * {
             box-sizing: border-box;
@@ -212,8 +212,7 @@
         if(response.ok) {
             mensagem.style.color = 'green';
             mensagem.textContent = "Cadastro realizado com sucesso!";
-            // opcional: limpar form
-            // document.getElementById('cadastroForm').reset();
+            window.location.href = "/apolices";
         } else {
             const erro = await response.json();
             mensagem.style.color = 'red';

@@ -15,4 +15,9 @@ public class ViewController {
     public String cadastrar() {
         return "cadastrar";
     }
+
+    @GetMapping("/apolices")
+    public String apolices() {
+        return "apolices";
+    }
 }

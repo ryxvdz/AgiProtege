@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Apólices</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            padding: 40px;
+        }
+
+        h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card h3 {
+            color: #0D47A1;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            margin: 6px 0;
+            color: #333;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #0D47A1;
+        }
+
+        .modal-content p {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2>Minhas Apólices</h2>
+
+<div class="container" id="cardsContainer"></div>
+
+<div id="detalhesModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="fecharModal">&times;</span>
+        <h3>Detalhes da Apólice</h3>
+        <div id="conteudoModal"></div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+    const cardsContainer = document.getElementById("cardsContainer");
+    const modal = document.getElementById("detalhesModal");
+    const fecharModal = document.getElementById("fecharModal");
+    const conteudoModal = document.getElementById("conteudoModal");
+
+    if (!token) {
+        alert("Você precisa estar logado para ver suas apólices.");
+        window.location.href = "/login";
+    } else {
+        fetch("/apolice/minhas", {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Erro ao buscar apólices");
+            return response.json();
+        })
+        .then(data => {
+            if (data.length === 0) {
+                cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhuma apólice encontrada.</p>";
+                return;
+            }
+
+            data.forEach(apolice => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <h3>${apolice.tipoSeguro}</h3>
+                    <p><strong>Nome:</strong> ${apolice.nome}</p>
+                    <p><strong>Email:</strong> ${apolice.email}</p>
+                    <p><strong>Início:</strong> ${apolice.dataInicio}</p>
+                `;
+
+                card.addEventListener("click", () => {
+                    conteudoModal.innerHTML = `
+                        <p><strong>Nome:</strong> ${apolice.nome}</p>
+                        <p><strong>Email:</strong> ${apolice.email}</p>
+                        <p><strong>Tipo de Seguro:</strong> ${apolice.tipoSeguro}</p>
+                        <p><strong>Data de Início:</strong> ${apolice.dataInicio}</p>
+                        <p><strong>Data de Fim:</strong> ${apolice.dataFim}</p>
+                        <p><strong>Parcela:</strong> R$ ${apolice.parcela.toFixed(2)}</p>
+                        ${apolice.dependentes ? `<p><strong>Dependentes:</strong> ${apolice.dependentes}</p>` : ''}
+                    `;
+                    modal.style.display = "block";
+                });
+
+                cardsContainer.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar apólices.</p>";
+        });
+    }
+
+    fecharModal.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+</body>
+</html>
