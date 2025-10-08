@@ -1,7 +1,10 @@
 package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.ApoliceResponseDTO;
+import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.service.ApoliceService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,13 @@ public class ApoliceController {
     @GetMapping("/apolicesUsuario/{cpf}")
     public List<ApoliceResponseDTO> buscarApolicesPorCpf(@PathVariable String cpf) {
         return service.buscarApolicesPorCpf(cpf);
+    }
+
+    //pega as apolices do usuario autenticado pelo token
+    @GetMapping("/minhas")
+    public ResponseEntity<List<ApoliceResponseDTO>> listarMinhasApolices(@AuthenticationPrincipal Cliente cliente) {
+        List<ApoliceResponseDTO> apolices = service.buscarApolicesPorCpf(cliente.getCpf());
+        return ResponseEntity.ok(apolices);
     }
 
     @PatchMapping("/{id}/inativarApolice")
