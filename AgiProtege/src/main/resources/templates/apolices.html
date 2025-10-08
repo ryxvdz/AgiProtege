@@ -160,15 +160,58 @@
                 `;
 
                 card.addEventListener("click", () => {
-                    conteudoModal.innerHTML = `
+                    let detalhes = `
                         <p><strong>Nome:</strong> ${apolice.nome}</p>
                         <p><strong>Email:</strong> ${apolice.email}</p>
+                        <p><strong>Telefone:</strong> ${apolice.telefone}</p>
+                        <p><strong>CPF:</strong> ${apolice.cpf}</p>
+                        <p><strong>Data de nascimento:</strong> ${apolice.idade}</p>
+                        <p><strong>Sexo:</strong> ${apolice.sexo}</p>
+                        <p><strong>Estado Civil:</strong> ${apolice.estadoCivil}</p>
+                        <p><strong>Renda:</strong> ${apolice.renda}</p>
+                        <p><strong>Perfil de risco:</strong> ${apolice.perfilRisco}</p>
                         <p><strong>Tipo de Seguro:</strong> ${apolice.tipoSeguro}</p>
                         <p><strong>Data de Início:</strong> ${apolice.dataInicio}</p>
                         <p><strong>Data de Fim:</strong> ${apolice.dataFim}</p>
                         <p><strong>Parcela:</strong> R$ ${apolice.parcela.toFixed(2)}</p>
-                        ${apolice.dependentes ? `<p><strong>Dependentes:</strong> ${apolice.dependentes}</p>` : ''}
                     `;
+
+                    // Verifica tipo de seguro e adiciona info extra
+                    if (apolice.tipoSeguro === "AUTO" && apolice.modelo) {
+                        detalhes += `<p><strong>Marca:</strong> ${apolice.marca}</p>`;
+                        detalhes += `<p><strong>Modelo do Carro:</strong> ${apolice.modelo}</p>`;
+                        detalhes += `<p><strong>Ano do veiculo:</strong> ${apolice.ano}</p>`;
+                        detalhes += `<p><strong>Placa:</strong> ${apolice.placa}</p>`;
+                        detalhes += `<p><strong>Categoria:</strong> ${apolice.categoria}</p>`;
+                        detalhes += `<p><strong>Tabela Fipe:</strong> ${apolice.tabelaFipe}</p>`;
+                        detalhes += `<p><strong>Desastres Naturais:</strong> ${apolice.desastresNaturais}</p>`;
+                        detalhes += `<p><strong>Carro Reserva:</strong> ${apolice.carroReserva}</p>`;
+                        detalhes += `<p><strong>Assistencia 24 horas:</strong> ${apolice.assistencia}</p>`;
+                    }
+
+                    if (apolice.tipoSeguro === "DESPESA") {
+                        detalhes += `<p><strong>Gastos Mensais:</strong> ${apolice.gastosMensais}</p>`;
+                        detalhes += `<p><strong>Tempo de Registro:</strong> ${apolice.tempoRegistro}</p>`;
+                    }
+
+                    if (apolice.tipoSeguro === "VIDA") {
+                        const dependentes = apolice.dependentes.map(dep =>
+                            `<li>${dep.nome} (${dep.parentesco})</li>`
+                        ).join("");
+
+                        detalhes += `<p><strong>Altura:</strong> ${apolice.altura}</p>`;
+                        detalhes += `<p><strong>Peso:</strong> ${apolice.peso}</p>`;
+                        detalhes += `<p><strong>Altura:</strong> ${apolice.altura}</p>`;
+                        detalhes += `<p><strong>Fumante:</strong> ${apolice.fumante}</p>`;
+                        detalhes += `<p><strong>Patrimonio:</strong> ${apolice.patrimonio}</p>`;
+                        detalhes += `<p><strong>Cobertura Hospitalar:</strong> ${apolice.coberturaHospitalar}</p>`;
+                        detalhes += `<p><strong>Historico familiar:</strong> ${apolice.historicoFamiliar}</p>`;
+                        detalhes += `<p><strong>Profissão:</strong> ${apolice.profissao}</p>`;
+                        detalhes += `<p><strong>Dependentes:</strong></p><ul>${dependentes}</ul>`;
+                        detalhes += `<p><strong>Valor indenizacao:</strong> ${apolice.valorIndenizacao}</p>`;
+                    }
+
+                    conteudoModal.innerHTML = detalhes;
                     modal.style.display = "block";
                 });
 
