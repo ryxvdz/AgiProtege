@@ -105,6 +105,26 @@
             background-color: #1976D2; /* azul mais claro ao passar o mouse */
         }
 
+        input[type="date"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
+            background-color: white;
+            color: #333;
+            font-size: 14px;
+            padding: 12px;
+            border: 1px solid #1976D2;
+            border-radius: 6px;
+            width: 100%;
+            margin: 8px 0 20px 0;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(38%) sepia(97%) saturate(1183%) hue-rotate(180deg) brightness(91%) contrast(89%);
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
