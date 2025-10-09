@@ -20,4 +20,9 @@ public class ViewController {
     public String apolices() {
         return "apolices";
     }
+
+    @GetMapping("/cadastrarSeguroDespesa")
+    public String exibirFormularioSeguroDespesa() {
+        return "cadastrarSeguroDespesa"; // nome do HTML sem .html
+    }
 }

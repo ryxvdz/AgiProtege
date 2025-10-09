@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 
@@ -25,8 +26,8 @@ public class DespesasService {
         this.clienteRepository = clienteRepository;
     }
 
-    public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto){
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+    public DespesasResponseDTO criarSeguroDespesas(DespesasRequestDTO dto, UUID id){
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
@@ -58,17 +59,17 @@ public class DespesasService {
         despesas.setTempoRegistro(dto.tempoRegistro());
         despesas.setTipoSeguro("DESPESA");
         despesas.setDataFim(LocalDate.now().plusYears(1));
-        despesas.setParcela(calcularParcela(dto));
+        despesas.setParcela(calcularParcela(dto, id));
 
         DespesasEssenciais despesaCadastrada = repository.save(despesas);
         return toResponseDTO (despesaCadastrada);
     }
 
-    public Double calcularParcela(DespesasRequestDTO dto) {
+    public Double calcularParcela(DespesasRequestDTO dto, UUID id) {
         Double porcentagemParcela = 0.0;
         Double porcentagemTempoTrabalho;
 
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 
