@@ -214,11 +214,18 @@
                     // Botão de cancelar apólice (só se ainda estiver ativa)
                     if (apolice.status === "Ativo") {
                         detalhes += `
-                            <button
-                                onclick="cancelarApolice('${apolice.idApolice}')"
-                                style="margin-top: 20px; padding: 10px 20px; background-color: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                                Cancelar Apólice
-                            </button>
+                            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                                <button
+                                    onclick="cancelarApolice('${apolice.idApolice}')"
+                                    style="flex: 1; padding: 10px 20px; background-color: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Cancelar Apólice
+                                </button>
+                                <button
+                                    onclick="acionarSinistro('${apolice.idApolice}')"
+                                    style="flex: 1; padding: 10px 20px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                    Acionar Sinistro
+                                </button>
+                            </div>
                         `;
                     }
 
@@ -254,7 +261,6 @@
             alert("Erro ao cancelar apólice.");
         });
     }
-
 
     fecharModal.onclick = () => {
         modal.style.display = "none";
