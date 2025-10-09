@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.service;
 
 import com.AgiBank.AgiProtege.dto.DespesasRequestDTO;
 import com.AgiBank.AgiProtege.dto.DespesasResponseDTO;
+import com.AgiBank.AgiProtege.enums.StatusApolice;
 import com.AgiBank.AgiProtege.exception.ExistingResourceException;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.exception.ServiceUnavaliable;
@@ -31,12 +32,14 @@ public class DespesasService {
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
-        //Verifica se o cliente já possui algum seguro despesa
-        boolean possuiSeguroDespesa = cliente.getApolices().stream()
-                .anyMatch(apolice -> "DESPESA".equalsIgnoreCase(apolice.getTipoSeguro()));
+        boolean possuiSeguroDespesaAtivo = cliente.getApolices().stream()
+                .anyMatch(apolice ->
+                        "DESPESA".equalsIgnoreCase(apolice.getTipoSeguro()) &&
+                                apolice.getStatus() == StatusApolice.Ativo
+                );
 
-        if(possuiSeguroDespesa) {
-            throw new ExistingResourceException("O cliente já possui um Seguro despesa");
+        if(possuiSeguroDespesaAtivo) {
+            throw new ExistingResourceException("O cliente já possui um Seguro despesa ativo");
         }
 
         //verifica se a renda do cliente é maior do que os gastos
