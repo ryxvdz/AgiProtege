@@ -262,6 +262,19 @@
         sidebar.style.width = "250px";
     }
 
+    function acionarSinistro(idApolice) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Você precisa estar logado para acionar um sinistro.");
+            window.location.href = "/login";
+            return;
+        }
+
+        // redireciona com id da apólice na URL
+        window.location.href = `/sinistro?idApolice=${idApolice}`;
+    }
+
     function closeSidebar() {
         sidebar.style.width = "0";
     }

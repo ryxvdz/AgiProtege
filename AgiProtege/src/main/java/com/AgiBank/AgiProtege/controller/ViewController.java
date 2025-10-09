@@ -25,4 +25,9 @@ public class ViewController {
     public String exibirFormularioSeguroDespesa() {
         return "cadastrarSeguroDespesa"; // nome do HTML sem .html
     }
+
+    @GetMapping("/sinistro")
+    public String sinistro() {
+        return "sinistro"; // nome do HTML sem .html
+    }
 }
