@@ -162,17 +162,34 @@
             data.forEach(apolice => {
                 const card = document.createElement("div");
                 card.className = "card";
+
+                // Formatando datas no padrão brasileiro
+                const dataInicio = new Date(apolice.dataInicio);
+                const dataFim = new Date(apolice.dataFim);
+                const dataNascimento = new Date(apolice.idade);
+
+                const dataInicioFormatada = !isNaN(dataInicio)
+                    ? dataInicio.toLocaleDateString("pt-BR", { timeZone: "UTC" })
+                    : "Data inválida";
+
+                const dataFimFormatada = !isNaN(dataFim)
+                    ? dataFim.toLocaleDateString("pt-BR", { timeZone: "UTC" })
+                    : "Data inválida";
+
+                const dataNascimentoFormatada = !isNaN(dataNascimento)
+                    ? dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" })
+                    : "Data inválida";
+
                 card.innerHTML = `
                     <h3>${apolice.tipoSeguro}</h3>
-                    <p><strong>Início:</strong> ${apolice.dataInicio}</p>
-                    <p><strong>Fim:</strong> ${apolice.dataFim}</p>
+                    <p><strong>Data de Início:</strong> ${dataInicioFormatada}</p>
+                    <p><strong>Data de Fim:</strong> ${dataFimFormatada}</p>
                     <p>
                         <strong>Status:</strong>
                         <span style="color: ${apolice.status === 'Ativo' ? 'green' : 'red'};">
                             ${apolice.status}
                         </span>
                     </p>
-
                 `;
 
                 card.addEventListener("click", () => {
@@ -181,33 +198,37 @@
                         <p><strong>Email:</strong> ${apolice.email}</p>
                         <p><strong>Telefone:</strong> ${apolice.telefone}</p>
                         <p><strong>CPF:</strong> ${apolice.cpf}</p>
-                        <p><strong>Data de nascimento:</strong> ${apolice.idade}</p>
+                        <p><strong>Data de nascimento:</strong> ${dataNascimentoFormatada}</p>
                         <p><strong>Sexo:</strong> ${apolice.sexo}</p>
                         <p><strong>Estado Civil:</strong> ${apolice.estadoCivil}</p>
                         <p><strong>Renda:</strong> ${apolice.renda}</p>
                         <p><strong>Perfil de risco:</strong> ${apolice.perfilRisco}</p>
                         <p><strong>Tipo de Seguro:</strong> ${apolice.tipoSeguro}</p>
-                        <p><strong>Data de Início:</strong> ${apolice.dataInicio}</p>
-                        <p><strong>Data de Fim:</strong> ${apolice.dataFim}</p>
+                        <p><strong>Data de Início:</strong> ${dataInicioFormatada}</p>
+                        <p><strong>Data de Fim:</strong> ${dataFimFormatada}</p>
                         <p><strong>Parcela:</strong> R$ ${apolice.parcela.toFixed(2)}</p>
                     `;
 
-                    // Verifica tipo de seguro e adiciona info extra
+                    // Infos específicas de cada tipo
                     if (apolice.tipoSeguro === "AUTO" && apolice.modelo) {
-                        detalhes += `<p><strong>Marca:</strong> ${apolice.marca}</p>`;
-                        detalhes += `<p><strong>Modelo do Carro:</strong> ${apolice.modelo}</p>`;
-                        detalhes += `<p><strong>Ano do veiculo:</strong> ${apolice.ano}</p>`;
-                        detalhes += `<p><strong>Placa:</strong> ${apolice.placa}</p>`;
-                        detalhes += `<p><strong>Categoria:</strong> ${apolice.categoria}</p>`;
-                        detalhes += `<p><strong>Tabela Fipe:</strong> ${apolice.tabelaFipe}</p>`;
-                        detalhes += `<p><strong>Desastres Naturais:</strong> ${apolice.desastresNaturais}</p>`;
-                        detalhes += `<p><strong>Carro Reserva:</strong> ${apolice.carroReserva}</p>`;
-                        detalhes += `<p><strong>Assistencia 24 horas:</strong> ${apolice.assistencia}</p>`;
+                        detalhes += `
+                            <p><strong>Marca:</strong> ${apolice.marca}</p>
+                            <p><strong>Modelo do Carro:</strong> ${apolice.modelo}</p>
+                            <p><strong>Ano do veiculo:</strong> ${apolice.ano}</p>
+                            <p><strong>Placa:</strong> ${apolice.placa}</p>
+                            <p><strong>Categoria:</strong> ${apolice.categoria}</p>
+                            <p><strong>Tabela Fipe:</strong> ${apolice.tabelaFipe}</p>
+                            <p><strong>Desastres Naturais:</strong> ${apolice.desastresNaturais ? "Incluso" : "Não incluso"}</p>
+                            <p><strong>Carro Reserva:</strong> ${apolice.carroReserva ? "Incluso" : "Não incluso"}</p>
+                            <p><strong>Assistencia 24 horas:</strong> ${apolice.assistencia ? "Incluso" : "Não incluso"}</p>
+                        `;
                     }
 
                     if (apolice.tipoSeguro === "DESPESA") {
-                        detalhes += `<p><strong>Gastos Mensais:</strong> ${apolice.gastosMensais}</p>`;
-                        detalhes += `<p><strong>Tempo de Registro:</strong> ${apolice.tempoRegistro}</p>`;
+                        detalhes += `
+                            <p><strong>Gastos Mensais:</strong> ${apolice.gastosMensais}</p>
+                            <p><strong>Tempo de Registro:</strong> ${apolice.tempoRegistro}</p>
+                        `;
                     }
 
                     if (apolice.tipoSeguro === "VIDA") {
@@ -215,18 +236,25 @@
                             `<li>${dep.nome} (${dep.parentesco})</li>`
                         ).join("");
 
-                        detalhes += `<p><strong>Altura:</strong> ${apolice.altura}</p>`;
-                        detalhes += `<p><strong>Peso:</strong> ${apolice.peso}</p>`;
-                        detalhes += `<p><strong>Fumante:</strong> ${apolice.fumante}</p>`;
-                        detalhes += `<p><strong>Patrimonio:</strong> ${apolice.patrimonio}</p>`;
-                        detalhes += `<p><strong>Cobertura Hospitalar:</strong> ${apolice.coberturaHospitalar}</p>`;
-                        detalhes += `<p><strong>Historico familiar:</strong> ${apolice.historicoFamiliar}</p>`;
-                        detalhes += `<p><strong>Profissão:</strong> ${apolice.profissao}</p>`;
-                        detalhes += `<p><strong>Dependentes:</strong></p><ul>${dependentes}</ul>`;
-                        detalhes += `<p><strong>Valor indenizacao:</strong> ${apolice.valorIndenizacao}</p>`;
+
+                        detalhes += `
+                            <p><strong>Altura:</strong> ${apolice.altura}</p>
+                            <p><strong>Peso:</strong> ${apolice.peso}</p>
+                            <p><strong>Fumante:</strong> ${apolice.fumante ? "Sim" : "Não"}</p>
+                            <p><strong>Patrimônio:</strong> ${apolice.patrimonio}</p>
+                            <p><strong>Cobertura Hospitalar:</strong> ${apolice.coberturaHospitalar ? "Incluso" : "Não incluso"}</p>
+                            <p><strong>Histórico familiar:</strong> ${apolice.historicoFamiliar ? "Incluso" : "Não incluso"}</p>
+                            <p><strong>Profissão:</strong> ${apolice.profissao}</p>
+                            <p><strong>Dependentes:</strong></p>
+                            <ul>${dependentes}</ul>
+                            <p><strong>Valor indenização:</strong> ${apolice.valorIndenizacao}</p>
+                        `;
+
+                       
+
                     }
 
-                    // Botão de cancelar apólice (só se ainda estiver ativa)
+                    // Botões
                     if (apolice.status === "Ativo") {
                         detalhes += `
                             <div style="margin-top: 20px; display: flex; gap: 10px;">
@@ -259,18 +287,15 @@
 
     openMenuBtn.onclick = () => {
         sidebar.style.width = "250px";
-    }
+    };
 
     function acionarSinistro(idApolice) {
         const token = localStorage.getItem("token");
-
         if (!token) {
             alert("Você precisa estar logado para acionar um sinistro.");
             window.location.href = "/login";
             return;
         }
-
-        // redireciona com id da apólice na URL
         window.location.href = `/sinistro?idApolice=${idApolice}`;
     }
 
@@ -279,8 +304,8 @@
     }
 
     function logout() {
-        localStorage.removeItem("token"); // remove o token da sessão
-        window.location.href = "/login"; // redireciona para login
+        localStorage.removeItem("token");
+        window.location.href = "/login";
     }
 
     function cancelarApolice(id) {
@@ -295,7 +320,7 @@
         .then(response => {
             if (!response.ok) throw new Error("Erro ao cancelar apólice");
             alert("Apólice cancelada com sucesso.");
-            location.reload(); // recarrega a página para atualizar a lista
+            location.reload();
         })
         .catch(error => {
             console.error(error);
@@ -313,6 +338,7 @@
         }
     };
 </script>
+
 
 </body>
 </html>

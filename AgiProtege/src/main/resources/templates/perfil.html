@@ -146,7 +146,12 @@
             document.getElementById("email").textContent = cliente.email;
             document.getElementById("cpf").textContent = cliente.cpf;
             document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
-            document.getElementById("idade").textContent = cliente.idade;
+
+
+            const dataNascimento = new Date(cliente.idade);
+            const dataFormatada = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+            document.getElementById("idade").textContent = dataFormatada;
+
             document.getElementById("sexo").textContent = cliente.sexo;
             document.getElementById("telefone").textContent = cliente.telefone;
             document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
