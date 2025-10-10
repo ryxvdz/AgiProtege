@@ -35,4 +35,8 @@ public class ViewController {
     public String perfil() {
         return "perfil";
     }
+    @GetMapping("/cadastrarSeguroVida")
+    public String exibirFormularioSeguroVida() {
+        return "cadastrarSeguroVida";
+    }
 }

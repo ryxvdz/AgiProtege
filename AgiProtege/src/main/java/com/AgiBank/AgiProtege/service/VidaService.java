@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class VidaService {
@@ -24,8 +25,8 @@ public class VidaService {
         this.clienteRepository = clienteRepository;
     }
 
-    public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto) {
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+    public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto, UUID id) {
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
@@ -45,7 +46,7 @@ public class VidaService {
         vida.setProfissao(dto.profissao());
         vida.setTipoSeguro("VIDA");
         vida.setDataFim(LocalDate.now().plusYears(1));
-        vida.setParcela(calcularParcela(dto, vida));
+        vida.setParcela(calcularParcela(dto, vida, id));
         vida.setPatrimonio(dto.patrimonio());
         vida.setCoberturaHospitalar(dto.coberturaHospitalar());
         vida.setHistoricoFamiliarDoencas(dto.historicoFamiliarDoencas());
@@ -73,11 +74,11 @@ public class VidaService {
         return indenizacao;
     }
 
-    public Double calcularParcela(VidaRequestDTO dto, Vida vida) {
+    public Double calcularParcela(VidaRequestDTO dto, Vida vida, UUID id) {
         Double parcela = 0.0;
         Double imc = dto.peso() / (dto.altura() * dto.altura());
 
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente nao encontrado!")
         );
 

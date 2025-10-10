@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Seguro de Vida</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0D47A1;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #0D47A1;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #1976D2;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+
+        .mensagem {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .btn-voltar {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #0D47A1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .dependente {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .dependente h4 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .remover {
+            background-color: #d32f2f;
+            margin-top: 10px;
+        }
+
+        .remover:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Seguro de Vida</h2>
+    <form id="formSeguro">
+
+        <label for="peso">Peso:</label>
+        <input type="number" id="peso" name="peso" required min="0" placeholder="Ex: 80">
+
+        <label for="altura">Altura:</label>
+        <input step="any" type="number" id="altura" name="altura" required min="0" placeholder="Ex: 1.70">
+
+        <label>
+            Você é fumante:
+            <input type="checkbox" id="fumante" name="fumante" />
+        </label>
+
+        <label for="profissao">Profissão:</label>
+        <input type="text" id="profissao" name="profissao" required placeholder="Ex: Engenheiro de Software">
+
+        <label for="patrimonio">Patrimônio:</label>
+        <input type="number" id="patrimonio" name="patrimonio" required min="0" placeholder="Ex: 100.000">
+
+        <label>
+            Existe um histórico familiar de doenças:
+            <input type="checkbox" id="historicoFamiliarDoencas" name="historicoFamiliarDoencas" />
+        </label>
+
+        <label>
+            Você deseja adicionar cobertura hospitalar:
+            <input type="checkbox" id="coberturaHospitalar" name="coberturaHospitalar" />
+        </label>
+
+        <h3>Dependentes</h3>
+        <div id="dependentesContainer"></div>
+        <button type="button" id="adicionarDependente" style="background-color:#1976D2;">+ Adicionar Dependente</button>
+
+        <button type="submit">Criar Seguro</button>
+    </form>
+
+    <p class="mensagem" id="mensagem"></p>
+    <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
+</div>
+
+<script>
+    const dependentesContainer = document.getElementById("dependentesContainer");
+    const btnAdicionar = document.getElementById("adicionarDependente");
+    const form = document.getElementById("formSeguro");
+    const mensagem = document.getElementById("mensagem");
+    const token = localStorage.getItem("token");
+
+    let contador = 0;
+
+    // Adiciona dependente dinamicamente
+    btnAdicionar.addEventListener("click", () => {
+        const div = document.createElement("div");
+        div.classList.add("dependente");
+        div.innerHTML = `
+            <h4>Dependente ${contador + 1}</h4>
+            <label>Nome:</label>
+            <input type="text" name="dependentes[${contador}].nome" placeholder="Nome do dependente" required>
+            <label>Parentesco:</label>
+            <input type="text" name="dependentes[${contador}].parentesco" placeholder="Parentesco" required>
+            <button type="button" class="remover">Remover</button>
+        `;
+
+        // botão para remover dependente
+        div.querySelector(".remover").addEventListener("click", () => {
+            div.remove();
+        });
+
+        dependentesContainer.appendChild(div);
+        contador++;
+    });
+
+    // Envia o formulário
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const dados = {
+            peso: parseFloat(document.getElementById("peso").value),
+            altura: parseFloat(document.getElementById("altura").value),
+            fumante: document.getElementById("fumante").checked,
+            profissao: document.getElementById("profissao").value,
+            patrimonio: parseFloat(document.getElementById("patrimonio").value),
+            historicoFamiliarDoencas: document.getElementById("historicoFamiliarDoencas").checked,
+            coberturaHospitalar: document.getElementById("coberturaHospitalar").checked,
+            dependentes: []
+        };
+
+        // coleta dependentes
+        const dependentes = dependentesContainer.querySelectorAll(".dependente");
+        dependentes.forEach(dep => {
+            const nome = dep.querySelector('input[name*="nome"]').value;
+            const parentesco = dep.querySelector('input[name*="parentesco"]').value;
+            dados.dependentes.push({ nome, parentesco });
+        });
+
+        try {
+            const response = await fetch("/seguroVida", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(dados)
+            });
+
+            if (response.ok) {
+                mensagem.textContent = "✅ Seguro criado com sucesso!";
+                mensagem.style.color = "green";
+                form.reset();
+                dependentesContainer.innerHTML = "";
+                contador = 0;
+
+                setTimeout(() => {
+                    window.location.href = "/apolices"; // rota da sua página de apólices
+                }, 1500);
+            } else {
+                mensagem.textContent = "❌ Erro ao criar o seguro.";
+                mensagem.style.color = "red";
+            }
+        } catch (error) {
+            mensagem.textContent = "❌ Falha na conexão com o servidor.";
+            mensagem.style.color = "red";
+        }
+    });
+</script>
+
+</body>
+</html>

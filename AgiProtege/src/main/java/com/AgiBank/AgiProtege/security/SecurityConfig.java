@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/cadastrarSeguroDespesa").permitAll()
                         .requestMatchers(HttpMethod.GET, "/sinistro").permitAll()
                         .requestMatchers(HttpMethod.GET, "/perfil").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cadastrarSeguroVida").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
