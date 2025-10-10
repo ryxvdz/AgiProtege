@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0D47A1;
+            margin-bottom: 25px;
+        }
+
+        .info {
+            margin-bottom: 15px;
+        }
+
+        .info label {
+            display: block;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+
+        .info span {
+            display: block;
+            margin-top: 5px;
+            color: #333;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .btn-voltar {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #0D47A1;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .btn-voltar:hover {
+            color: #1565C0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Perfil do Usuário</h2>
+
+    <div class="info">
+        <label>Nome:</label>
+        <span id="nome"></span>
+    </div>
+
+    <div class="info">
+        <label>Email:</label>
+        <span id="email"></span>
+    </div>
+
+    <div class="info">
+        <label>CPF:</label>
+        <span id="cpf"></span>
+    </div>
+
+    <div class="info">
+        <label>Renda:</label>
+        <span id="renda"></span>
+    </div>
+
+    <div class="info">
+        <label>Data de nascimento:</label>
+        <span id="idade"></span>
+    </div>
+
+    <div class="info">
+        <label>Sexo:</label>
+        <span id="sexo"></span>
+    </div>
+
+    <div class="info">
+        <label>Telefone:</label>
+        <span id="telefone"></span>
+    </div>
+
+    <div class="info">
+        <label>Estado Civil:</label>
+        <span id="estadoCivil"></span>
+    </div>
+
+    <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+
+    async function carregarPerfil() {
+
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+
+        try {
+
+            const response = await fetch(`/cliente/me`, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (!response.ok) {
+                // Se o token for inválido ou expirado, redireciona pro login
+                if (response.status === 401 || response.status === 403) {
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                    return;
+                }
+                throw new Error("Erro ao carregar informações do perfil");
+            }
+
+            const cliente = await response.json();
+
+            // Preenche as informações do perfil
+            document.getElementById("nome").textContent = cliente.nome;
+            document.getElementById("email").textContent = cliente.email;
+            document.getElementById("cpf").textContent = cliente.cpf;
+            document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
+            document.getElementById("idade").textContent = cliente.idade;
+            document.getElementById("sexo").textContent = cliente.sexo;
+            document.getElementById("telefone").textContent = cliente.telefone;
+            document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao carregar o perfil do usuário.");
+        }
+    }
+
+    carregarPerfil();
+</script>
+
+
+</body>
+</html>

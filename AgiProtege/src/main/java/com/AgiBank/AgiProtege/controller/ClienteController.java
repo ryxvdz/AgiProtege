@@ -3,10 +3,12 @@ package com.AgiBank.AgiProtege.controller;
 import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.dto.EnderecoResponseDTO;
+import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Endereco;
 import com.AgiBank.AgiProtege.service.ClienteService;
 import com.AgiBank.AgiProtege.service.EnderecoService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,8 +26,9 @@ public class ClienteController {
         return clienteService.cadastrarCliente(dto);
     }
 
-    @GetMapping("/{id}")
-    public ClienteResponseDTO buscarClientePorId(@PathVariable UUID id) {
+    @GetMapping("/me")
+    public ClienteResponseDTO buscarClientePorId(@AuthenticationPrincipal Cliente cliente) {
+        UUID id = cliente.getIdCliente();
         return clienteService.buscarClientePorId(id);
     }
 

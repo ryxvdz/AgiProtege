@@ -23,11 +23,16 @@ public class ViewController {
 
     @GetMapping("/cadastrarSeguroDespesa")
     public String exibirFormularioSeguroDespesa() {
-        return "cadastrarSeguroDespesa"; // nome do HTML sem .html
+        return "cadastrarSeguroDespesa";
     }
 
     @GetMapping("/sinistro")
     public String sinistro() {
-        return "sinistro"; // nome do HTML sem .html
+        return "sinistro";
+    }
+
+    @GetMapping("/perfil")
+    public String perfil() {
+        return "perfil";
     }
 }

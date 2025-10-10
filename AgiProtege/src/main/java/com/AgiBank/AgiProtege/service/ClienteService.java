@@ -241,6 +241,9 @@ public class ClienteService {
         return new ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getEmail(),
+                cliente.getCpf(),
+                cliente.getRenda(),
+                cliente.getSexo(),
                 cliente.getStatus(),
                 cliente.getTelefone(),
                 cliente.getIdade(),
