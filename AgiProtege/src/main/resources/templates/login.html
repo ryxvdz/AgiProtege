@@ -144,6 +144,17 @@
 </div>
 
 <script>
+    const cpfInput = document.getElementById('cpf');
+
+    cpfInput.addEventListener('input', function (e) {
+        let value = e.target.value;
+        value = value.replace(/\D/g, ""); // remove tudo que não for número
+        value = value.replace(/(\d{3})(\d)/, "$1.$2");
+        value = value.replace(/(\d{3})(\d)/, "$1.$2");
+        value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        e.target.value = value;
+    });
+
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
         event.preventDefault();
 

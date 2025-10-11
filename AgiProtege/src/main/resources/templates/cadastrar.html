@@ -203,6 +203,22 @@
         cpfInput.value = value;
     });
 
+    const telefoneInput = document.getElementById('telefone');
+    telefoneInput.addEventListener('input', function() {
+        let value = telefoneInput.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+
+        if (value.length <= 10) {
+            // formato (XX) XXXX-XXXX
+            value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+        } else {
+            // formato (XX) XXXXX-XXXX
+            value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
+        }
+
+        telefoneInput.value = value;
+    });
+
     // Submissão do formulário
     document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
         event.preventDefault();
