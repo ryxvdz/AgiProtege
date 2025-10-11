@@ -232,10 +232,12 @@
                     }
 
                     if (apolice.tipoSeguro === "VIDA") {
-                        const dependentes = apolice.dependentes.map(dep =>
-                            `<li>${dep.nome} (${dep.parentesco})</li>`
-                        ).join("");
-
+                        let dependentesHtml = "Nenhum";
+                        if (apolice.dependentes && apolice.dependentes.length > 0) {
+                            dependentesHtml = apolice.dependentes.map(dep =>
+                                `<li>${dep.nome} (${dep.parentesco})</li>`
+                            ).join("");
+                        }
 
                         detalhes += `
                             <p><strong>Altura:</strong> ${apolice.altura}</p>
@@ -246,12 +248,9 @@
                             <p><strong>Histórico familiar:</strong> ${apolice.historicoFamiliar ? "Sim" : "Não"}</p>
                             <p><strong>Profissão:</strong> ${apolice.profissao}</p>
                             <p><strong>Dependentes:</strong></p>
-                            <ul>${dependentes}</ul>
+                            <ul>${dependentesHtml}</ul>
                             <p><strong>Valor indenização:</strong> ${apolice.valorIndenizacao}</p>
                         `;
-
-                       
-
                     }
 
                     // Botões

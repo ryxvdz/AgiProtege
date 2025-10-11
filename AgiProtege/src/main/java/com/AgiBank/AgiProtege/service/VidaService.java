@@ -7,8 +7,10 @@ import com.AgiBank.AgiProtege.enums.StatusApolice;
 import com.AgiBank.AgiProtege.exception.ExistingResourceException;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
+import com.AgiBank.AgiProtege.model.Dependente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.ClienteRepository;
+import com.AgiBank.AgiProtege.repository.DependenteRepository;
 import com.AgiBank.AgiProtege.repository.VidaRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class VidaService {
     private final VidaRepository vidaRepository;
     private final ClienteRepository clienteRepository;
+    private final DependenteRepository dependenteRepository;
 
-    public VidaService(VidaRepository vidaRepository, ClienteRepository clienteRepository) {
+    public VidaService(VidaRepository vidaRepository, ClienteRepository clienteRepository, DependenteRepository dependenteRepository) {
         this.vidaRepository = vidaRepository;
         this.clienteRepository = clienteRepository;
+        this.dependenteRepository = dependenteRepository;
     }
 
     public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto, UUID id) {
@@ -56,6 +60,17 @@ public class VidaService {
         vida.setHistoricoFamiliarDoencas(dto.historicoFamiliarDoencas());
 
         Vida vidaCadastrada = vidaRepository.save(vida);
+
+        if(dto.dependentes() != null) {
+            dto.dependentes().forEach(depDTO -> {
+                Dependente dependente = new Dependente();
+                dependente.setNome(depDTO.nome());
+                dependente.setParentesco(depDTO.parentesco());
+                dependente.setSeguroVida(vidaCadastrada);
+                dependenteRepository.save(dependente);
+            });
+        }
+
         return toResponseDTO(vidaCadastrada);
     }
 
