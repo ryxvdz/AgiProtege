@@ -3,6 +3,7 @@ package com.AgiBank.AgiProtege.service;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
 import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
+import com.AgiBank.AgiProtege.enums.StatusApolice;
 import com.AgiBank.AgiProtege.exception.ExistingResourceException;
 import com.AgiBank.AgiProtege.exception.ResourceNotFoundException;
 import com.AgiBank.AgiProtege.model.Cliente;
@@ -31,10 +32,13 @@ public class VidaService {
         );
 
         boolean possuiSeguroVida = cliente.getApolices().stream()
-                .anyMatch(apolice -> "VIDA".equalsIgnoreCase(apolice.getTipoSeguro()));
+                .anyMatch(apolice ->
+                        "VIDA".equalsIgnoreCase(apolice.getTipoSeguro()) &&
+                                apolice.getStatus() == StatusApolice.Ativo
+                );
 
         if(possuiSeguroVida) {
-            throw new ExistingResourceException("O cliente já possui um Seguro de vida");
+            throw new ExistingResourceException("O cliente já possui um Seguro de vida!");
         }
 
         Vida vida = new Vida();
