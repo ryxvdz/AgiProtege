@@ -201,7 +201,7 @@
                         <p><strong>Data de nascimento:</strong> ${dataNascimentoFormatada}</p>
                         <p><strong>Sexo:</strong> ${apolice.sexo}</p>
                         <p><strong>Estado Civil:</strong> ${apolice.estadoCivil}</p>
-                        <p><strong>Renda:</strong> ${apolice.renda}</p>
+                        <p><strong>Renda:</strong> R$ ${Number(apolice.renda).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</p>
                         <p><strong>Perfil de risco:</strong> ${apolice.perfilRisco}</p>
                         <p><strong>Tipo de Seguro:</strong> ${apolice.tipoSeguro}</p>
                         <p><strong>Data de Início:</strong> ${dataInicioFormatada}</p>
@@ -217,7 +217,7 @@
                             <p><strong>Ano do veiculo:</strong> ${apolice.ano}</p>
                             <p><strong>Placa:</strong> ${apolice.placa}</p>
                             <p><strong>Categoria:</strong> ${apolice.categoria}</p>
-                            <p><strong>Tabela Fipe:</strong> ${apolice.tabelaFipe}</p>
+                           <p><strong>Tabela Fipe:</strong> R$ ${Number(apolice.tabelaFipe).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</p>
                             <p><strong>Desastres Naturais:</strong> ${apolice.desastresNaturais ? "Incluso" : "Não incluso"}</p>
                             <p><strong>Carro Reserva:</strong> ${apolice.carroReserva ? "Incluso" : "Não incluso"}</p>
                             <p><strong>Assistencia 24 horas:</strong> ${apolice.assistencia ? "Incluso" : "Não incluso"}</p>
@@ -226,7 +226,7 @@
 
                     if (apolice.tipoSeguro === "DESPESA") {
                         detalhes += `
-                            <p><strong>Gastos Mensais:</strong> ${apolice.gastosMensais}</p>
+                            <p><strong>Gastos Mensais:</strong> R$ ${Number(apolice.gastosMensais).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</p>
                             <p><strong>Tempo de Registro:</strong> ${apolice.tempoRegistro}</p>
                         `;
                     }
@@ -243,13 +243,13 @@
                             <p><strong>Altura:</strong> ${apolice.altura}</p>
                             <p><strong>Peso:</strong> ${apolice.peso}</p>
                             <p><strong>Fumante:</strong> ${apolice.fumante ? "Sim" : "Não"}</p>
-                            <p><strong>Patrimônio:</strong> ${apolice.patrimonio}</p>
+                            <p><strong>Patrimônio:</strong> R$ ${Number(apolice.patrimonio).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</p>
                             <p><strong>Cobertura Hospitalar:</strong> ${apolice.coberturaHospitalar ? "Incluso" : "Não incluso"}</p>
                             <p><strong>Histórico familiar:</strong> ${apolice.historicoFamiliar ? "Sim" : "Não"}</p>
                             <p><strong>Profissão:</strong> ${apolice.profissao}</p>
                             <p><strong>Dependentes:</strong></p>
                             <ul>${dependentesHtml}</ul>
-                            <p><strong>Valor indenização:</strong> ${apolice.valorIndenizacao}</p>
+                            <p><strong>Valor indenização:</strong> R$ ${Number(apolice.valorIndenizacao).toLocaleString("pt-BR", {minimumFractionDigits: 2})}</p>
                         `;
                     }
 
