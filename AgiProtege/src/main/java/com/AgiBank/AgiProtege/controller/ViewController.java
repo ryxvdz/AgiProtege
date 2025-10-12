@@ -45,4 +45,9 @@ public class ViewController {
     public String sinistros() {
         return "MeusSinistros";
     }
+
+    @GetMapping("/cadastrarSeguroAutomovel")
+    public String exibirFormularioSeguroAutomovel() {
+        return "cadastrarSeguroAutomovel";
+    }
 }

@@ -13,6 +13,7 @@ import com.AgiBank.AgiProtege.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static com.AgiBank.AgiProtege.dto.AutomovelRequestDTO.converterValorFipe;
 
@@ -29,9 +30,9 @@ public class AutomovelService {
         this.fipeService = fipeService;
     }
 
-    public AutomovelResponseDTO criarSeguroAutomovel(AutomovelRequestDTO dto){
+    public AutomovelResponseDTO criarSeguroAutomovel(AutomovelRequestDTO dto, UUID id){
 
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 ()-> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
@@ -58,7 +59,7 @@ public class AutomovelService {
         automovel.setCategoria(dto.categoria());
         automovel.setTipoSeguro("AUTO");
         automovel.setDataFim(LocalDate.now().plusYears(1));
-        automovel.setParcela(calcularParcela(dto, valorTabela));
+        automovel.setParcela(calcularParcela(dto, valorTabela, id));
         automovel.setAssistencia24(dto.asistencia24());
         automovel.setCarroReserva(dto.carroReserva());
         automovel.setDesastresNaturais(dto.desastresNaturais());
@@ -67,10 +68,10 @@ public class AutomovelService {
         return toResponseDTO(automovelCadastrado);
     }
 
-    public Double calcularParcela(AutomovelRequestDTO dto, double valorTabelFipe) {
+    public Double calcularParcela(AutomovelRequestDTO dto, double valorTabelFipe, UUID id) {
         Double porcentagemTabelFipe = 0.0;
 
-        Cliente cliente = clienteRepository.findById(dto.idCliente()).orElseThrow(
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Cliente não encontrado!")
         );
 
