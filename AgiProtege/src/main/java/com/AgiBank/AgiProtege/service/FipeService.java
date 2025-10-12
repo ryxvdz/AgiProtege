@@ -1,6 +1,6 @@
 package com.AgiBank.AgiProtege.service;
 
-import com.AgiBank.AgiProtege.Client.FipeClient;
+import com.AgiBank.AgiProtege.client.FipeClient;
 import com.AgiBank.AgiProtege.dto.FipeDTO;
 import com.AgiBank.AgiProtege.dto.MarcaFipeDTO;
 import com.AgiBank.AgiProtege.dto.ModeloFipeDTO;
@@ -38,8 +38,10 @@ public class FipeService {
                 .orElseThrow(() -> new RuntimeException("Marca não encontrada: " + nomeModelo));
 
         ModeloFipeDTO modelo = fipeClient.listarModelosPorMarca(marca.codigo().toString()).stream()
+                .filter(m -> m.modelo().equalsIgnoreCase(nomeModelo.trim()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Modelo não encontado: " + nomeModelo));
+                .orElseThrow(() -> new RuntimeException("Modelo não encontrado: " + nomeModelo));
+
         return fipeClient.listarAnosPorModelos(marca.codigo().toString(), String.valueOf(modelo.codigo()));
     }
 

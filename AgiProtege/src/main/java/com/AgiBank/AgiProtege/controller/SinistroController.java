@@ -2,10 +2,12 @@ package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.SinistroRequestDTO;
 import com.AgiBank.AgiProtege.dto.SinistroResponseDTO;
+import com.AgiBank.AgiProtege.model.Cliente;
 import com.AgiBank.AgiProtege.model.Sinistro;
 import com.AgiBank.AgiProtege.service.SinistroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,13 +31,14 @@ public class SinistroController {
             SinistroResponseDTO resp = sinistroService.registrarSinistro(request, documento);
             return ResponseEntity.ok(resp);
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().body(new SinistroResponseDTO(null, "Erro", "Falha ao salvar documento: " + e.getMessage()));
+            return ResponseEntity.internalServerError().body(new SinistroResponseDTO(null, "Erro", "Falha ao salvar documento: " + e.getMessage(), null, null, null));
         }
     }
 
-    @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<SinistroResponseDTO>> listarPorCliente(@PathVariable UUID idCliente) {
-        List<SinistroResponseDTO> sinistros = sinistroService.listarSinistrosPorCliente(idCliente);
+    @GetMapping("/cliente")
+    public ResponseEntity<List<SinistroResponseDTO>> listarPorCliente(@AuthenticationPrincipal Cliente cliente) {
+        UUID id = cliente.getIdCliente();
+        List<SinistroResponseDTO> sinistros = sinistroService.listarSinistrosPorCliente(id);
         return ResponseEntity.ok(sinistros);
     }
 }

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Seguro Automóvel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { min-height: 100vh; background: linear-gradient(to right, #0D47A1, #1976D2); padding: 40px; color: #333; }
+        h2 { color: white; text-align: center; margin-bottom: 30px; font-size: 40px; }
+        .form-container { background-color: #fff; border-radius: 12px; padding: 30px; max-width: 600px; margin: auto; box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #0D47A1; }
+        select, input[type="text"], input[type="number"] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+        .checkbox-group { display: flex; gap: 20px; }
+        .checkbox-group label { font-weight: normal; }
+        .btn { background-color: #0D47A1; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background-color: #1976D2; }
+        .tabela-fipe { margin-top: 15px; font-weight: bold; font-size: 18px; color: #0D47A1; }
+        .btn-voltar { display: inline-block; background-color: #0D47A1; color: white; padding: 10px 15px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 25px; transition: 0.3s; }
+        .btn-voltar:hover { background-color: #1976D2; }
+    </style>
+</head>
+<body>
+
+<a href="/apolices" class="btn-voltar">←</a>
+
+<h2>Cadastrar Seguro Automóvel</h2>
+
+<div class="form-container">
+    <div class="form-group">
+        <label for="placa">Placa do Veículo:</label>
+        <input type="text" id="placa" placeholder="Digite a placa">
+    </div>
+
+    <div class="form-group">
+        <label for="marca">Marca:</label>
+        <select id="marca">
+            <option value="">Selecione a marca</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="modelo">Modelo:</label>
+        <select id="modelo" disabled>
+            <option value="">Selecione o modelo</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="ano">Ano:</label>
+        <select id="ano" disabled>
+            <option value="">Selecione o ano</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="categoria">Categoria:</label>
+        <select id="categoria">
+            <option value="Sedan">Sedan</option>
+            <option value="Hatch">Hatch</option>
+            <option value="SUV">SUV</option>
+            <option value="Esportivo">Esportivo</option>
+        </select>
+    </div>
+
+    <div class="form-group checkbox-group">
+        <label><input type="checkbox" id="assistencia24"> Assistência 24h</label>
+        <label><input type="checkbox" id="carroReserva"> Carro Reserva</label>
+        <label><input type="checkbox" id="desastresNaturais"> Desastres Naturais</label>
+    </div>
+
+    <div class="tabela-fipe" id="tabelaFipe">Tabela FIPE: R$ 0,00</div>
+
+    <button class="btn" id="btnCadastrar">Cadastrar Seguro</button>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("Você precisa estar logado.");
+        window.location.href = "/login";
+    }
+
+    const marcaSelect = document.getElementById("marca");
+    const modeloSelect = document.getElementById("modelo");
+    const anoSelect = document.getElementById("ano");
+    const tabelaFipeSpan = document.getElementById("tabelaFipe");
+
+    // Função para converter valor FIPE
+    function converterValorFipe(valor) {
+        if (!valor) return 0;
+        return parseFloat(valor.replace("R$", "").replace(/\./g, "").replace(",", ".").trim());
+    }
+
+    // Carregar marcas
+    fetch("/fipe/marcas", { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(res => res.json())
+        .then(marcas => {
+            marcas.forEach(m => {
+                const option = document.createElement("option");
+                option.value = m.nome;
+                option.textContent = m.nome;
+                marcaSelect.appendChild(option);
+            });
+        });
+
+    // Ao selecionar marca, carregar modelos
+    marcaSelect.addEventListener("change", () => {
+        modeloSelect.innerHTML = '<option value="">Selecione o modelo</option>';
+        anoSelect.innerHTML = '<option value="">Selecione o ano</option>';
+        modeloSelect.disabled = true;
+        anoSelect.disabled = true;
+        tabelaFipeSpan.textContent = "Tabela FIPE: R$ 0,00";
+
+        if (!marcaSelect.value) return;
+        fetch(`/fipe/modelos/${marcaSelect.value}`, { headers: { 'Authorization': 'Bearer ' + token } })
+            .then(res => res.json())
+            .then(modelos => {
+                modelos.forEach(m => {
+                    const option = document.createElement("option");
+                    option.value = m.modelo;
+                    option.textContent = m.modelo;
+                    modeloSelect.appendChild(option);
+                });
+                modeloSelect.disabled = false;
+            });
+    });
+
+    // Ao selecionar modelo, carregar anos
+    modeloSelect.addEventListener("change", () => {
+    anoSelect.innerHTML = '<option value="">Selecione o ano</option>';
+    anoSelect.disabled = true;
+    tabelaFipeSpan.textContent = "Tabela FIPE: R$ 0,00";
+
+    if (!modeloSelect.value) return;
+
+    fetch(`/fipe/anos/${marcaSelect.value}/${modeloSelect.value}`, { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(res => res.json())
+        .then(anosObj => {
+            const anosArray = Object.values(anosObj); // [{nome:"2016", codigo:"2016-5"}, ...]
+            anosArray.forEach(a => {
+                const option = document.createElement("option");
+                option.value = a.nome;  // <<--- aqui usamos apenas o ano
+                option.textContent = a.nome;
+                anoSelect.appendChild(option);
+            });
+            anoSelect.disabled = false;
+        });
+});
+
+
+
+    // Ao selecionar ano, buscar valor FIPE
+    anoSelect.addEventListener("change", () => {
+    tabelaFipeSpan.textContent = "Tabela FIPE: R$ 0,00";
+    if (!anoSelect.value) return;
+
+    fetch(`/fipe/detalhes?nomeMarca=${marcaSelect.value}&nomeModelo=${modeloSelect.value}&ano=${anoSelect.value}`, { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(res => res.json())
+        .then(fipe => {
+            const valor = converterValorFipe(fipe.Valor); // <- "Valor" com V maiúsculo
+            tabelaFipeSpan.textContent = `Tabela FIPE: ${valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+        });
+});
+
+
+    // Botão cadastrar
+    document.getElementById("btnCadastrar").addEventListener("click", () => {
+        const payload = {
+            placa: document.getElementById("placa").value,
+            marca: marcaSelect.value,
+            modelo: modeloSelect.value,
+            ano: parseInt(anoSelect.value),
+            categoria: document.getElementById("categoria").value,
+            asistencia24: document.getElementById("assistencia24").checked,
+            carroReserva: document.getElementById("carroReserva").checked,
+            desastresNaturais: document.getElementById("desastresNaturais").checked
+        };
+
+        fetch("/SeguroAutomovel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(`Seguro contratado com sucesso!`);
+            window.location.href = "/apolices";
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Erro ao cadastrar seguro!");
+        });
+    });
+</script>
+
+</body>
+</html>

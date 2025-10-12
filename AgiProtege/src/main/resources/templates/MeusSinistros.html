@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Sinistros</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            padding: 40px;
+        }
+
+        h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 40px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card h3 {
+            color: #0D47A1;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            margin: 6px 0;
+            color: #333;
+        }
+
+        .status {
+            /* font-weight: bold; */
+        }
+
+        /* Cores de status */
+        .status.analise {
+            color: #FF9800; /* Laranja */
+        }
+
+        .status.aprovado {
+            color: #2E7D32; /* Verde */
+        }
+
+        .status.negado {
+            color: #C62828; /* Vermelho */
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #0D47A1;
+        }
+
+        .modal-content p {
+            margin-bottom: 10px;
+        }
+
+        #openMenuBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 11;
+            background-color: #0D47A1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #openMenuBtn:hover {
+            background-color: #1976D2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<a href="/apolices" id="openMenuBtn">
+    ←
+</a>
+
+<h2>Meus Sinistros</h2>
+
+<div class="container" id="cardsContainer"></div>
+
+<div id="detalhesModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="fecharModal">&times;</span>
+        <h3>Detalhes do Sinistro</h3>
+        <div id="conteudoModal"></div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem("token");
+    const cardsContainer = document.getElementById("cardsContainer");
+    const modal = document.getElementById("detalhesModal");
+    const fecharModal = document.getElementById("fecharModal");
+    const conteudoModal = document.getElementById("conteudoModal");
+
+    if (!token) {
+        alert("Você precisa estar logado para ver seus sinistros.");
+        window.location.href = "/login";
+    } else {
+        // Pega o ID do cliente do token
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const idCliente = payload.id || payload.sub || payload.userId;
+
+        fetch(`/sinistros/cliente`, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Erro ao buscar sinistros");
+            return response.json();
+        })
+        .then(data => {
+            if (data.length === 0) {
+                cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhum sinistro encontrado.</p>";
+                return;
+            }
+
+            // Ordenar por data mais recente primeiro (opcional)
+            data.sort((a, b) => new Date(b.dataOcorrencia) - new Date(a.dataOcorrencia));
+
+            data.forEach(sinistro => {
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const dataOcorrencia = new Date(sinistro.dataOcorrencia);
+                const dataFormatada = dataOcorrencia.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+
+                // Define cor conforme status
+                let statusClass = "";
+                if (sinistro.status === "EM_ANALISE") statusClass = "analise";
+                else if (sinistro.status === "APROVADO") statusClass = "aprovado";
+                else if (sinistro.status === "NEGADO") statusClass = "negado";
+
+                card.innerHTML = `
+                    <h3>Sinistro - ${sinistro.tipoSeguro || "Seguro"}</h3>
+                    <p><strong>Data da Solicitação:</strong> ${dataFormatada}</p>
+                    <p><strong>Status:</strong> <span class="status ${statusClass}">${sinistro.status.replace("_", " ")}</span></p>
+                `;
+
+                card.addEventListener("click", () => {
+                    let detalhes = `
+                        <p><strong>Tipo do Seguro:</strong> ${sinistro.tipoSeguro || "Não informado"}</p>
+                        <p><strong>Descrição:</strong> ${sinistro.mensagem || "Sem descrição"}</p>
+                        <p><strong>Data da Solicitação:</strong> ${dataFormatada}</p>
+                        <p><strong>Status:</strong> <span class="status ${statusClass}">${sinistro.status.replace("_", " ")}</span></p>
+                    `;
+
+                    if (sinistro.apolice) {
+                        detalhes += `
+                            <hr style="margin: 15px 0;">
+                            <p><strong>Apólice Relacionada:</strong></p>
+                            <p>Tipo: ${sinistro.apolice.tipoSeguro}</p>
+                            <p>Data Início: ${new Date(sinistro.apolice.dataInicio).toLocaleDateString("pt-BR", { timeZone: "UTC" })}</p>
+                            <p>Status Apólice: ${sinistro.apolice.status}</p>
+                        `;
+                    }
+
+                    if (sinistro.documento) {
+                        detalhes += `<p><strong>Documento:</strong> <a href="${sinistro.documento}" target="_blank">📄 Ver Documento</a></p>`;
+                    }
+
+                    conteudoModal.innerHTML = detalhes;
+                    modal.style.display = "block";
+                });
+
+                cardsContainer.appendChild(card);
+            });
+        })
+        .catch(error => {
+            console.error(error);
+            cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar sinistros.</p>";
+        });
+    }
+
+    fecharModal.onclick = () => {
+        modal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+</body>
+</html>

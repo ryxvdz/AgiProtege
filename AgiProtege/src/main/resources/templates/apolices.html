@@ -112,8 +112,9 @@
 <div id="sidebar" style="height: 100%; width: 0; position: fixed; z-index: 12; top: 0; left: 0; background-color: #0D47A1; overflow-x: hidden; transition: 0.3s; padding-top: 60px;">
     <a href="javascript:void(0)" onclick="closeSidebar()" style="position: absolute; top: 20px; right: 20px; font-size: 36px; color: white; text-decoration: none;">&times;</a>
     <a href="/cadastrarSeguroVida" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro de Vida</a>
-    <a href="" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Automóvel</a>
+    <a href="/cadastrarSeguroAutomovel" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Automóvel</a>
     <a href="/cadastrarSeguroDespesa" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Despesas</a>
+    <a href="/MeusSinistros" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Sinistros</a>
     <a href="/perfil" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Perfil</a>
     <a href="/login" onclick="logout()" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Logout</a>
 
@@ -158,6 +159,12 @@
                 cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhuma apólice encontrada.</p>";
                 return;
             }
+
+            data.sort((a, b) => {
+                if (a.status === "Ativo" && b.status !== "Ativo") return -1;
+                if (a.status !== "Ativo" && b.status === "Ativo") return 1;
+                return 0;
+            });
 
             data.forEach(apolice => {
                 const card = document.createElement("div");

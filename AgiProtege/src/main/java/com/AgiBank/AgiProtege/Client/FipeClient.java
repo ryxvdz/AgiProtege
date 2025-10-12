@@ -1,4 +1,4 @@
-package com.AgiBank.AgiProtege.Client;
+package com.AgiBank.AgiProtege.client;
 
 import com.AgiBank.AgiProtege.dto.FipeDTO;
 import com.AgiBank.AgiProtege.dto.MarcaFipeDTO;

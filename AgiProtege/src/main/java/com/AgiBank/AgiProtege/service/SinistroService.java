@@ -28,7 +28,7 @@ public class SinistroService {
     public SinistroResponseDTO registrarSinistro(SinistroRequestDTO request, MultipartFile documentoFile) throws IOException {
         Optional<Apolice> apoliceOpt = apoliceRepository.findById(request.idApolice());
         if (apoliceOpt.isEmpty()) {
-            return new SinistroResponseDTO(null, "Erro", "Apólice não encontrada");
+            return new SinistroResponseDTO(null, "Erro", "Apólice não encontrada", null, null, null);
         }
         String documento = salvarDocumento(documentoFile);
         Sinistro sinistro = new Sinistro();
@@ -38,7 +38,7 @@ public class SinistroService {
         sinistro.setStatus("Em análise");
         sinistro.setDocumento(documento);
         sinistro = sinistroRepository.save(sinistro);
-        return new SinistroResponseDTO(sinistro.getIdSinistro(), sinistro.getStatus(), "Sinistro registrado e em análise");
+        return new SinistroResponseDTO(sinistro.getIdSinistro(), sinistro.getStatus(), "Sinistro registrado e em análise", sinistro.getDataOcorrencia(), sinistro.getDocumento(), sinistro.getApolice().getTipoSeguro());
     }
 
     private String salvarDocumento(MultipartFile file) throws IOException {
@@ -55,13 +55,13 @@ public class SinistroService {
         String nomeArquivo = UUID.randomUUID() + "_" + file.getOriginalFilename();
         File destino = new File(dir, nomeArquivo);
         file.transferTo(destino);
-        return destino.getAbsolutePath();
+        return "/uploads/sinistros/" + nomeArquivo;
     }
 
     public List<SinistroResponseDTO> listarSinistrosPorCliente(UUID idCliente) {
         return sinistroRepository.findByClienteId(idCliente)
             .stream()
-            .map(s -> new SinistroResponseDTO(s.getIdSinistro(), s.getStatus(), s.getDescricao()))
+            .map(s -> new SinistroResponseDTO(s.getIdSinistro(), s.getStatus(), s.getDescricao(), s.getDataOcorrencia(), s.getDocumento(), s.getApolice().getTipoSeguro()))
             .collect(Collectors.toList());
     }
 }
