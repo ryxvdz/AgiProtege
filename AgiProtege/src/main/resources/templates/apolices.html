@@ -159,6 +159,12 @@
                 return;
             }
 
+            data.sort((a, b) => {
+                if (a.status === "Ativo" && b.status !== "Ativo") return -1;
+                if (a.status !== "Ativo" && b.status === "Ativo") return 1;
+                return 0;
+            });
+
             data.forEach(apolice => {
                 const card = document.createElement("div");
                 card.className = "card";
