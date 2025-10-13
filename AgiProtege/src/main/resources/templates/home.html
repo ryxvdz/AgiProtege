@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AgiProtege</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        header h1 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header h1 span {
+            color: #4CAF50;
+        }
+
+        header p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+
+        /* Cards empilhados */
+        .cards-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background-color: #fff;
+            color: #333;
+            border-radius: 16px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            padding: 30px 20px;
+            text-align: center;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #0D47A1;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #0D47A1;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #1976D2;
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* Animações sutis */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 40px;
+            }
+            .card {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Agi<span>Protege</span></h1>
+    <p>Protegendo o que mais importa para você.</p>
+</header>
+
+<section class="cards-container">
+    <div class="card">
+        <img th:src="@{/images/icon_carro.png}" alt="Seguro Automóvel">
+        <h3>Seguro Automóvel</h3>
+        <p>Proteja seu veículo contra acidentes, roubos e danos imprevistos com cobertura completa.</p>
+        <a href="/login" class="btn">Saiba mais</a>
+    </div>
+
+    <div class="card">
+        <img th:src="@{/images/icon_vida.png}" alt="Seguro de Vida">
+        <h3>Seguro de Vida</h3>
+        <p>Garanta o bem-estar e segurança financeira da sua família em todos os momentos.</p>
+        <a href="/login" class="btn">Saiba mais</a>
+    </div>
+
+    <div class="card">
+        <img th:src="@{/images/icon_contrato.png}" alt="Seguro de Despesas">
+        <h3>Seguro de Despesas</h3>
+        <p>Tenha tranquilidade em situações inesperadas com cobertura de despesas essenciais.</p>
+        <a href="/login" class="btn">Saiba mais</a>
+    </div>
+</section>
+
+<footer>
+    © 2025 AgiProtege - Todos os direitos reservados.
+</footer>
+
+</body>
+</html>
