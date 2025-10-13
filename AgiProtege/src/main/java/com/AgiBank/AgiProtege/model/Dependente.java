@@ -27,4 +27,6 @@ public class Dependente {
     private String nome;
 
     private String parentesco;
+
+    private Double percentualBeneficio;
 }

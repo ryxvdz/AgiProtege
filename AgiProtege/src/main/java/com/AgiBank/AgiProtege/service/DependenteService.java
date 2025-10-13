@@ -8,7 +8,11 @@ import com.AgiBank.AgiProtege.model.Dependente;
 import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.repository.DependenteRepository;
 import com.AgiBank.AgiProtege.repository.VidaRepository;
+import org.apache.tomcat.util.compat.JrePlatform;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -29,7 +33,6 @@ public class DependenteService {
 
     }
 
-
     public DependenteResponseDTO adicionarDependente(DependenteRequestDTO dto) {
         //verifica se o seguro de vida existe
         Vida seguroVida = vidaRepository.findById(dto.seguroVida()).orElseThrow(
@@ -40,18 +43,68 @@ public class DependenteService {
         dependente.setParentesco(dto.parentesco());
         dependente.setSeguroVida(seguroVida);
 
-        Dependente dependeCastrado = repository.save(dependente);
+        Dependente dependenteCadastrado = repository.save(dependente);
 
-        return toResponseDTO(dependeCastrado);
+        return toResponseDTO(dependenteCadastrado);
     }
 
+    public List<DependenteResponseDTO> calcularPercentual(Vida seguroVida, Dependente dependente) {
 
+        Double premioTotal = seguroVida.getValorIndenizacaoMorte();
+        List<Dependente> dependentes = seguroVida.getDependentes();
+
+        if (dependentes == null || dependentes.isEmpty()) {
+            dependentes = new ArrayList<>();
+            dependentes.add(dependente);
+        }
+
+        Dependente conjuge = null;
+
+        for (Dependente dep : dependentes) {
+            if (dep.getParentesco().equalsIgnoreCase("Conjuge")) {
+                conjuge = dep;
+                break;
+            }
+        }
+
+        Map<Dependente, Double> percentuais = new HashMap<>();
+
+        Double percentualConjuge = 0.0;
+        Double percentualOutros = 0.0;
+
+        if (conjuge != null) {
+            percentualConjuge = premioTotal / 2;
+
+            Long numDependentes = (long) (dependentes.size() - 1);
+            percentualOutros = (premioTotal - percentualConjuge) / numDependentes;
+
+        } if (conjuge == null) {
+            Long numDependentes = (long) dependentes.size();
+            percentualOutros = premioTotal / numDependentes;
+        }
+
+            for (Dependente dep : dependentes) {
+                percentuais.put(dep, percentualOutros);
+                dep.setPercentualBeneficio(percentualOutros);
+            }
+
+        percentuais.forEach((dep, percentual) -> dep.setPercentualBeneficio(percentual));
+
+        return percentuais.entrySet()
+                .stream()
+                .map(entry -> new DependenteResponseDTO(
+                        entry.getKey().getNome(),
+                        entry.getKey().getParentesco(),
+                        entry.getValue()))
+                .collect(Collectors.toList());
+    }
 
     public DependenteResponseDTO toResponseDTO(Dependente dependente) {
         return new DependenteResponseDTO(
 
                 dependente.getNome(),
-                dependente.getParentesco()
+                dependente.getParentesco(),
+                dependente.getPercentualBeneficio()
 
         );
     }

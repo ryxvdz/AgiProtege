@@ -149,7 +149,7 @@ public class VidaService {
         // converte cada Dependente para DependenteResponseDTO
         List<DependenteResponseDTO> dependentesDTO = vida.getDependentes()
                 .stream()
-                .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco()))
+                .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco(), dep.getPercentualBeneficio()))
                 .toList();
 
         return new VidaResponseDTO(
