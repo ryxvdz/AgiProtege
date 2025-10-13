@@ -166,17 +166,14 @@ public class ClienteService {
     private int perfilRiscoIdade(Cliente cliente, ClienteRequestDTO dto) {
         int perfilRisco = 0;
 
-        //Idade risco alto
         if(calcularIdadeCliente(dto.idade()) <= 25 || calcularIdadeCliente(dto.idade()) > 60) {
             perfilRisco = perfilRisco + 25;
         }
 
-        //Idade risco medio
         if(calcularIdadeCliente(dto.idade()) > 25 && calcularIdadeCliente(dto.idade()) <=40) {
             perfilRisco = perfilRisco + 15;
         }
 
-        //Idade risco Baixo
         if(calcularIdadeCliente(dto.idade()) > 40 && calcularIdadeCliente(dto.idade()) <=60) {
             perfilRisco = perfilRisco + 10;
         }
@@ -187,17 +184,14 @@ public class ClienteService {
     private int perfilRiscoRenda(Cliente cliente) {
         int perfilRisco = 0;
 
-        //baixa renda - alto risco
         if(cliente.getRenda() <= 2000) {
             perfilRisco = perfilRisco + 25;
         }
 
-        //media renda - medio risco
         if(cliente.getRenda() > 2000 && cliente.getRenda() < 5000) {
             perfilRisco = perfilRisco + 15;
         }
 
-        //alta renda - baixo risco
         if(cliente.getRenda() >= 5000) {
             perfilRisco = perfilRisco + 5;
         }
@@ -208,12 +202,10 @@ public class ClienteService {
     private int perfilRiscoEstadoCivil(Cliente cliente) {
         int perfilRisco = 0;
 
-        //solteiro maior risco
         if(cliente.getEstadoCivil().equalsIgnoreCase("solteiro")) {
             perfilRisco = perfilRisco + 20;
         }
 
-        //casado menor risco
         if(cliente.getEstadoCivil().equalsIgnoreCase("casado")) {
             perfilRisco = perfilRisco + 10;
         }
@@ -224,12 +216,10 @@ public class ClienteService {
     private int perfilRiscoSexo(Cliente cliente) {
         int perfilRisco = 0;
 
-        //masculino maior risco
         if(cliente.getSexo().equalsIgnoreCase("Masculino")) {
             perfilRisco = perfilRisco + 10;
         }
 
-        //femenino menor risco
         if (cliente.getSexo().equalsIgnoreCase("Femenino")) {
             perfilRisco = perfilRisco + 5;
         }

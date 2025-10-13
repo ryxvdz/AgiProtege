@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/dependente")
 @AllArgsConstructor
-
 public class DependenteController {
 
     private final DependenteService dependenteService;
 
     @PostMapping
-    public DependenteResponseDTO adicionarDependente(@RequestBody DependenteRequestDTO dto){
-
+    public DependenteResponseDTO adicionarDependente(@RequestBody DependenteRequestDTO dto) {
         return dependenteService.adicionarDependente(dto);
     }
+
 }

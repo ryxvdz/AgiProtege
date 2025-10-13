@@ -9,7 +9,7 @@ class ClienteTest {
     void deveCriarClienteComDadosValidos() {
         Cliente cliente = Cliente.builder()
                 .nome("João")
-                .cpf("12345678909") // CPF válido para teste
+                .cpf("12345678909")
                 .sexo("M")
                 .email("joao@email.com")
                 .build();
@@ -24,7 +24,7 @@ class ClienteTest {
         Exception exception = assertThrows(Exception.class, () -> {
             Cliente cliente = Cliente.builder()
                     .nome("Maria")
-                    .cpf("11111111117771") // CPF inválido
+                    .cpf("11111111117771")
                     .sexo("Fkkkk")
                     .email("maria@email.com")
                     .build();
@@ -35,4 +35,3 @@ class ClienteTest {
         assertEquals("CPF inválido", exception.getMessage());
     }
 }
-

@@ -34,15 +34,12 @@ public class Apolice {
     @Column(name = "tipo_seguro")
     private String tipoSeguro;
 
-    //cliente varias apolices - apolice deve ter um cliente
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
     private Cliente cliente;
 
     @OneToMany(mappedBy = "apolice", cascade = CascadeType.ALL)
     private List<Sinistro> sinistros = new ArrayList<>();
-
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_apolice")

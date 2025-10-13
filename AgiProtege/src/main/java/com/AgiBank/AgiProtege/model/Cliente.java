@@ -24,31 +24,24 @@ public class Cliente {
     @Column(name = "id_cliente")
     private UUID idCliente;
 
-//    @NotBlank
     private String nome;
 
     @CPF
     @Column(unique = true)
     private String cpf;
 
-//    @NotBlank
     private String sexo;
 
-//    @Email
     @Column(unique = true)
     private String email;
 
-//    @NotBlank
     @Column(unique = true)
     private String telefone;
 
-//    @NotNull
     private Double renda;
 
-//    @NotNull
     private LocalDate idade;
 
-//    @NotBlank
     @Column(name = "estado_Civil")
     private String estadoCivil;
 
@@ -57,7 +50,6 @@ public class Cliente {
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Apolice> apolices = new ArrayList<>();
-
 
     @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
     private Endereco endereco;

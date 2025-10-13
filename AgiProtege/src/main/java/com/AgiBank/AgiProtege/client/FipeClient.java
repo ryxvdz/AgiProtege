@@ -77,10 +77,8 @@ public class FipeClient {
         return response.getBody();
     }
 
-    //TESTE USANDO APENAS METODO DE CHAMAR PELO NOME
     public FipeDTO buscarPorNome(String nomeMarca, String nomeModelo, String ano) {
 
-        // Buscar marca
         List<MarcaFipeDTO> marcas = listarMarcas();
         MarcaFipeDTO marca = marcas.stream()
                 .filter(m -> m.nome().equalsIgnoreCase(nomeMarca))
@@ -88,7 +86,6 @@ public class FipeClient {
                 .orElseThrow(()-> new RuntimeException("Marca não encontrada: "+ nomeMarca));
         String codigoMarca = String.valueOf(marca.codigo());
 
-        //Buscar modelo
         ResponseEntity<Map> responseModelos =
                 restTemplate.getForEntity(BASE_URL + "/marcas/" + codigoMarca + "/modelos/", Map.class);
         List<Map<String, String>> modelos = (List<Map<String, String>>) responseModelos.getBody().get("modelos");
@@ -98,7 +95,6 @@ public class FipeClient {
                 .orElseThrow(() -> new RuntimeException("Modelo não encontrado: " + nomeModelo));
         String codigoModelo = String.valueOf(modelo.get("codigo"));
 
-        //Buscar ano
         ResponseEntity<List> responseAnos = restTemplate.getForEntity(
                 BASE_URL + "/marcas/" + codigoMarca + "/modelos/" + codigoModelo + "/anos", List.class);
         List<Map<String, String>> anos = responseAnos.getBody();

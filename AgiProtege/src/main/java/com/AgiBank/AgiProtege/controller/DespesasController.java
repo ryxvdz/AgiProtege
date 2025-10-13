@@ -16,13 +16,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/seguroDespesa")
 @AllArgsConstructor
-
 public class DespesasController {
+
     private final DespesasService despesasService;
 
     @PostMapping
-    public DespesasResponseDTO criarSeguroDespesas(@RequestBody DespesasRequestDTO dto, @AuthenticationPrincipal Cliente cliente){
+    public DespesasResponseDTO criarSeguroDespesas(@RequestBody DespesasRequestDTO dto, @AuthenticationPrincipal Cliente cliente) {
         UUID id = cliente.getIdCliente();
         return despesasService.criarSeguroDespesas(dto, id);
     }
+
 }

@@ -17,6 +17,7 @@ import java.util.UUID;
 @RequestMapping("/SeguroAutomovel")
 @AllArgsConstructor
 public class AutomovelController {
+
     private final AutomovelService service;
 
     @PostMapping
@@ -24,4 +25,5 @@ public class AutomovelController {
         UUID id = cliente.getIdCliente();
         return service.criarSeguroAutomovel(dto, id);
     }
+
 }

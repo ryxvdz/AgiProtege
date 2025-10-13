@@ -44,7 +44,6 @@ public class ClienteController {
         clienteService.inativarClientePorId(id);
     }
 
-
     @PostMapping("/{id}/endereco")
     public EnderecoResponseDTO adicionarEnderecoAoCliente(
             @PathVariable UUID id,
@@ -57,7 +56,5 @@ public class ClienteController {
     public EnderecoResponseDTO buscarEnderecoporId(@PathVariable UUID id) {
         return enderecoService.buscarEnderecoporId(id);
     }
+
 }
-
-
-

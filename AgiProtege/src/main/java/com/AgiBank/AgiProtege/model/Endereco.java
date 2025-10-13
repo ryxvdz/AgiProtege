@@ -1,4 +1,3 @@
-
 package com.AgiBank.AgiProtege.model;
 
 import jakarta.persistence.*;
@@ -22,7 +21,7 @@ public class Endereco {
     private String cep;
     private String logradouro;
     private String bairro;
-    private String localidade; //cidade
+    private String localidade;
     private String uf;
     private String numero;
 
