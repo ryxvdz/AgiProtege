@@ -196,6 +196,18 @@
                     <option value="Casado">Casado</option>
                 </select>
             </div>
+            <div>
+                <label for="renda">CEP:</label>
+                <input type="number" id="cep" name="cep" placeholder="EX: 133340615" required>
+            </div>
+            <div>
+                <label for="renda">Numero:</label>
+                <input type="number" id="numero" name="numero" placeholder="Numero da residencia" required>
+            </div>
+            <input type="hidden" id="logradouro" name="logradouro">
+            <input type="hidden" id="bairro" name="bairro">
+            <input type="hidden" id="localidade" name="localidade">
+            <input type="hidden" id="uf" name="uf">
             <div style="grid-column: 1 / -1;">
                 <label for="senha">Senha:</label>
                 <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
@@ -243,6 +255,39 @@
         telefoneInput.value = value;
     });
 
+    async function buscarCep() {
+        const cep = cepInput.value.replace(/\D/g, ''); // Limpa o CEP para a requisição
+        if (cep.length !== 8) {
+            return; // O CEP precisa ter 8 dígitos
+        }
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (!data.erro) {
+                document.getElementById('logradouro').value = data.logradouro;
+                document.getElementById('bairro').value = data.bairro;
+                document.getElementById('localidade').value = data.localidade;
+                document.getElementById('uf').value = data.uf;
+                // Ocultos, mas preenchidos!
+            } else {
+                // Limpa os campos se o CEP for inválido
+                document.getElementById('logradouro').value = '';
+                document.getElementById('bairro').value = '';
+                document.getElementById('localidade').value = '';
+                document.getElementById('uf').value = '';
+                console.warn("CEP não encontrado ou inválido.");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar CEP:", error);
+        }
+    }
+
+    // Adiciona o evento 'blur' (quando o campo perde o foco) no campo CEP
+    const cepInput = document.getElementById('cep');
+    cepInput.addEventListener('blur', buscarCep);
+
     // Submissão do formulário
     document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -252,16 +297,23 @@
         CadastrarButton.innerHTML = '<span class="spinner"></span>Cadastrando...';
 
         const dto = {
-            nome: document.getElementById('nome').value,
-            cpf: document.getElementById('cpf').value,
-            sexo: document.getElementById('sexo').value,
-            email: document.getElementById('email').value,
-            telefone: document.getElementById('telefone').value,
-            renda: parseFloat(document.getElementById('renda').value),
-            idade: document.getElementById('idade').value,
-            estadoCivil: document.getElementById('estadoCivil').value,
-            senha: document.getElementById('senha').value
-        };
+    nome: document.getElementById('nome').value,
+    cpf: document.getElementById('cpf').value,
+    sexo: document.getElementById('sexo').value,
+    email: document.getElementById('email').value,
+    telefone: document.getElementById('telefone').value,
+    renda: parseFloat(document.getElementById('renda').value),
+    idade: document.getElementById('idade').value,
+    estadoCivil: document.getElementById('estadoCivil').value,
+    cep: document.getElementById('cep').value,
+    numero: document.getElementById('numero').value,
+    senha: document.getElementById('senha').value,
+    logradouro: document.getElementById('logradouro').value,
+    bairro: document.getElementById('bairro').value,
+    localidade: document.getElementById('localidade').value,
+    uf: document.getElementById('uf').value
+};
+
 
         const response = await fetch('/auth/cadastrar', {
             method: 'POST',

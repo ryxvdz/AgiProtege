@@ -26,10 +26,13 @@ public class ClienteService {
 
     private final TokenService tokenService;
 
-    public ClienteService(ClienteRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService) {
+    private final EnderecoService enderecoService;
+
+    public ClienteService(ClienteRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService, EnderecoService enderecoService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
+        this.enderecoService = enderecoService;
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
@@ -50,6 +53,18 @@ public class ClienteService {
         cliente.setSenha(passwordEncoder.encode(dto.senha()));          //guarda a senha criptografada no banco
 
         Cliente clienteCadastrado = repository.save(cliente);
+
+        if (dto.cep() != null && !dto.cep().isEmpty()) {
+            enderecoService.adicionarEnderecoAoCliente(
+                    cliente.getIdCliente(),
+                    dto.cep(),
+                    dto.numero(),
+                    dto.logradouro(),
+                    dto.bairro(),
+                    dto.localidade(),
+                    dto.uf()
+            );
+        }
 
 
         calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente(), dto);
