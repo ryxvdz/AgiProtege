@@ -127,6 +127,28 @@
             font-weight: bold;
         }
 
+         button.loading {
+            background-color: #388E3C;
+            cursor: not-allowed;
+        }
+
+         .spinner {
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .dependente {
             background: #f5f5f5;
             padding: 10px;
@@ -204,7 +226,7 @@
 
         <button type="button" id="adicionarDependente">+ Adicionar Dependente</button>
 
-        <button type="submit">Criar Seguro</button>
+        <button type="submit" id="btnCadastrar">Criar Seguro</button>
     </form>
 
     <p class="mensagem" id="mensagem"></p>
@@ -218,6 +240,7 @@
     const mensagem = document.getElementById("mensagem");
     const token = localStorage.getItem("token");
     const alturaInput = document.getElementById("altura");
+    const btnCadastrar = document.getElementById("btnCadastrar");
     let contador = 0;
 
     // Máscara automática de altura (com ponto)
@@ -266,6 +289,10 @@
     // Envio do formulário
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        btnCadastrar.disabled = true;
+        btnCadastrar.classList.add('loading');
+        btnCadastrar.innerHTML = '<span class="spinner"></span>Criando seguro...';
 
         const dados = {
             peso: parseFloat(document.getElementById("peso").value),

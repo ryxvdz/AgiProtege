@@ -61,6 +61,28 @@
         .btn-voltar:hover {
             color: #1565C0;
         }
+
+         button.loading {
+            background-color: #388E3C;
+            cursor: not-allowed;
+        }
+
+         .spinner {
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -174,6 +196,12 @@
     carregarPerfil();
 
      async function inativarConta() {
+
+        btnInativar.disabled = true;
+        btnInativar.classList.add('loading');
+        btnInativar.innerHTML = '<span class="spinner"></span>Inativando...';
+
+
         if (!confirm("Tem certeza que deseja inativar sua conta? Esta ação não pode ser desfeita.")) {
             return;
         }
