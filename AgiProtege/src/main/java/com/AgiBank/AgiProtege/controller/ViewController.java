@@ -51,4 +51,9 @@ public class ViewController {
         return "cadastrarSeguroAutomovel";
     }
 
+    @GetMapping("/AgiProtege")
+    public String home() {
+        return "home";
+    }
+
 }

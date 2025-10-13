@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/cadastrarSeguroVida").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cadastrarSeguroAutomovel").permitAll()
                         .requestMatchers(HttpMethod.GET, "/MeusSinistros").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/AgiProtege").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
