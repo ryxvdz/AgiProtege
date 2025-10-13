@@ -25,40 +25,50 @@
         header {
             text-align: center;
             margin-bottom: 50px;
+            animation: fadeIn 1.2s ease-in-out;
         }
 
         header h1 {
-            font-size: 48px;
-            font-weight: 700;
+            font-size: 52px;
+            font-weight: 800;
             margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header h1 span {
+            color: #4CAF50;
         }
 
         header p {
-            font-size: 18px;
+            font-size: 20px;
             opacity: 0.9;
         }
 
+        /* Cards empilhados */
         .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
             width: 100%;
+            max-width: 500px;
         }
 
         .card {
             background-color: #fff;
             color: #333;
             border-radius: 16px;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-            padding: 25px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            padding: 30px 20px;
             text-align: center;
+            width: 100%;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 0.8s ease both;
         }
 
         .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
         }
 
         .card img {
@@ -77,13 +87,14 @@
             font-size: 15px;
             color: #555;
             margin-bottom: 20px;
+            line-height: 1.4;
         }
 
         .btn {
             display: inline-block;
             background-color: #0D47A1;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 25px;
             border: none;
             border-radius: 8px;
             font-weight: bold;
@@ -96,16 +107,37 @@
         }
 
         footer {
-            margin-top: 50px;
+            margin-top: 60px;
             font-size: 14px;
-            opacity: 0.8;
+            opacity: 0.85;
+        }
+
+        /* Animações sutis */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 40px;
+            }
+            .card {
+                padding: 25px 15px;
+            }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Agi<span style="color: #4CAF50;">Protege</span></h1>
+    <h1>Agi<span>Protege</span></h1>
     <p>Protegendo o que mais importa para você.</p>
 </header>
 
