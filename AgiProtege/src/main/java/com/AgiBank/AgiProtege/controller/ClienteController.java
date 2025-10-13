@@ -32,15 +32,17 @@ public class ClienteController {
         return clienteService.buscarClientePorId(id);
     }
 
-    @PutMapping("/{id}")
-    public ClienteResponseDTO atualizarClientePorId(@PathVariable UUID id, @RequestBody ClienteRequestDTO dto) {
+    @PutMapping("/atualizar")
+    public ClienteResponseDTO atualizarClientePorId(@AuthenticationPrincipal Cliente cliente, @RequestBody ClienteRequestDTO dto) {
+        UUID id = cliente.getIdCliente();
         clienteService.atualizarClientePorId(id, dto);
         clienteService.calcularPerfilDeRiscoInical(id, dto);
         return clienteService.buscarClientePorId(id);
     }
 
-    @PatchMapping("/{id}/inativarCliente")
-    public void inativarCliente(@PathVariable UUID id) {
+    @PatchMapping("/inativarCliente")
+    public void inativarCliente(@AuthenticationPrincipal Cliente cliente) {
+        UUID id = cliente.getIdCliente();
         clienteService.inativarClientePorId(id);
     }
 

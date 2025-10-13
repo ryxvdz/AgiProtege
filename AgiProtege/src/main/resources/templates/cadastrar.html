@@ -105,6 +105,28 @@
             background-color: #1976D2; /* azul mais claro ao passar o mouse */
         }
 
+        button.loading {
+            background-color: #388E3C;
+            cursor: not-allowed;
+        }
+
+         .spinner {
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         input[type="date"] {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -180,7 +202,9 @@
             </div>
         </div>
 
-        <button type="submit">Cadastrar</button>
+        <button type="submit" id="CadastrarButton">
+            Cadastrar
+        </button>
 
         <p style="text-align: center; margin-top: 15px;">
             <a href="/login" class="btn-voltar">Voltar ao login</a>
@@ -223,6 +247,10 @@
     document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
         event.preventDefault();
 
+        CadastrarButton.disabled = true;
+        CadastrarButton.classList.add('loading');
+        CadastrarButton.innerHTML = '<span class="spinner"></span>Cadastrando...';
+
         const dto = {
             nome: document.getElementById('nome').value,
             cpf: document.getElementById('cpf').value,
@@ -248,7 +276,7 @@
         if(response.ok) {
             mensagem.style.color = 'green';
             mensagem.textContent = "Cadastro realizado com sucesso!";
-            window.location.href = "/apolices";
+            window.location.href = "/login";
         } else {
             const erro = await response.json();
             mensagem.style.color = 'red';
