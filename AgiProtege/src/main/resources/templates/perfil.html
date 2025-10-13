@@ -132,6 +132,53 @@
 
     <div style="margin-top: 20px; display: flex; gap: 10px;">
         <button
+                id="btnEditar"
+                style="flex: 1; padding: 10px 20px; background-color: #0D47A1; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Editar Perfil
+        </button>
+    </div>
+
+    <div id="modalEdicao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+        <div style="background:white; padding:25px; border-radius:10px; width:90%; max-width:400px;">
+            <h3 style="text-align:center; color:#0D47A1;">Editar Perfil</h3>
+
+            <form id="formEditar">
+                <label>Nome:</label>
+                <input type="text" id="editNome" style="width:100%; margin-bottom:10px;">
+
+                <label>Email:</label>
+                <input type="email" id="editEmail" style="width:100%; margin-bottom:10px;">
+
+                <label>Telefone:</label>
+                <input type="text" id="editTelefone" style="width:100%; margin-bottom:10px;">
+
+                <label>Renda:</label>
+                <input type="number" id="editRenda" style="width:100%; margin-bottom:10px;">
+
+                <label>Sexo:</label>
+                <select id="editSexo" style="width:100%; margin-bottom:10px;">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+
+                <label>Estado Civil:</label>
+                <select id="editEstadoCivil" style="width:100%; margin-bottom:15px;">
+                    <option value="Solteiro">Solteiro</option>
+                    <option value="Casado">Casado</option>
+                    <option value="Divorciado">Divorciado</option>
+                    <option value="Viúvo">Viúvo</option>
+                </select>
+
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" style="flex:1; background-color:#4CAF50; color:white; border:none; border-radius:6px; padding:10px;">Salvar</button>
+                    <button type="button" id="btnCancelarEdicao" style="flex:1; background-color:#c62828; color:white; border:none; border-radius:6px; padding:10px;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button
                 id="btnInativar"
                 onclick="inativarConta()"
                 style="flex: 1; padding: 10px 20px; background-color: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
@@ -145,53 +192,105 @@
 <script>
     const token = localStorage.getItem("token");
 
+    let clienteAtual = null;
+
     async function carregarPerfil() {
-
-        if (!token) {
-            window.location.href = "/login";
-            return;
-        }
-
-        try {
-
-            const response = await fetch(`/cliente/me`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-
-            if (!response.ok) {
-                // Se o token for inválido ou expirado, redireciona pro login
-                if (response.status === 401 || response.status === 403) {
-                    localStorage.removeItem("token");
-                    window.location.href = "/login";
-                    return;
-                }
-                throw new Error("Erro ao carregar informações do perfil");
-            }
-
-            const cliente = await response.json();
-
-            // Preenche as informações do perfil
-            document.getElementById("nome").textContent = cliente.nome;
-            document.getElementById("email").textContent = cliente.email;
-            document.getElementById("cpf").textContent = cliente.cpf;
-            document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
-
-
-            const dataNascimento = new Date(cliente.idade);
-            const dataFormatada = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-            document.getElementById("idade").textContent = dataFormatada;
-
-            document.getElementById("sexo").textContent = cliente.sexo;
-            document.getElementById("telefone").textContent = cliente.telefone;
-            document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
-
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao carregar o perfil do usuário.");
-        }
+    if (!token) {
+        window.location.href = "/login";
+        return;
     }
+
+    try {
+        const response = await fetch(`/cliente/me`, {
+            headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+                return;
+            }
+            throw new Error("Erro ao carregar perfil");
+        }
+
+        const cliente = await response.json();
+        clienteAtual = cliente; // 🟢 armazenamos os dados para edição
+
+        document.getElementById("nome").textContent = cliente.nome;
+        document.getElementById("email").textContent = cliente.email;
+        document.getElementById("cpf").textContent = cliente.cpf;
+        document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
+        document.getElementById("sexo").textContent = cliente.sexo;
+        document.getElementById("telefone").textContent = cliente.telefone;
+        document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
+
+        if (cliente.idade) { // idade é na verdade a data de nascimento
+    const dataNascimento = new Date(cliente.idade);
+    const dataFormatada = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    document.getElementById("idade").textContent = dataFormatada;
+} else {
+    document.getElementById("idade").textContent = "-";
+}
+
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao carregar perfil.");
+    }
+}
+
+document.getElementById("btnEditar").addEventListener("click", () => {
+    document.getElementById("modalEdicao").style.display = "flex";
+    document.getElementById("editNome").value = clienteAtual.nome;
+    document.getElementById("editEmail").value = clienteAtual.email;
+    document.getElementById("editTelefone").value = clienteAtual.telefone;
+    document.getElementById("editRenda").value = clienteAtual.renda;
+    document.getElementById("editSexo").value = clienteAtual.sexo;
+    document.getElementById("editEstadoCivil").value = clienteAtual.estadoCivil;
+});
+
+// 🟢 Botão de cancelar fecha o modal
+document.getElementById("btnCancelarEdicao").addEventListener("click", () => {
+    document.getElementById("modalEdicao").style.display = "none";
+});
+
+// 🟢 Envia PUT /cliente/{id}
+document.getElementById("formEditar").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const dadosAtualizados = {
+        nome: document.getElementById("editNome").value,
+        email: document.getElementById("editEmail").value,
+        telefone: document.getElementById("editTelefone").value,
+        renda: parseFloat(document.getElementById("editRenda").value),
+        sexo: document.getElementById("editSexo").value,
+        estadoCivil: document.getElementById("editEstadoCivil").value,
+        idade: clienteAtual.idade
+    };
+
+    try {
+        const response = await fetch(`/cliente/atualizar`, {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dadosAtualizados)
+        });
+
+        if (response.ok) {
+            alert("Perfil atualizado com sucesso!");
+            document.getElementById("modalEdicao").style.display = "none";
+            carregarPerfil(); // recarrega os dados
+        } else {
+            alert("Erro ao atualizar perfil.");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Erro ao enviar dados.");
+    }
+});
+
 
     carregarPerfil();
 
