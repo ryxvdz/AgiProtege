@@ -43,7 +43,8 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        select {
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
@@ -238,21 +239,29 @@
 
     // Adicionar dependente dinamicamente
     btnAdicionar.addEventListener("click", () => {
-        const div = document.createElement("div");
-        div.classList.add("dependente");
-        div.innerHTML = `
-            <h4>Dependente ${contador + 1}</h4>
-            <label>Nome:</label>
-            <input type="text" name="dependentes[${contador}].nome" placeholder="Nome do dependente" required>
-            <label>Parentesco:</label>
-            <input type="text" name="dependentes[${contador}].parentesco" placeholder="Parentesco" required>
-            <button type="button" class="remover">Remover</button>
-        `;
+    const div = document.createElement("div");
+    div.classList.add("dependente");
+    div.innerHTML = `
+        <h4>Dependente ${contador + 1}</h4>
+        <label>Nome:</label>
+        <input type="text" name="dependentes[${contador}].nome" placeholder="Nome do dependente" required>
+        <label>Parentesco:</label>
+        <select name="dependentes[${contador}].parentesco" required>
+            <option value="" disabled selected>Selecione o parentesco</option>
+            <option value="Pai">Pai</option>
+            <option value="Mae">Mãe</option>
+            <option value="FilhoILHO">Filho(a)</option>
+            <option value="Conjuge">Cônjuge</option>
+            <option value="Outro">Outro</option>
+        </select>
+        <button type="button" class="remover">Remover</button>
+    `;
 
-        div.querySelector(".remover").addEventListener("click", () => div.remove());
-        dependentesContainer.appendChild(div);
-        contador++;
-    });
+    div.querySelector(".remover").addEventListener("click", () => div.remove());
+    dependentesContainer.appendChild(div);
+    contador++;
+});
+
 
     // Envio do formulário
     form.addEventListener("submit", async (e) => {
