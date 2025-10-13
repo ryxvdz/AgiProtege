@@ -18,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/sinistros")
 public class SinistroController {
+
     @Autowired
     private SinistroService sinistroService;
 
@@ -41,4 +42,5 @@ public class SinistroController {
         List<SinistroResponseDTO> sinistros = sinistroService.listarSinistrosPorCliente(id);
         return ResponseEntity.ok(sinistros);
     }
+
 }

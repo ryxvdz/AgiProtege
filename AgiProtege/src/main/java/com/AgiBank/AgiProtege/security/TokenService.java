@@ -20,13 +20,11 @@ public class TokenService {
 
     public String generateToken (Cliente cliente) {
         try {
-            //tipo de criptografia da chave
             Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            //geração do token
             String token = JWT.create()
                     .withIssuer("login-auth-api")
-                    .withSubject(cliente.getCpf())              //salva o cpf do usuario no token
+                    .withSubject(cliente.getCpf())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
             return token;
@@ -35,7 +33,6 @@ public class TokenService {
         }
     }
 
-    //Metodo para validar o token
     public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -50,7 +47,6 @@ public class TokenService {
         }
     }
 
-    //Tempo de duração do token
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

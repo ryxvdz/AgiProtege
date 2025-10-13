@@ -18,7 +18,6 @@ public class FipeService {
         this.fipeClient = fipeClient;
     }
 
-    //Filtro de todas as marcas
     public List<MarcaFipeDTO> listarMarcas() {
         return fipeClient.listarMarcas();
     }
@@ -45,7 +44,6 @@ public class FipeService {
         return fipeClient.listarAnosPorModelos(marca.codigo().toString(), String.valueOf(modelo.codigo()));
     }
 
-    //Teste buscar unico metodo
     public FipeDTO buscarPorNome(String nomeMarca, String nomeModelo, String ano) {
         System.out.println("Marca: "+nomeMarca);
         System.out.println("Modelo: "+nomeModelo);

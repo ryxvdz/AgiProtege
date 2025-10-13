@@ -50,4 +50,5 @@ public class ViewController {
     public String exibirFormularioSeguroAutomovel() {
         return "cadastrarSeguroAutomovel";
     }
+
 }

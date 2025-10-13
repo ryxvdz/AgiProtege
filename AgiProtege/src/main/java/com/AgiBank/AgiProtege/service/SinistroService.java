@@ -43,7 +43,6 @@ public class SinistroService {
 
     private String salvarDocumento(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) return null;
-        // Caminho absoluto relativo ao diretório do projeto
         String baseDir = System.getProperty("user.dir") + File.separator + "uploads" + File.separator + "sinistros";
         File dir = new File(baseDir);
         if (!dir.exists()) {

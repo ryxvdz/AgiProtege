@@ -30,7 +30,6 @@ public class ApoliceController {
         return service.buscarApolicesPorCpf(cpf);
     }
 
-    //pega as apolices do usuario autenticado pelo token
     @GetMapping("/minhas")
     public ResponseEntity<List<ApoliceResponseDTO>> listarMinhasApolices(@AuthenticationPrincipal Cliente cliente) {
         List<ApoliceResponseDTO> apolices = service.buscarApolicesPorCpf(cliente.getCpf());
@@ -41,4 +40,5 @@ public class ApoliceController {
     public void inativarApolice(@PathVariable UUID id) {
         service.inativarApolicePorId(id);
     }
+
 }

@@ -26,4 +26,5 @@ public class AuthController {
     public ClienteResponseDTO cadastrar(@RequestBody ClienteRequestDTO dto) {
         return clienteService.cadastrarCliente(dto);
     }
+
 }

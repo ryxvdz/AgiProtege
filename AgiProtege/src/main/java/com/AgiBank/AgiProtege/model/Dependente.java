@@ -20,8 +20,6 @@ public class Dependente {
     @Column(name = "id_dependente")
     private UUID idDependente;
 
-    //varios dependentes para um seguro de vida
-    //obriga todo dependente a ter um seguro
     @ManyToOne
     @JoinColumn(name = "id_seguro_vida", nullable = false)
     private Vida seguroVida;

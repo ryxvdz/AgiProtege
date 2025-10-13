@@ -16,14 +16,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/seguroVida")
 @AllArgsConstructor
-
 public class VidaController {
+
     private final VidaService vidaService;
 
     @PostMapping
-
-    public VidaResponseDTO criarSeguroVida(@RequestBody VidaRequestDTO dto, @AuthenticationPrincipal Cliente cliente){
+    public VidaResponseDTO criarSeguroVida(@RequestBody VidaRequestDTO dto, @AuthenticationPrincipal Cliente cliente) {
         UUID id = cliente.getIdCliente();
         return vidaService.criarSeguroVida(dto, id);
     }
+
 }

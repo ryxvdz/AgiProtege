@@ -1,6 +1,5 @@
 package com.AgiBank.AgiProtege.client;
 
-
 import com.AgiBank.AgiProtege.dto.EnderecoResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,5 +14,4 @@ public class ViaCepClient {
         String url = "https://viacep.com.br/ws/" + cep + "/json/";
         return restTemplate.getForObject(url, EnderecoResponseDTO.class);
     }
-
 }
