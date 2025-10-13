@@ -273,7 +273,7 @@
             <option value="" disabled selected>Selecione o parentesco</option>
             <option value="Pai">Pai</option>
             <option value="Mae">Mãe</option>
-            <option value="FilhoILHO">Filho(a)</option>
+            <option value="Filho">Filho(a)</option>
             <option value="Conjuge">Cônjuge</option>
             <option value="Outro">Outro</option>
         </select>
@@ -307,7 +307,7 @@
 
         dependentesContainer.querySelectorAll(".dependente").forEach(dep => {
             const nome = dep.querySelector('input[name*="nome"]').value;
-            const parentesco = dep.querySelector('input[name*="parentesco"]').value;
+            const parentesco = dep.querySelector('select[name*="parentesco"]').value;
             dados.dependentes.push({ nome, parentesco });
         });
 

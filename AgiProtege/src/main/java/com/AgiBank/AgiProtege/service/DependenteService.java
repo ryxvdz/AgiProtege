@@ -45,6 +45,8 @@ public class DependenteService {
 
         Dependente dependenteCadastrado = repository.save(dependente);
 
+        calcularPercentual(seguroVida, dependente);
+
         return toResponseDTO(dependenteCadastrado);
     }
 
@@ -89,6 +91,8 @@ public class DependenteService {
             }
 
         percentuais.forEach((dep, percentual) -> dep.setPercentualBeneficio(percentual));
+
+        repository.saveAll(dependentes);
 
         return percentuais.entrySet()
                 .stream()
