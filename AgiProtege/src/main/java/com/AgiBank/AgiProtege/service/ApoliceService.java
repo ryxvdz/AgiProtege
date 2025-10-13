@@ -91,7 +91,7 @@ public class ApoliceService {
 
             dependentesDTO = vida.getDependentes()
                     .stream()
-                    .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco()))
+                    .map(dep -> new DependenteResponseDTO(dep.getNome(), dep.getParentesco(), dep.getPercentualBeneficio()))
                     .toList();
         }
 
