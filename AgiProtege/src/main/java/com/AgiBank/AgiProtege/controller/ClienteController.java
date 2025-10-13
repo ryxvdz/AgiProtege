@@ -39,8 +39,9 @@ public class ClienteController {
         return clienteService.buscarClientePorId(id);
     }
 
-    @PatchMapping("/{id}/inativarCliente")
-    public void inativarCliente(@PathVariable UUID id) {
+    @PatchMapping("/inativarCliente")
+    public void inativarCliente(@AuthenticationPrincipal Cliente cliente) {
+        UUID id = cliente.getIdCliente();
         clienteService.inativarClientePorId(id);
     }
 

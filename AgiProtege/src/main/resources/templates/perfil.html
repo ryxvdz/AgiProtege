@@ -108,6 +108,15 @@
         <span id="estadoCivil"></span>
     </div>
 
+    <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button
+                id="btnInativar"
+                onclick="inativarConta()"
+                style="flex: 1; padding: 10px 20px; background-color: #c62828; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Inativar Conta
+        </button>
+    </div>
+
     <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
 </div>
 
@@ -163,6 +172,33 @@
     }
 
     carregarPerfil();
+
+     async function inativarConta() {
+        if (!confirm("Tem certeza que deseja inativar sua conta? Esta ação não pode ser desfeita.")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/cliente/inativarCliente`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.ok) {
+                alert("Conta inativada com sucesso!");
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            } else {
+                alert("Erro ao inativar conta. Tente novamente.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erro de conexão ao tentar inativar conta.");
+        }
+    }
+
 </script>
 
 
