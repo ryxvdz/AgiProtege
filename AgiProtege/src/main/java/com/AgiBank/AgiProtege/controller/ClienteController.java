@@ -46,13 +46,13 @@ public class ClienteController {
         clienteService.inativarClientePorId(id);
     }
 
-    @PostMapping("/{id}/endereco")
-    public EnderecoResponseDTO adicionarEnderecoAoCliente(
-            @PathVariable UUID id,
-            @RequestParam String cep,
-            @RequestParam String numero) {
-        return enderecoService.adicionarEnderecoAoCliente(id, cep, numero);
-    }
+//    @PostMapping("/{id}/endereco")
+//    public EnderecoResponseDTO adicionarEnderecoAoCliente(
+//            @PathVariable UUID id,
+//            @RequestParam String cep,
+//            @RequestParam String numero) {
+//        return enderecoService.adicionarEnderecoAoCliente(id, cep, numero);
+//    }
 
     @GetMapping("/endereco/{id}")
     public EnderecoResponseDTO buscarEnderecoporId(@PathVariable UUID id) {
