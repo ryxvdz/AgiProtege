@@ -169,6 +169,8 @@
 
 <script>
     const cpfInput = document.getElementById('cpf');
+    const loginButton = document.getElementById('loginButton');
+    const mensagemErro = document.getElementById('mensagemErro');
 
     cpfInput.addEventListener('input', function (e) {
         let value = e.target.value;
@@ -185,33 +187,38 @@
         loginButton.disabled = true;
         loginButton.classList.add('loading');
         loginButton.innerHTML = '<span class="spinner"></span>Entrando...';
+        mensagemErro.textContent = "";
 
-        //salva os dados enviados pelo usuario no form
-        const cpf = document.getElementById('cpf').value;
-        const senha = document.getElementById('senha').value;
+        try {
+            const cpf = document.getElementById('cpf').value;
+            const senha = document.getElementById('senha').value;
 
-        //gera o JSON para a API
-        const response = await fetch('/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ cpf, senha })
-        });
+            const response = await fetch('/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cpf, senha })
+            });
 
-        if (response.ok) {
-            const dados = await response.json();
-
-            //salva o token
-            localStorage.setItem("token", dados.token);
-
-            window.location.href = "/apolices";
-
-        } else {
-            document.getElementById('mensagemErro').textContent = "CPF ou senha inválidos!";
+            if (response.ok) {
+                const dados = await response.json();
+                localStorage.setItem("token", dados.token);
+                window.location.href = "/apolices";
+            } else {
+                mensagemErro.textContent = "CPF ou senha inválidos!";
+            }
+        } catch (error) {
+            mensagemErro.textContent = "Erro ao tentar fazer login. Tente novamente.";
+            console.error(error);
+        } finally {
+            loginButton.disabled = false;
+            loginButton.classList.remove('loading');
+            loginButton.innerHTML = "Entrar";
         }
     });
 </script>
+
 
 </body>
 </html>
