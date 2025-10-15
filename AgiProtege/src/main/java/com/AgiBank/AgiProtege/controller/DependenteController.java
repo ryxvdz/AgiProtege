@@ -2,6 +2,7 @@ package com.AgiBank.AgiProtege.controller;
 
 import com.AgiBank.AgiProtege.dto.DependenteRequestDTO;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
+import com.AgiBank.AgiProtege.model.Vida;
 import com.AgiBank.AgiProtege.service.DependenteService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ public class DependenteController {
     private final DependenteService dependenteService;
 
     @PostMapping
-    public DependenteResponseDTO adicionarDependente(@RequestBody DependenteRequestDTO dto) {
-        return dependenteService.adicionarDependente(dto);
+    public DependenteResponseDTO adicionarDependente(@RequestBody Vida vida, DependenteRequestDTO dto) {
+        return dependenteService.adicionarDependente(vida, dto);
     }
 
 }

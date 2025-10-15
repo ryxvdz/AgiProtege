@@ -1,5 +1,6 @@
 package com.AgiBank.AgiProtege.service;
 
+import com.AgiBank.AgiProtege.dto.DependenteRequestDTO;
 import com.AgiBank.AgiProtege.dto.DependenteResponseDTO;
 import com.AgiBank.AgiProtege.dto.VidaRequestDTO;
 import com.AgiBank.AgiProtege.dto.VidaResponseDTO;
@@ -22,12 +23,12 @@ import java.util.UUID;
 public class VidaService {
     private final VidaRepository vidaRepository;
     private final ClienteRepository clienteRepository;
-    private final DependenteRepository dependenteRepository;
+    private final DependenteService dependenteService;
 
-    public VidaService(VidaRepository vidaRepository, ClienteRepository clienteRepository, DependenteRepository dependenteRepository) {
+    public VidaService(VidaRepository vidaRepository, ClienteRepository clienteRepository, DependenteService dependenteService) {
         this.vidaRepository = vidaRepository;
         this.clienteRepository = clienteRepository;
-        this.dependenteRepository = dependenteRepository;
+        this.dependenteService = dependenteService;
     }
 
     public VidaResponseDTO criarSeguroVida(VidaRequestDTO dto, UUID id) {
@@ -41,7 +42,7 @@ public class VidaService {
                                 apolice.getStatus() == StatusApolice.Ativo
                 );
 
-        if(possuiSeguroVida) {
+        if (possuiSeguroVida) {
             throw new ExistingResourceException("O cliente já possui um Seguro de vida!");
         }
 
@@ -61,20 +62,25 @@ public class VidaService {
 
         Vida vidaCadastrada = vidaRepository.save(vida);
 
-        if(dto.dependentes() != null) {
+        if (dto.dependentes() != null) {
             dto.dependentes().forEach(depDTO -> {
-                Dependente dependente = new Dependente();
-                dependente.setNome(depDTO.nome());
-                dependente.setParentesco(depDTO.parentesco());
-                dependente.setSeguroVida(vidaCadastrada);
-                dependenteRepository.save(dependente);
+                DependenteRequestDTO dependenteDTO = new DependenteRequestDTO(
+                        depDTO.nome(),
+                        depDTO.parentesco(),
+                        vidaCadastrada.getIdApolice()
+                );
+
+               dependenteService.adicionarDependente(vidaCadastrada, dependenteDTO);
+
             });
         }
 
+// sempre retorna o DTO após salvar seguro e dependentes
         return toResponseDTO(vidaCadastrada);
+
     }
 
-    public Double calculaValorIndenizacaoMorte(Cliente cliente, VidaRequestDTO dto) {
+        public Double calculaValorIndenizacaoMorte(Cliente cliente, VidaRequestDTO dto) {
         Double indenizacao = 0.0;
 
         //Calcula o valor da indenização de acordo com o perfil de risco e patrimonio
