@@ -4,14 +4,33 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Sinistro</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+             box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: linear-gradient(to right, #0D47A1, #1976D2);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            margin-bottom: 50px
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
         }
 
         .container {
@@ -20,13 +39,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             max-width: 500px;
-            width: 100%;
-        }
-
-        h2 {
-            text-align: center;
-            color: #0D47A1;
-            margin-bottom: 25px;
+            margin: auto;
         }
 
         label {
@@ -93,12 +106,30 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @media (max-width: 600px) {
+            header h2 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 20px;       /* espaçamento interno */
+                margin: 0 10px;      /* espaço externo nas laterais */
+                width: auto;         /* deixa o container ocupar só o necessário */
+                max-width: 500px;    /* mantém limite de largura */
+                box-shadow: none;    /* opcional: remove sombra no mobile */
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<header>
     <h2>Registrar Sinistro</h2>
+</header>
+
+<div class="container">
+
     <form id="formSinistro" enctype="multipart/form-data">
         <label for="descricao">Descrição:</label>
         <input type="text" id="descricao" name="descricao" required placeholder="Descreva o sinistro...">

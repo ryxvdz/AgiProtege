@@ -11,17 +11,37 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        header {
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* centraliza o título horizontalmente */
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center; /* Alinha botão e título verticalmente */
+            gap: 15px;           /* Espaço entre botão e título */
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
+        }
+
         body {
             min-height: 100vh;
             background: linear-gradient(to right, #0D47A1, #1976D2);
-            padding: 40px;
-        }
-
-        h2 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 40px;
         }
 
         .container {
@@ -114,21 +134,15 @@
         }
 
         #openMenuBtn {
-            position: fixed;
-            top: 20px;
+            position: absolute;
             left: 20px;
-            z-index: 11;
             background-color: #0D47A1;
             color: white;
             border: none;
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease, background-color 0.2s ease;
-            font-size: 32px;
+            font-size: 28px;
         }
 
         #openMenuBtn:hover {
@@ -142,35 +156,29 @@
         }
 
         @media (max-width: 768px) {
-    h2 {
-        margin-top: 70px; /* desce o título no celular */
-        font-size: 28px;  /* ajusta tamanho da fonte */
-    }
+            header h2 {
+                font-size: 28px;
+            }
 
-    #openMenuBtn {
-        top: 15px; /* sobe um pouco o botão */
-        left: 15px;
-        padding: 8px 12px;
-        font-size: 26px; /* deixa a seta proporcional */
-    }
+            #openMenuBtn {
+                padding: 8px 12px;
+                font-size: 24px;
+            }
 
-    body {
-        padding: 20px; /* reduz espaço lateral */
-    }
-
-    .card {
-        width: 90%; /* ocupa mais espaço no mobile */
-    }
-}
+            .card {
+                width: 90%; /* ocupa mais espaço no mobile */
+            }
+        }
     </style>
 </head>
 <body>
 
-<a href="/apolices" id="openMenuBtn">
-    ←
-</a>
-
-<h2>Meus Sinistros</h2>
+<header>
+    <a href="/apolices" id="openMenuBtn">
+        ←
+    </a>
+    <h2>Meus Sinistros</h2>
+</header>
 
 <div class="container" id="cardsContainer"></div>
 

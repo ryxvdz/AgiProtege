@@ -24,7 +24,6 @@
         header {
             text-align: center;
             width: 100%;
-            margin-bottom: 50px;
             animation: fadeIn 1.2s ease-in-out;
             background-color: #fff;
             border-bottom: 5px solid #4CAF50;
@@ -57,6 +56,7 @@
             gap: 25px;
             width: 100%;
             max-width: 500px;
+            padding: 40px 20px;
         }
 
         .card {
@@ -115,6 +115,7 @@
             margin-top: 60px;
             font-size: 14px;
             opacity: 0.85;
+            padding: 30px 20px
         }
 
         /* Animações sutis */
@@ -128,13 +129,15 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Responsividade */
         @media (max-width: 600px) {
             header h1 {
                 font-size: 40px;
             }
-            .card {
+            .card-container {
                 padding: 25px 15px;
+            }
+            footer {
+                padding: 20px 15px;
             }
         }
     </style>

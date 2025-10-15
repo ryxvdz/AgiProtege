@@ -13,11 +13,26 @@
 
         body {
             background: linear-gradient(to right, #0D47A1, #1976D2);
-            display: flex;
+            min-height: 100vh;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            margin-bottom: 40px
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
         }
 
         .form-container {
@@ -27,12 +42,7 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             max-width: 500px;
             width: 100%;
-        }
-
-        h2 {
-            text-align: center;
-            color: #0D47A1;
-            margin-bottom: 25px;
+            margin: auto;
         }
 
         label {
@@ -103,12 +113,28 @@
             100% { transform: rotate(360deg); }
         }
 
+        @media (max-width: 600px) {
+            header h2 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 20px 15px;
+                width: 95%;
+                max-width: none; /* permite ocupar quase toda a tela */
+                box-shadow: none; /* opcional: remove sombra no mobile */
+            }
+        }
+
     </style>
 </head>
 <body>
 
-<div class="form-container">
+<header>
     <h2>Seguro de Despesas</h2>
+</header>
+
+<div class="form-container">
     <form id="formDespesa">
         <label for="gastosMensais">Gastos Mensais:</label>
         <input type="number" id="gastosMensais" name="gastosMensais" required min="0" placeholder="Ex: 1500">

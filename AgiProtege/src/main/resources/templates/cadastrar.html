@@ -11,15 +11,32 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        header {
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            margin-bottom: 10px
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
+        }
+
         body {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* não centraliza mais verticalmente */
-    background: linear-gradient(to right, #0D47A1, #1976D2);
-    padding: 30px 15px; /* cria espaço no topo e nas laterais */
-    overflow-y: auto; /* permite rolar no mobile */
-}
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #0D47A1, #1976D2);
+            overflow-y: auto; /* permite rolar no mobile */
+        }
 
         .cadastro-container {
             background-color: #ffffff;
@@ -76,25 +93,25 @@
         }
 
         @media (max-width: 600px) {
-    .form-grid {
-        grid-template-columns: 1fr; /* força 1 coluna */
-        gap: 10px;
-    }
+            .form-grid {
+                grid-template-columns: 1fr; /* força 1 coluna */
+                gap: 10px;
+            }
 
-    .cadastro-container {
-        padding: 20px 15px;
-        width: 95%;
-        max-width: none; /* permite ocupar quase toda a tela */
-        box-shadow: none; /* opcional: remove sombra no mobile */
-    }
+            .cadastro-container {
+                padding: 20px 15px;
+                width: 95%;
+                max-width: none; /* permite ocupar quase toda a tela */
+                box-shadow: none; /* opcional: remove sombra no mobile */
+            }
 
-    h2 {
-        font-size: 22px;
-    }
+            header h2 {
+                font-size: 28px;
+            }
 
-    input, select, button {
-        font-size: 14px;
-    }
+            input, select, button {
+                font-size: 14px;
+            }
 }
 
         .form-grid {
@@ -169,8 +186,11 @@
 </head>
 <body>
 
-<div class="cadastro-container">
+<header>
     <h2>Cadastro</h2>
+</header>
+
+<div class="cadastro-container">
 
     <form id="cadastroForm">
         <div class="form-grid">
