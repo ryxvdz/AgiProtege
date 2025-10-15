@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Sinistros</title>
     <style>
         * {
@@ -140,6 +140,28 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @media (max-width: 768px) {
+    h2 {
+        margin-top: 70px; /* desce o título no celular */
+        font-size: 28px;  /* ajusta tamanho da fonte */
+    }
+
+    #openMenuBtn {
+        top: 15px; /* sobe um pouco o botão */
+        left: 15px;
+        padding: 8px 12px;
+        font-size: 26px; /* deixa a seta proporcional */
+    }
+
+    body {
+        padding: 20px; /* reduz espaço lateral */
+    }
+
+    .card {
+        width: 90%; /* ocupa mais espaço no mobile */
+    }
+}
     </style>
 </head>
 <body>

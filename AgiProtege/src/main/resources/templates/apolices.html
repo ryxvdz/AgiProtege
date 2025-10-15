@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Apólices</title>
     <style>
         * {
@@ -96,11 +96,24 @@
             margin-bottom: 10px;
         }
 
-        @media (max-width: 600px) {
-            .card {
-                width: 100%;
-            }
-        }
+        @media (max-width: 768px) {
+    h2 {
+        margin-top: 70px; /* desce o título no celular */
+        font-size: 28px;  /* deixa o texto mais proporcional */
+    }
+
+    #openMenuBtn {
+        top: 15px; /* opcional: sobe um pouquinho no mobile */
+        left: 15px;
+        padding: 8px 12px;
+        font-size: 24px;
+    }
+
+    body {
+        padding: 20px; /* reduz a borda lateral para melhor encaixe */
+    }
+}
+
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
