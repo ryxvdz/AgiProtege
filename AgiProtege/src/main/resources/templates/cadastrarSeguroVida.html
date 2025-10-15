@@ -188,7 +188,7 @@
     <form id="formSeguro">
 
         <label for="peso">Peso:</label>
-        <input type="number" id="peso" name="peso" required min="0" placeholder="Ex: 80">
+        <input type="number" id="peso" name="peso" required min="0" max="300" placeholder="Ex: 80">
 
         <label for="altura">Altura:</label>
         <input type="text" id="altura" name="altura" required placeholder="Ex: 1.70">
@@ -219,7 +219,6 @@
                 <input type="checkbox" id="coberturaHospitalar" name="coberturaHospitalar">
             </label>
         </div>
-
 
         <h3>Dependentes</h3>
         <div id="dependentesContainer"></div>
@@ -288,55 +287,65 @@
 
     // Envio do formulário
     form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        btnCadastrar.disabled = true;
-        btnCadastrar.classList.add('loading');
-        btnCadastrar.innerHTML = '<span class="spinner"></span>Criando seguro...';
+    const botao = btnCadastrar;
+    mensagem.textContent = "";
 
-        const dados = {
-            peso: parseFloat(document.getElementById("peso").value),
-            altura: parseFloat(document.getElementById("altura").value),
-            fumante: document.getElementById("fumante").checked,
-            profissao: document.getElementById("profissao").value,
-            patrimonio: parseFloat(document.getElementById("patrimonio").value),
-            historicoFamiliarDoencas: document.getElementById("historicoFamiliarDoencas").checked,
-            coberturaHospitalar: document.getElementById("coberturaHospitalar").checked,
-            dependentes: []
-        };
+    // Bloqueia botão e adiciona spinner
+    botao.disabled = true;
+    botao.classList.add('loading');
+    botao.innerHTML = '<span class="spinner"></span>Criando seguro...';
 
-        dependentesContainer.querySelectorAll(".dependente").forEach(dep => {
-            const nome = dep.querySelector('input[name*="nome"]').value;
-            const parentesco = dep.querySelector('select[name*="parentesco"]').value;
-            dados.dependentes.push({ nome, parentesco });
+    const dados = {
+        peso: parseFloat(document.getElementById("peso").value),
+        altura: parseFloat(document.getElementById("altura").value),
+        fumante: document.getElementById("fumante").checked,
+        profissao: document.getElementById("profissao").value,
+        patrimonio: parseFloat(document.getElementById("patrimonio").value),
+        historicoFamiliarDoencas: document.getElementById("historicoFamiliarDoencas").checked,
+        coberturaHospitalar: document.getElementById("coberturaHospitalar").checked,
+        dependentes: []
+    };
+
+    dependentesContainer.querySelectorAll(".dependente").forEach(dep => {
+        const nome = dep.querySelector('input[name*="nome"]').value;
+        const parentesco = dep.querySelector('select[name*="parentesco"]').value;
+        dados.dependentes.push({ nome, parentesco });
+    });
+
+    try {
+        const response = await fetch("/seguroVida", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(dados)
         });
 
-        try {
-            const response = await fetch("/seguroVida", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(dados)
-            });
-
-            if (response.ok) {
-                mensagem.textContent = "✅ Seguro criado com sucesso!";
-                mensagem.style.color = "green";
-                form.reset();
-                dependentesContainer.innerHTML = "";
-                contador = 0;
-                setTimeout(() => (window.location.href = "/apolices"), 1500);
-            } else {
-                mensagem.textContent = "❌ Erro ao criar o seguro.";
-                mensagem.style.color = "red";
-            }
-        } catch {
-            mensagem.textContent = "❌ Falha na conexão com o servidor.";
+        if (response.ok) {
+            mensagem.textContent = "✅ Seguro criado com sucesso!";
+            mensagem.style.color = "green";
+            form.reset();
+            dependentesContainer.innerHTML = "";
+            contador = 0;
+            setTimeout(() => (window.location.href = "/apolices"), 1500);
+        } else {
+            mensagem.textContent = "❌ Erro ao criar o seguro.";
             mensagem.style.color = "red";
         }
-    });
+    } catch (error) {
+        console.error(error);
+        mensagem.textContent = "❌ Falha na conexão com o servidor.";
+        mensagem.style.color = "red";
+    } finally {
+        // 🔥 Reativa o botão e remove o spinner
+        botao.disabled = false;
+        botao.classList.remove('loading');
+        botao.innerHTML = "Criar seguro";
+    }
+});
 </script>
 
 </body>

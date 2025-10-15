@@ -130,16 +130,18 @@
     document.getElementById("formDespesa").addEventListener("submit", async function (e) {
         e.preventDefault();
 
+        const mensagem = document.getElementById("mensagem");
+        mensagem.textContent = "";
+
+        // 🔄 Coloca o botão em modo "loading"
         btnCadastrar.disabled = true;
         btnCadastrar.classList.add('loading');
-        btnCadastrar.innerHTML = '<span class="spinner"></span>Entrando...';
+        btnCadastrar.innerHTML = '<span class="spinner"></span>Criando Seguro...';
 
         const dados = {
             gastosMensais: parseFloat(document.getElementById("gastosMensais").value),
             tempoRegistro: parseFloat(document.getElementById("tempoRegistro").value)
         };
-
-        const mensagem = document.getElementById("mensagem");
 
         try {
             const response = await fetch("/seguroDespesa", {
@@ -153,19 +155,26 @@
 
             if (response.ok) {
                 mensagem.style.color = "green";
-                mensagem.textContent = "Seguro criado com sucesso!";
-                setTimeout(() => window.location.href = "/apolices", 2000);
+                mensagem.textContent = "✅ Seguro criado com sucesso!";
+                setTimeout(() => window.location.href = "/apolices", 1500);
             } else {
-                const erro = await response.json();
+                const erro = await response.json().catch(() => ({}));
                 mensagem.style.color = "red";
-                mensagem.textContent = erro.message || "Erro ao criar o seguro.";
+                mensagem.textContent = erro.message || "❌ Erro ao criar o seguro.";
             }
         } catch (error) {
+            console.error(error);
             mensagem.style.color = "red";
-            mensagem.textContent = "Erro de conexão com o servidor.";
+            mensagem.textContent = "❌ Erro de conexão com o servidor.";
+        } finally {
+            // 🔥 Garante que o botão volte ao normal sempre
+            btnCadastrar.disabled = false;
+            btnCadastrar.classList.remove('loading');
+            btnCadastrar.innerHTML = "Criar Seguro";
         }
     });
 </script>
+
 
 </body>
 </html>

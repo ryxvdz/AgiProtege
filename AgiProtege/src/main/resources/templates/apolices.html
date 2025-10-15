@@ -101,6 +101,71 @@
                 width: 100%;
             }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card {
+            background-color: #fff;
+            color: #333;
+            border-radius: 16px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            padding: 30px 20px;
+            text-align: center;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 0.8s ease both;
+            max-width: 350px;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #0D47A1;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #0D47A1;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #1976D2;
+        }
+
+        .cards-container p {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+}
     </style>
 </head>
 <body>
@@ -132,7 +197,30 @@
     </div>
 </div>
 
+<div id="loadingOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    ">
+    <div style="
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #0D47A1;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        "></div>
+</div>
+
 <script>
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.style.display = "flex"; // mostra o loading antes do fetch
     const token = localStorage.getItem("token");
     const cardsContainer = document.getElementById("cardsContainer");
     const modal = document.getElementById("detalhesModal");
@@ -155,10 +243,47 @@
             return response.json();
         })
         .then(data => {
+            loadingOverlay.style.display = "none"; // esconde o loading quando carregar
+
             if (data.length === 0) {
-                cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhuma apólice encontrada.</p>";
-                return;
-            }
+            cardsContainer.innerHTML = `
+
+                <p style="
+                display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 25px;
+        ">
+            Você ainda não possui nenhum seguro, confira nossos produtos abaixo!
+        </p>
+
+                <div class="card">
+                    <img src="/images/icon_carro.png" alt="Seguro Automóvel">
+                    <h3>Seguro Automóvel</h3>
+                    <p>Proteja seu veículo contra acidentes, roubos e danos imprevistos com cobertura completa.</p>
+                    <a href="/cadastrarSeguroAutomovel" class="btn">Saiba mais</a>
+                </div>
+
+                <div class="card">
+                    <img src="/images/icon_vida.png" alt="Seguro de Vida">
+                    <h3>Seguro de Vida</h3>
+                    <p>Garanta o bem-estar e segurança financeira da sua família em todos os momentos.</p>
+                    <a href="/cadastrarSeguroVida" class="btn">Saiba mais</a>
+                </div>
+
+                <div class="card">
+                    <img src="/images/icon_contrato.png" alt="Seguro de Despesas">
+                    <h3>Seguro de Despesas</h3>
+                    <p>Tenha tranquilidade em situações inesperadas com cobertura de despesas essenciais.</p>
+                    <a href="/cadastrarSeguroDespesa" class="btn">Saiba mais</a>
+                </div>
+                `;
+                    return;
+                }
 
             data.sort((a, b) => {
                 if (a.status === "Ativo" && b.status !== "Ativo") return -1;
@@ -292,6 +417,8 @@
             });
         })
         .catch(error => {
+            loadingOverlay.style.display = "none";
+
             console.error(error);
             cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar apólices.</p>";
         });
@@ -321,24 +448,62 @@
     }
 
     function cancelarApolice(id) {
-        if (!confirm("Tem certeza que deseja cancelar esta apólice?")) return;
+    if (!confirm("Tem certeza que deseja cancelar esta apólice?")) return;
 
-        fetch(`/apolice/${id}/inativarApolice`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': 'Bearer ' + token
+    const token = localStorage.getItem("token");
+    const botao = event.target; // captura o botão clicado
+
+    // estado de loading
+    botao.disabled = true;
+    const textoOriginal = botao.innerHTML;
+    botao.innerHTML = '<span class="spinner"></span> Cancelando...';
+    botao.style.opacity = "0.7";
+    botao.style.cursor = "not-allowed";
+
+    // spinner CSS (adiciona dinamicamente se ainda não existir)
+    if (!document.getElementById("spinnerStyle")) {
+        const style = document.createElement("style");
+        style.id = "spinnerStyle";
+        style.textContent = `
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid white;
+                border-top: 2px solid transparent;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                margin-right: 8px;
+                vertical-align: middle;
             }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Erro ao cancelar apólice");
-            alert("Apólice cancelada com sucesso.");
-            location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-            alert("Erro ao cancelar apólice.");
-        });
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     }
+
+    // chamada da API
+    fetch(`/apolice/${id}/inativarApolice`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Erro ao cancelar apólice");
+        alert("Apólice cancelada com sucesso.");
+        location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Erro ao cancelar apólice.");
+        botao.disabled = false;
+        botao.innerHTML = textoOriginal;
+        botao.style.opacity = "1";
+        botao.style.cursor = "pointer";
+    });
+}
 
     fecharModal.onclick = () => {
         modal.style.display = "none";

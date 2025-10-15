@@ -130,6 +130,21 @@
         <span id="estadoCivil"></span>
     </div>
 
+    <div class="info">
+        <label>Bairro:</label>
+        <span id="bairro"></span>
+    </div>
+
+    <div class="info">
+        <label>Logradouro:</label>
+        <span id="logradouro"></span>
+    </div>
+
+    <div class="info">
+        <label>Numero:</label>
+        <span id="numero"></span>
+    </div>
+
     <div style="margin-top: 20px; display: flex; gap: 10px;">
         <button
                 id="btnEditar"
@@ -189,121 +204,161 @@
     <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
 </div>
 
-<script>
-    const token = localStorage.getItem("token");
+<div id="loadingOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    ">
+    <div style="
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #0D47A1;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        "></div>
+</div>
 
+<script>
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.style.display = "flex"; // mostra o loading antes do fetch
+    const token = localStorage.getItem("token");
     let clienteAtual = null;
 
     async function carregarPerfil() {
-    if (!token) {
-        window.location.href = "/login";
-        return;
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+
+        loadingOverlay.style.display = "flex"; // mostra o loading
+
+        try {
+    const response = await fetch(`/cliente/me`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
+
+    if (!response.ok) {
+        throw new Error("Erro ao carregar perfil");
     }
 
-    try {
-        const response = await fetch(`/cliente/me`, {
-            headers: { "Authorization": "Bearer " + token }
-        });
+    const cliente = await response.json();
+    clienteAtual = cliente;
 
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-                return;
+    document.getElementById("nome").textContent = cliente.nome;
+    document.getElementById("email").textContent = cliente.email;
+    document.getElementById("cpf").textContent = cliente.cpf;
+    document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
+    document.getElementById("sexo").textContent = cliente.sexo;
+    document.getElementById("telefone").textContent = cliente.telefone;
+    document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
+    document.getElementById("bairro").textContent = cliente.bairro;
+    document.getElementById("logradouro").textContent = cliente.logradouro;
+    document.getElementById("numero").textContent = cliente.numero;
+
+    if (cliente.idade) {
+        const dataNascimento = new Date(cliente.idade);
+        document.getElementById("idade").textContent = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    } else {
+        document.getElementById("idade").textContent = "-";
+    }
+} catch (error) {
+    console.error(error);
+    alert("Erro ao carregar perfil.");
+} finally {
+    loadingOverlay.style.display = "none"; // esconde o loading
+}
+
+    }
+
+    document.getElementById("btnEditar").addEventListener("click", () => {
+        document.getElementById("modalEdicao").style.display = "flex";
+        document.getElementById("editNome").value = clienteAtual.nome;
+        document.getElementById("editEmail").value = clienteAtual.email;
+        document.getElementById("editTelefone").value = clienteAtual.telefone;
+        document.getElementById("editRenda").value = clienteAtual.renda;
+        document.getElementById("editSexo").value = clienteAtual.sexo;
+        document.getElementById("editEstadoCivil").value = clienteAtual.estadoCivil;
+    });
+
+    document.getElementById("btnCancelarEdicao").addEventListener("click", () => {
+        document.getElementById("modalEdicao").style.display = "none";
+    });
+
+    // 🟢 Loading no botão SALVAR
+    document.getElementById("formEditar").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const btnSalvar = e.target.querySelector('button[type="submit"]');
+        const textoOriginal = btnSalvar.innerHTML;
+
+        // Ativa loading
+        btnSalvar.disabled = true;
+        btnSalvar.innerHTML = '<span class="spinner"></span> Salvando...';
+        btnSalvar.style.opacity = "0.7";
+        btnSalvar.style.cursor = "not-allowed";
+
+        const dadosAtualizados = {
+            nome: document.getElementById("editNome").value,
+            email: document.getElementById("editEmail").value,
+            telefone: document.getElementById("editTelefone").value,
+            renda: parseFloat(document.getElementById("editRenda").value),
+            sexo: document.getElementById("editSexo").value,
+            estadoCivil: document.getElementById("editEstadoCivil").value,
+            idade: clienteAtual.idade
+        };
+
+        try {
+            const response = await fetch(`/cliente/atualizar`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dadosAtualizados)
+            });
+
+            if (response.ok) {
+                alert("Perfil atualizado com sucesso!");
+                document.getElementById("modalEdicao").style.display = "none";
+                carregarPerfil();
+            } else {
+                alert("Erro ao atualizar perfil.");
             }
-            throw new Error("Erro ao carregar perfil");
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao enviar dados.");
+        } finally {
+            // Restaura o botão
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = textoOriginal;
+            btnSalvar.style.opacity = "1";
+            btnSalvar.style.cursor = "pointer";
         }
-
-        const cliente = await response.json();
-        clienteAtual = cliente; // 🟢 armazenamos os dados para edição
-
-        document.getElementById("nome").textContent = cliente.nome;
-        document.getElementById("email").textContent = cliente.email;
-        document.getElementById("cpf").textContent = cliente.cpf;
-        document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
-        document.getElementById("sexo").textContent = cliente.sexo;
-        document.getElementById("telefone").textContent = cliente.telefone;
-        document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
-
-        if (cliente.idade) { // idade é na verdade a data de nascimento
-    const dataNascimento = new Date(cliente.idade);
-    const dataFormatada = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-    document.getElementById("idade").textContent = dataFormatada;
-} else {
-    document.getElementById("idade").textContent = "-";
-}
-
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao carregar perfil.");
-    }
-}
-
-document.getElementById("btnEditar").addEventListener("click", () => {
-    document.getElementById("modalEdicao").style.display = "flex";
-    document.getElementById("editNome").value = clienteAtual.nome;
-    document.getElementById("editEmail").value = clienteAtual.email;
-    document.getElementById("editTelefone").value = clienteAtual.telefone;
-    document.getElementById("editRenda").value = clienteAtual.renda;
-    document.getElementById("editSexo").value = clienteAtual.sexo;
-    document.getElementById("editEstadoCivil").value = clienteAtual.estadoCivil;
-});
-
-// 🟢 Botão de cancelar fecha o modal
-document.getElementById("btnCancelarEdicao").addEventListener("click", () => {
-    document.getElementById("modalEdicao").style.display = "none";
-});
-
-// 🟢 Envia PUT /cliente/{id}
-document.getElementById("formEditar").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const dadosAtualizados = {
-        nome: document.getElementById("editNome").value,
-        email: document.getElementById("editEmail").value,
-        telefone: document.getElementById("editTelefone").value,
-        renda: parseFloat(document.getElementById("editRenda").value),
-        sexo: document.getElementById("editSexo").value,
-        estadoCivil: document.getElementById("editEstadoCivil").value,
-        idade: clienteAtual.idade
-    };
-
-    try {
-        const response = await fetch(`/cliente/atualizar`, {
-            method: "PUT",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dadosAtualizados)
-        });
-
-        if (response.ok) {
-            alert("Perfil atualizado com sucesso!");
-            document.getElementById("modalEdicao").style.display = "none";
-            carregarPerfil(); // recarrega os dados
-        } else {
-            alert("Erro ao atualizar perfil.");
-        }
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao enviar dados.");
-    }
-});
-
+    });
 
     carregarPerfil();
 
-     async function inativarConta() {
-
-        btnInativar.disabled = true;
-        btnInativar.classList.add('loading');
-        btnInativar.innerHTML = '<span class="spinner"></span>Inativando...';
-
+    // 🟢 Função de inativar conta com loading e confirmação
+    async function inativarConta() {
+        const btnInativar = document.getElementById("btnInativar");
+        const textoOriginal = btnInativar.innerHTML;
 
         if (!confirm("Tem certeza que deseja inativar sua conta? Esta ação não pode ser desfeita.")) {
             return;
         }
+
+        // Ativa loading
+        btnInativar.disabled = true;
+        btnInativar.innerHTML = '<span class="spinner"></span> Inativando...';
+        btnInativar.style.opacity = "0.7";
+        btnInativar.style.cursor = "not-allowed";
 
         try {
             const response = await fetch(`/cliente/inativarCliente`, {
@@ -323,10 +378,16 @@ document.getElementById("formEditar").addEventListener("submit", async (e) => {
         } catch (error) {
             console.error(error);
             alert("Erro de conexão ao tentar inativar conta.");
+        } finally {
+            // Caso erro ou falha, restaurar botão
+            btnInativar.disabled = false;
+            btnInativar.innerHTML = textoOriginal;
+            btnInativar.style.opacity = "1";
+            btnInativar.style.cursor = "pointer";
         }
     }
-
 </script>
+
 
 
 </body>
