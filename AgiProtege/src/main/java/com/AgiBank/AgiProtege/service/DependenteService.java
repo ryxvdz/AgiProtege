@@ -20,86 +20,86 @@ public class DependenteService {
 
 
     private final DependenteRepository repository;
-    private final VidaService vidaService;
-    private final ClienteService clienteService;
     private final VidaRepository vidaRepository;
 
 
-    public DependenteService(DependenteRepository repository, VidaService vidaService, ClienteService clienteService, VidaRepository vidaRepository) {
+    public DependenteService(DependenteRepository repository, VidaRepository vidaRepository) {
         this.repository = repository;
-        this.vidaService = vidaService;
-        this.clienteService = clienteService;
         this.vidaRepository = vidaRepository;
 
     }
 
-    public DependenteResponseDTO adicionarDependente(DependenteRequestDTO dto) {
-        //verifica se o seguro de vida existe
-        Vida seguroVida = vidaRepository.findById(dto.seguroVida()).orElseThrow(
-                () -> new ResourceNotFoundException("Seguro de vida não encontrado!"));
-
+    public DependenteResponseDTO adicionarDependente(Vida seguroVida, DependenteRequestDTO dto) {
         Dependente dependente = new Dependente();
         dependente.setNome(dto.nome());
         dependente.setParentesco(dto.parentesco());
-        dependente.setSeguroVida(seguroVida);
+        dependente.setSeguroVida(seguroVida); // vincula o dependente ao Vida
+
+        // Calcula o percentual antes de salvar
+        calcularPercentual(seguroVida, dependente);
 
         Dependente dependenteCadastrado = repository.save(dependente);
 
         calcularPercentual(seguroVida, dependente);
 
         return toResponseDTO(dependenteCadastrado);
+
     }
 
     public List<DependenteResponseDTO> calcularPercentual(Vida seguroVida, Dependente dependente) {
-
         Double premioTotal = seguroVida.getValorIndenizacaoMorte();
         List<Dependente> dependentes = seguroVida.getDependentes();
 
-        if (dependentes == null || dependentes.isEmpty()) {
+        // garante que a lista exista e contenha o dependente atual
+        if (dependentes == null) {
             dependentes = new ArrayList<>();
+        }
+        if (!dependentes.contains(dependente)) {
             dependentes.add(dependente);
         }
 
         Dependente conjuge = null;
-
         for (Dependente dep : dependentes) {
-            if (dep.getParentesco().equalsIgnoreCase("Conjuge")) {
+            if ("Conjuge".equalsIgnoreCase(dep.getParentesco())) {
                 conjuge = dep;
                 break;
             }
         }
 
-        Map<Dependente, Double> percentuais = new HashMap<>();
-
-        Double percentualConjuge = 0.0;
-        Double percentualOutros = 0.0;
+        double valorConjuge = 0.0;
+        double valorOutros = 0.0;
+        int numOutros = dependentes.size();
 
         if (conjuge != null) {
-            percentualConjuge = premioTotal / 2;
+            numOutros = dependentes.size() - 1;
 
-            Long numDependentes = (long) (dependentes.size() - 1);
-            percentualOutros = (premioTotal - percentualConjuge) / numDependentes;
-
-        } if (conjuge == null) {
-            Long numDependentes = (long) dependentes.size();
-            percentualOutros = premioTotal / numDependentes;
+            // se tiver cônjuge e outros dependentes
+            if (numOutros > 0) {
+                valorConjuge = premioTotal / 2;
+                valorOutros = (premioTotal - valorConjuge) / numOutros;
+            }
+            // se for só o cônjuge
+            else {
+                valorConjuge = premioTotal;
+            }
+        } else {
+            // nenhum cônjuge — divide igualmente
+            valorOutros = premioTotal / dependentes.size();
         }
 
-            for (Dependente dep : dependentes) {
-                percentuais.put(dep, percentualOutros);
-                dep.setPercentualBeneficio(percentualOutros);
+        for (Dependente dep : dependentes) {
+            if (conjuge != null && dep.equals(conjuge)) {
+                dep.setPercentualBeneficio(valorConjuge);
+            } else {
+                dep.setPercentualBeneficio(valorOutros);
             }
+        }
 
-        percentuais.forEach((dep, percentual) -> dep.setPercentualBeneficio(percentual));
-
-        repository.saveAll(dependentes);
-
-        return percentuais.entrySet()
-                .stream()
-                .map(entry -> new DependenteResponseDTO(
-                        entry.getKey().getNome(),
-                        entry.getKey().getParentesco(),
-                        entry.getValue()))
+        return dependentes.stream()
+                .map(dep -> new DependenteResponseDTO(
+                        dep.getNome(),
+                        dep.getParentesco(),
+                        dep.getPercentualBeneficio()))
                 .collect(Collectors.toList());
     }
 
