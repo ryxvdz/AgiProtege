@@ -189,7 +189,30 @@
     <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
 </div>
 
+<div id="loadingOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    ">
+    <div style="
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #0D47A1;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        "></div>
+</div>
+
 <script>
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.style.display = "flex"; // mostra o loading antes do fetch
     const token = localStorage.getItem("token");
     let clienteAtual = null;
 
@@ -199,41 +222,41 @@
             return;
         }
 
+        loadingOverlay.style.display = "flex"; // mostra o loading
+
         try {
-            const response = await fetch(`/cliente/me`, {
-                headers: { "Authorization": "Bearer " + token }
-            });
+    const response = await fetch(`/cliente/me`, {
+        headers: { "Authorization": "Bearer " + token }
+    });
 
-            if (!response.ok) {
-                if (response.status === 401 || response.status === 403) {
-                    localStorage.removeItem("token");
-                    window.location.href = "/login";
-                    return;
-                }
-                throw new Error("Erro ao carregar perfil");
-            }
+    if (!response.ok) {
+        throw new Error("Erro ao carregar perfil");
+    }
 
-            const cliente = await response.json();
-            clienteAtual = cliente;
+    const cliente = await response.json();
+    clienteAtual = cliente;
 
-            document.getElementById("nome").textContent = cliente.nome;
-            document.getElementById("email").textContent = cliente.email;
-            document.getElementById("cpf").textContent = cliente.cpf;
-            document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
-            document.getElementById("sexo").textContent = cliente.sexo;
-            document.getElementById("telefone").textContent = cliente.telefone;
-            document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
+    document.getElementById("nome").textContent = cliente.nome;
+    document.getElementById("email").textContent = cliente.email;
+    document.getElementById("cpf").textContent = cliente.cpf;
+    document.getElementById("renda").textContent = "R$ " + cliente.renda.toFixed(2);
+    document.getElementById("sexo").textContent = cliente.sexo;
+    document.getElementById("telefone").textContent = cliente.telefone;
+    document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
 
-            if (cliente.idade) {
-                const dataNascimento = new Date(cliente.idade);
-                document.getElementById("idade").textContent = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-            } else {
-                document.getElementById("idade").textContent = "-";
-            }
-        } catch (error) {
-            console.error(error);
-            alert("Erro ao carregar perfil.");
-        }
+    if (cliente.idade) {
+        const dataNascimento = new Date(cliente.idade);
+        document.getElementById("idade").textContent = dataNascimento.toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    } else {
+        document.getElementById("idade").textContent = "-";
+    }
+} catch (error) {
+    console.error(error);
+    alert("Erro ao carregar perfil.");
+} finally {
+    loadingOverlay.style.display = "none"; // esconde o loading
+}
+
     }
 
     document.getElementById("btnEditar").addEventListener("click", () => {

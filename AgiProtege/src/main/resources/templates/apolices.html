@@ -101,6 +101,11 @@
                 width: 100%;
             }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -132,7 +137,30 @@
     </div>
 </div>
 
+<div id="loadingOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    ">
+    <div style="
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #0D47A1;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        "></div>
+</div>
+
 <script>
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.style.display = "flex"; // mostra o loading antes do fetch
     const token = localStorage.getItem("token");
     const cardsContainer = document.getElementById("cardsContainer");
     const modal = document.getElementById("detalhesModal");
@@ -155,6 +183,8 @@
             return response.json();
         })
         .then(data => {
+            loadingOverlay.style.display = "none"; // esconde o loading quando carregar
+
             if (data.length === 0) {
                 cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhuma apólice encontrada.</p>";
                 return;
@@ -292,6 +322,8 @@
             });
         })
         .catch(error => {
+            loadingOverlay.style.display = "none";
+
             console.error(error);
             cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Erro ao carregar apólices.</p>";
         });
