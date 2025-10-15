@@ -48,8 +48,11 @@ public class DependenteService {
         Double premioTotal = seguroVida.getValorIndenizacaoMorte();
         List<Dependente> dependentes = seguroVida.getDependentes();
 
-        if (dependentes == null || dependentes.isEmpty()) {
+        // garante que a lista exista e contenha o dependente atual
+        if (dependentes == null) {
             dependentes = new ArrayList<>();
+        }
+        if (!dependentes.contains(dependente)) {
             dependentes.add(dependente);
         }
 
@@ -61,22 +64,32 @@ public class DependenteService {
             }
         }
 
-        double percentualConjuge = 0.0;
-        double percentualOutros = 0.0;
-        int numOutros = dependentes.size() - (conjuge != null ? 1 : 0);
+        double valorConjuge = 0.0;
+        double valorOutros = 0.0;
+        int numOutros = dependentes.size();
 
         if (conjuge != null) {
-            percentualConjuge = numOutros > 0 ? premioTotal / 2 : premioTotal;
-            percentualOutros = numOutros > 0 ? (premioTotal - percentualConjuge) / numOutros : 0.0;
+            numOutros = dependentes.size() - 1;
+
+            // se tiver cônjuge e outros dependentes
+            if (numOutros > 0) {
+                valorConjuge = premioTotal / 2;
+                valorOutros = (premioTotal - valorConjuge) / numOutros;
+            }
+            // se for só o cônjuge
+            else {
+                valorConjuge = premioTotal;
+            }
         } else {
-            percentualOutros = premioTotal / dependentes.size();
+            // nenhum cônjuge — divide igualmente
+            valorOutros = premioTotal / dependentes.size();
         }
 
         for (Dependente dep : dependentes) {
-            if (dep.equals(conjuge)) {
-                dep.setPercentualBeneficio(percentualConjuge);
+            if (conjuge != null && dep.equals(conjuge)) {
+                dep.setPercentualBeneficio(valorConjuge);
             } else {
-                dep.setPercentualBeneficio(percentualOutros);
+                dep.setPercentualBeneficio(valorOutros);
             }
         }
 
@@ -87,6 +100,7 @@ public class DependenteService {
                         dep.getPercentualBeneficio()))
                 .collect(Collectors.toList());
     }
+
 
     public DependenteResponseDTO toResponseDTO(Dependente dependente) {
         return new DependenteResponseDTO(
