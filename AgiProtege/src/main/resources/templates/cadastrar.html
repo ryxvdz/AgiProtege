@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
     <style>
         * {
@@ -12,12 +12,14 @@
         }
 
         body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to right, #0D47A1, #1976D2);
-        }
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* não centraliza mais verticalmente */
+    background: linear-gradient(to right, #0D47A1, #1976D2);
+    padding: 30px 15px; /* cria espaço no topo e nas laterais */
+    overflow-y: auto; /* permite rolar no mobile */
+}
 
         .cadastro-container {
             background-color: #ffffff;
@@ -73,11 +75,27 @@
             color: red;
         }
 
-        @media (max-width: 500px) {
-            .cadastro-container {
-                padding: 30px 20px;
-            }
-        }
+        @media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* força 1 coluna */
+        gap: 10px;
+    }
+
+    .cadastro-container {
+        padding: 20px 15px;
+        width: 95%;
+        max-width: none; /* permite ocupar quase toda a tela */
+        box-shadow: none; /* opcional: remove sombra no mobile */
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    input, select, button {
+        font-size: 14px;
+    }
+}
 
         .form-grid {
             display: grid;
