@@ -118,6 +118,7 @@ public class ClienteService {
                 .idade(dto.idade() != null ? dto.idade() : clienteModel.getIdade())
                 .estadoCivil(dto.estadoCivil() != null ? dto.estadoCivil() : clienteModel.getEstadoCivil())
                 .senha((clienteModel.getSenha()))
+                .status(clienteModel.getStatus())
                 .idCliente(clienteModel.getIdCliente())
                 .build();
 
