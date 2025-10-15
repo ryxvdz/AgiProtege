@@ -106,6 +106,66 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .card {
+            background-color: #fff;
+            color: #333;
+            border-radius: 16px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+            padding: 30px 20px;
+            text-align: center;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeUp 0.8s ease both;
+            max-width: 350px;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #0D47A1;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #0D47A1;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #1976D2;
+        }
+
+        .cards-container p {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+}
     </style>
 </head>
 <body>
@@ -186,9 +246,44 @@
             loadingOverlay.style.display = "none"; // esconde o loading quando carregar
 
             if (data.length === 0) {
-                cardsContainer.innerHTML = "<p style='color:white; text-align:center;'>Nenhuma apólice encontrada.</p>";
-                return;
-            }
+            cardsContainer.innerHTML = `
+
+                <p style="
+                display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 25px;
+        ">
+            Você ainda não possui nenhum seguro, confira nossos produtos abaixo!
+        </p>
+
+                <div class="card">
+                    <img src="/images/icon_carro.png" alt="Seguro Automóvel">
+                    <h3>Seguro Automóvel</h3>
+                    <p>Proteja seu veículo contra acidentes, roubos e danos imprevistos com cobertura completa.</p>
+                    <a href="/cadastrarSeguroAutomovel" class="btn">Saiba mais</a>
+                </div>
+
+                <div class="card">
+                    <img src="/images/icon_vida.png" alt="Seguro de Vida">
+                    <h3>Seguro de Vida</h3>
+                    <p>Garanta o bem-estar e segurança financeira da sua família em todos os momentos.</p>
+                    <a href="/cadastrarSeguroVida" class="btn">Saiba mais</a>
+                </div>
+
+                <div class="card">
+                    <img src="/images/icon_contrato.png" alt="Seguro de Despesas">
+                    <h3>Seguro de Despesas</h3>
+                    <p>Tenha tranquilidade em situações inesperadas com cobertura de despesas essenciais.</p>
+                    <a href="/cadastrarSeguroDespesa" class="btn">Saiba mais</a>
+                </div>
+                `;
+                    return;
+                }
 
             data.sort((a, b) => {
                 if (a.status === "Ativo" && b.status !== "Ativo") return -1;
