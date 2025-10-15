@@ -41,11 +41,6 @@ public class AutomovelService {
             throw new ExistingResourceException("Placa já cadastrada");
         }
 
-        //verifica a idade do carro, se oferecemos serviço
-        if(LocalDate.now().getYear() - dto.ano() > 12) {
-            throw new ServiceUnavaliable("Serviço indisponivel! O carro possui mais de 12 anos!");
-        }
-
         FipeDTO fipeDTO = fipeService.buscarPorNome(dto.marca(), dto.modelo(), String.valueOf(dto.ano()));
         double valorTabela = AutomovelRequestDTO.converterValorFipe(fipeDTO.valor());
 

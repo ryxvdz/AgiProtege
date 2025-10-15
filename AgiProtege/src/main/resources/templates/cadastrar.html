@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
     <style>
         * {
@@ -12,12 +12,14 @@
         }
 
         body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to right, #0D47A1, #1976D2);
-        }
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* não centraliza mais verticalmente */
+    background: linear-gradient(to right, #0D47A1, #1976D2);
+    padding: 30px 15px; /* cria espaço no topo e nas laterais */
+    overflow-y: auto; /* permite rolar no mobile */
+}
 
         .cadastro-container {
             background-color: #ffffff;
@@ -73,11 +75,27 @@
             color: red;
         }
 
-        @media (max-width: 500px) {
-            .cadastro-container {
-                padding: 30px 20px;
-            }
-        }
+        @media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* força 1 coluna */
+        gap: 10px;
+    }
+
+    .cadastro-container {
+        padding: 20px 15px;
+        width: 95%;
+        max-width: none; /* permite ocupar quase toda a tela */
+        box-shadow: none; /* opcional: remove sombra no mobile */
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    input, select, button {
+        font-size: 14px;
+    }
+}
 
         .form-grid {
             display: grid;
@@ -103,6 +121,28 @@
 
         .btn-voltar:hover {
             background-color: #1976D2; /* azul mais claro ao passar o mouse */
+        }
+
+        button.loading {
+            background-color: #388E3C;
+            cursor: not-allowed;
+        }
+
+         .spinner {
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         input[type="date"] {
@@ -152,7 +192,7 @@
             </div>
             <div>
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu email" required>
+                <input type="email" id="email" name="email" placeholder="EX: nome@email.com" required>
             </div>
             <div>
                 <label for="telefone">Telefone:</label>
@@ -160,11 +200,11 @@
             </div>
             <div>
                 <label for="renda">Renda:</label>
-                <input type="number" id="renda" name="renda" placeholder="Digite sua renda" required>
+                <input type="number" id="renda" name="renda" placeholder="EX: 1180.90" required step="0.01">
             </div>
             <div>
                 <label for="idade">Data de nascimento:</label>
-                <input type="date" id="idade" name="idade" required>
+                <input type="date" id="idade" name="idade" required max="2025-10-14">
             </div>
             <div>
                 <label for="estadoCivil">Estado civil:</label>
@@ -174,13 +214,27 @@
                     <option value="Casado">Casado</option>
                 </select>
             </div>
+            <div>
+                <label for="renda">CEP:</label>
+                <input type="number" id="cep" name="cep" placeholder="EX: 13340615" required oninput="if(this.value.length > 8) this.value = this.value.slice(0, 8);">
+            </div>
+            <div>
+                <label for="renda">Numero:</label>
+                <input type="number" id="numero" name="numero" placeholder="Numero da residencia" required>
+            </div>
+            <input type="hidden" id="logradouro" name="logradouro">
+            <input type="hidden" id="bairro" name="bairro">
+            <input type="hidden" id="localidade" name="localidade">
+            <input type="hidden" id="uf" name="uf">
             <div style="grid-column: 1 / -1;">
                 <label for="senha">Senha:</label>
                 <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
             </div>
         </div>
 
-        <button type="submit">Cadastrar</button>
+        <button type="submit" id="CadastrarButton">
+            Cadastrar
+        </button>
 
         <p style="text-align: center; margin-top: 15px;">
             <a href="/login" class="btn-voltar">Voltar ao login</a>
@@ -192,7 +246,6 @@
 </div>
 
 <script>
-    // Máscara simples de CPF
     const cpfInput = document.getElementById('cpf');
     cpfInput.addEventListener('input', function() {
         let value = cpfInput.value.replace(/\D/g, '');
@@ -209,19 +262,52 @@
         if (value.length > 11) value = value.slice(0, 11);
 
         if (value.length <= 10) {
-            // formato (XX) XXXX-XXXX
             value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
         } else {
-            // formato (XX) XXXXX-XXXX
             value = value.replace(/^(\d{2})(\d{5})(\d{0,4}).*/, '($1) $2-$3');
         }
 
         telefoneInput.value = value;
     });
 
-    // Submissão do formulário
+    const cepInput = document.getElementById('cep');
+    cepInput.addEventListener('blur', buscarCep);
+
+    async function buscarCep() {
+        const cep = cepInput.value.replace(/\D/g, '');
+        if (cep.length !== 8) return;
+
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (!data.erro) {
+                document.getElementById('logradouro').value = data.logradouro;
+                document.getElementById('bairro').value = data.bairro;
+                document.getElementById('localidade').value = data.localidade;
+                document.getElementById('uf').value = data.uf;
+            } else {
+                document.getElementById('logradouro').value = '';
+                document.getElementById('bairro').value = '';
+                document.getElementById('localidade').value = '';
+                document.getElementById('uf').value = '';
+                console.warn("CEP não encontrado ou inválido.");
+            }
+        } catch (error) {
+            console.error("Erro ao buscar CEP:", error);
+        }
+    }
+
     document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
         event.preventDefault();
+
+        const botao = CadastrarButton;
+        const mensagem = document.getElementById('mensagem');
+
+        botao.disabled = true;
+        botao.classList.add('loading');
+        botao.innerHTML = '<span class="spinner"></span>Cadastrando...';
+        mensagem.textContent = "";
 
         const dto = {
             nome: document.getElementById('nome').value,
@@ -232,30 +318,43 @@
             renda: parseFloat(document.getElementById('renda').value),
             idade: document.getElementById('idade').value,
             estadoCivil: document.getElementById('estadoCivil').value,
-            senha: document.getElementById('senha').value
+            cep: document.getElementById('cep').value,
+            numero: document.getElementById('numero').value,
+            senha: document.getElementById('senha').value,
+            logradouro: document.getElementById('logradouro').value,
+            bairro: document.getElementById('bairro').value,
+            localidade: document.getElementById('localidade').value,
+            uf: document.getElementById('uf').value
         };
 
-        const response = await fetch('/auth/cadastrar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dto)
-        });
+        try {
+            const response = await fetch('/auth/cadastrar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
 
-        const mensagem = document.getElementById('mensagem');
-
-        if(response.ok) {
-            mensagem.style.color = 'green';
-            mensagem.textContent = "Cadastro realizado com sucesso!";
-            window.location.href = "/apolices";
-        } else {
-            const erro = await response.json();
+            if (response.ok) {
+                mensagem.style.color = 'green';
+                mensagem.textContent = "Cadastro realizado com sucesso!";
+                window.location.href = "/login";
+            } else {
+                const erro = await response.json();
+                mensagem.style.color = 'red';
+                mensagem.textContent = erro.message || "Erro ao cadastrar!";
+            }
+        } catch (error) {
+            console.error(error);
             mensagem.style.color = 'red';
-            mensagem.textContent = erro.message || "Erro ao cadastrar!";
+            mensagem.textContent = "Erro ao tentar cadastrar. Tente novamente.";
+        } finally {
+            botao.disabled = false;
+            botao.classList.remove('loading');
+            botao.innerHTML = "Cadastrar";
         }
     });
 </script>
+
 
 </body>
 </html>

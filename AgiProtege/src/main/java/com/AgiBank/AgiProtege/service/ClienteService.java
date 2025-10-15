@@ -26,10 +26,13 @@ public class ClienteService {
 
     private final TokenService tokenService;
 
-    public ClienteService(ClienteRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService) {
+    private final EnderecoService enderecoService;
+
+    public ClienteService(ClienteRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService, EnderecoService enderecoService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
+        this.enderecoService = enderecoService;
     }
 
     public ClienteResponseDTO cadastrarCliente(ClienteRequestDTO dto) {
@@ -50,6 +53,18 @@ public class ClienteService {
         cliente.setSenha(passwordEncoder.encode(dto.senha()));          //guarda a senha criptografada no banco
 
         Cliente clienteCadastrado = repository.save(cliente);
+
+        if (dto.cep() != null && !dto.cep().isEmpty()) {
+            enderecoService.adicionarEnderecoAoCliente(
+                    cliente.getIdCliente(),
+                    dto.cep(),
+                    dto.numero(),
+                    dto.logradouro(),
+                    dto.bairro(),
+                    dto.localidade(),
+                    dto.uf()
+            );
+        }
 
 
         calcularPerfilDeRiscoInical(clienteCadastrado.getIdCliente(), dto);
@@ -102,6 +117,8 @@ public class ClienteService {
                 .renda(dto.renda() != null ? dto.renda() : clienteModel.getRenda())
                 .idade(dto.idade() != null ? dto.idade() : clienteModel.getIdade())
                 .estadoCivil(dto.estadoCivil() != null ? dto.estadoCivil() : clienteModel.getEstadoCivil())
+                .senha((clienteModel.getSenha()))
+                .status(clienteModel.getStatus())
                 .idCliente(clienteModel.getIdCliente())
                 .build();
 
@@ -228,6 +245,11 @@ public class ClienteService {
     }
 
     private ClienteResponseDTO toResponseDTO(Cliente cliente, String token) {
+        String bairro = cliente.getEndereco() != null ? cliente.getEndereco().getBairro() : null;
+        String logradouro = cliente.getEndereco() != null ? cliente.getEndereco().getLogradouro() : null;
+        String numero = cliente.getEndereco() != null ? cliente.getEndereco().getNumero() : null;
+
+
         return new ClienteResponseDTO(
                 cliente.getNome(),
                 cliente.getEmail(),
@@ -238,6 +260,9 @@ public class ClienteService {
                 cliente.getTelefone(),
                 cliente.getIdade(),
                 cliente.getEstadoCivil(),
+                bairro,
+                logradouro,
+                numero,
                 token
         );
     }

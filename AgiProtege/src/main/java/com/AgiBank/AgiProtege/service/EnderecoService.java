@@ -26,25 +26,32 @@ public class EnderecoService {
         this.clienteRepository = clienteRepository;
     }
 
-    public EnderecoResponseDTO adicionarEnderecoAoCliente(UUID idCliente, String cep, String numero) {
-        Cliente cliente = clienteRepository.findById(idCliente)
-                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado!"));
+    public EnderecoResponseDTO adicionarEnderecoAoCliente(
+            UUID id,
+            String cep,
+            String numero,
+            String logradouro,
+            String bairro,
+            String localidade,
+            String uf) {
 
-        EnderecoResponseDTO enderecoViaCep = viaCepClient.buscarEndereco(cep);
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         Endereco endereco = new Endereco();
-        endereco.setCliente(cliente); // idEndereco será o mesmo que cliente.idCliente
-        endereco.setCep(enderecoViaCep.cep());
-        endereco.setLogradouro(enderecoViaCep.logradouro());
-        endereco.setBairro(enderecoViaCep.bairro());
-        endereco.setLocalidade(enderecoViaCep.localidade());
-        endereco.setUf(enderecoViaCep.uf());
+        endereco.setCep(cep);
         endereco.setNumero(numero);
+        endereco.setLogradouro(logradouro);
+        endereco.setBairro(bairro);
+        endereco.setLocalidade(localidade);
+        endereco.setUf(uf);
+        endereco.setCliente(cliente);
 
         enderecoRepository.save(endereco);
 
         return toResponseDTO(endereco);
     }
+
 
 
 

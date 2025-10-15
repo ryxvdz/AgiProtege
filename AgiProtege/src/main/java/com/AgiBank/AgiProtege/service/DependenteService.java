@@ -40,6 +40,8 @@ public class DependenteService {
 
         Dependente dependenteCadastrado = repository.save(dependente);
 
+        calcularPercentual(seguroVida, dependente);
+
         return toResponseDTO(dependenteCadastrado);
 
     }
@@ -100,7 +102,6 @@ public class DependenteService {
                         dep.getPercentualBeneficio()))
                 .collect(Collectors.toList());
     }
-
 
     public DependenteResponseDTO toResponseDTO(Dependente dependente) {
         return new DependenteResponseDTO(

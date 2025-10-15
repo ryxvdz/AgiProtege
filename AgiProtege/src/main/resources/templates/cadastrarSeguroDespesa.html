@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Seguro de Despesa</title>
     <style>
         * {
@@ -81,6 +81,28 @@
             font-weight: bold;
         }
 
+         button.loading {
+            background-color: #388E3C;
+            cursor: not-allowed;
+        }
+
+         .spinner {
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
@@ -94,7 +116,7 @@
         <label for="tempoRegistro">Tempo de Trabalho (em meses):</label>
         <input type="number" id="tempoRegistro" name="tempoRegistro" required min="0" placeholder="Ex: 5">
 
-        <button type="submit">Criar Seguro</button>
+        <button type="submit" id="btnCadastrar">Criar Seguro</button>
     </form>
 
     <p class="mensagem" id="mensagem"></p>
@@ -103,16 +125,23 @@
 
 <script>
     const token = localStorage.getItem("token");
+    const btnCadastrar = document.getElementById("btnCadastrar");
 
     document.getElementById("formDespesa").addEventListener("submit", async function (e) {
         e.preventDefault();
+
+        const mensagem = document.getElementById("mensagem");
+        mensagem.textContent = "";
+
+        // 🔄 Coloca o botão em modo "loading"
+        btnCadastrar.disabled = true;
+        btnCadastrar.classList.add('loading');
+        btnCadastrar.innerHTML = '<span class="spinner"></span>Criando Seguro...';
 
         const dados = {
             gastosMensais: parseFloat(document.getElementById("gastosMensais").value),
             tempoRegistro: parseFloat(document.getElementById("tempoRegistro").value)
         };
-
-        const mensagem = document.getElementById("mensagem");
 
         try {
             const response = await fetch("/seguroDespesa", {
@@ -126,19 +155,26 @@
 
             if (response.ok) {
                 mensagem.style.color = "green";
-                mensagem.textContent = "Seguro criado com sucesso!";
-                setTimeout(() => window.location.href = "/apolices", 2000);
+                mensagem.textContent = "✅ Seguro criado com sucesso!";
+                setTimeout(() => window.location.href = "/apolices", 1500);
             } else {
-                const erro = await response.json();
+                const erro = await response.json().catch(() => ({}));
                 mensagem.style.color = "red";
-                mensagem.textContent = erro.message || "Erro ao criar o seguro.";
+                mensagem.textContent = erro.message || "❌ Erro ao criar o seguro.";
             }
         } catch (error) {
+            console.error(error);
             mensagem.style.color = "red";
-            mensagem.textContent = "Erro de conexão com o servidor.";
+            mensagem.textContent = "❌ Erro de conexão com o servidor.";
+        } finally {
+            // 🔥 Garante que o botão volte ao normal sempre
+            btnCadastrar.disabled = false;
+            btnCadastrar.classList.remove('loading');
+            btnCadastrar.innerHTML = "Criar Seguro";
         }
     });
 </script>
+
 
 </body>
 </html>

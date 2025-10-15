@@ -32,25 +32,27 @@ public class ClienteController {
         return clienteService.buscarClientePorId(id);
     }
 
-    @PutMapping("/{id}")
-    public ClienteResponseDTO atualizarClientePorId(@PathVariable UUID id, @RequestBody ClienteRequestDTO dto) {
+    @PutMapping("/atualizar")
+    public ClienteResponseDTO atualizarClientePorId(@AuthenticationPrincipal Cliente cliente, @RequestBody ClienteRequestDTO dto) {
+        UUID id = cliente.getIdCliente();
         clienteService.atualizarClientePorId(id, dto);
         clienteService.calcularPerfilDeRiscoInical(id, dto);
         return clienteService.buscarClientePorId(id);
     }
 
-    @PatchMapping("/{id}/inativarCliente")
-    public void inativarCliente(@PathVariable UUID id) {
+    @PatchMapping("/inativarCliente")
+    public void inativarCliente(@AuthenticationPrincipal Cliente cliente) {
+        UUID id = cliente.getIdCliente();
         clienteService.inativarClientePorId(id);
     }
 
-    @PostMapping("/{id}/endereco")
-    public EnderecoResponseDTO adicionarEnderecoAoCliente(
-            @PathVariable UUID id,
-            @RequestParam String cep,
-            @RequestParam String numero) {
-        return enderecoService.adicionarEnderecoAoCliente(id, cep, numero);
-    }
+//    @PostMapping("/{id}/endereco")
+//    public EnderecoResponseDTO adicionarEnderecoAoCliente(
+//            @PathVariable UUID id,
+//            @RequestParam String cep,
+//            @RequestParam String numero) {
+//        return enderecoService.adicionarEnderecoAoCliente(id, cep, numero);
+//    }
 
     @GetMapping("/endereco/{id}")
     public EnderecoResponseDTO buscarEnderecoporId(@PathVariable UUID id) {

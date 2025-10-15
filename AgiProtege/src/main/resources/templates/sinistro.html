@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Sinistro</title>
     <style>
         body {
@@ -76,6 +76,23 @@
             text-decoration: none;
             font-weight: bold;
         }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 8px;
+            animation: spin 0.8s linear infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -91,7 +108,7 @@
 
         <input type="hidden" id="idApolice" name="idApolice">
 
-        <button type="submit">Enviar Sinistro</button>
+        <button type="submit" id = "btnEnviar">Enviar Sinistro</button>
         <p class="mensagem" id="mensagem"></p>
         <a href="/apolices" class="btn-voltar">Voltar para Apólices</a>
     </form>
@@ -99,13 +116,14 @@
 
 <script>
     const token = localStorage.getItem("token");
+    const btnEnviar = document.getElementById("btnEnviar");
 
     function getIdApoliceFromURL() {
         const params = new URLSearchParams(window.location.search);
         return params.get("idApolice");
     }
 
-    // Preencher automaticamente o campo com o ID da apólice
+    // Preenche automaticamente o campo com o ID da apólice
     document.addEventListener("DOMContentLoaded", function () {
         const idApolice = getIdApoliceFromURL();
         if (idApolice) {
@@ -128,6 +146,11 @@
         }
 
         const mensagem = document.getElementById("mensagem");
+        mensagem.textContent = "";
+
+        // 🔄 Modo loading no botão
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '<span class="spinner"></span>Enviando...';
 
         try {
             const response = await fetch("/sinistros", {
@@ -142,15 +165,19 @@
 
             if (response.ok) {
                 mensagem.style.color = "green";
-                mensagem.textContent = result.mensagem || "Sinistro registrado com sucesso!";
+                mensagem.textContent = result.mensagem || "✅ Sinistro registrado com sucesso!";
                 setTimeout(() => window.location.href = "/apolices", 2000);
             } else {
                 mensagem.style.color = "red";
-                mensagem.textContent = result.mensagem || "Erro ao registrar sinistro.";
+                mensagem.textContent = result.mensagem || "❌ Erro ao registrar sinistro.";
             }
         } catch (error) {
             mensagem.style.color = "red";
-            mensagem.textContent = "Erro ao conectar com o servidor.";
+            mensagem.textContent = "❌ Erro ao conectar com o servidor.";
+        } finally {
+            // 🔥 Garante que o botão volte ao normal
+            btnEnviar.disabled = false;
+            btnEnviar.innerHTML = "Enviar Sinistro";
         }
     });
 </script>

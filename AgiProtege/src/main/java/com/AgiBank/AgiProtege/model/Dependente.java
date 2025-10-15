@@ -28,5 +28,6 @@ public class Dependente {
 
     private String parentesco;
 
+    @Column(name = "percentual_beneficio")
     private Double percentualBeneficio;
 }
