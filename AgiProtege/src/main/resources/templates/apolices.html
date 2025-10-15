@@ -426,9 +426,19 @@
                     if (apolice.tipoSeguro === "VIDA") {
                         let dependentesHtml = "Nenhum";
                         if (apolice.dependentes && apolice.dependentes.length > 0) {
-                            dependentesHtml = apolice.dependentes.map(dep =>
-                                `<li>${dep.nome} (${dep.parentesco})</li>`
-                            ).join("");
+                            dependentesHtml = apolice.dependentes.map(dep => {
+    // Formata o valor como moeda brasileira
+    const valorFormatado = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(dep.percentualBeneficio);
+
+    return `<li>
+                <strong>${dep.nome}</strong>
+                <span style="color: gray;">(${dep.parentesco})</span>
+                - <span style="color: green;">${valorFormatado}</span>
+            </li>`;
+}).join("");
                         }
 
                         detalhes += `
