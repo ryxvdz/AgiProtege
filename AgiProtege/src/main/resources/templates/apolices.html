@@ -321,24 +321,62 @@
     }
 
     function cancelarApolice(id) {
-        if (!confirm("Tem certeza que deseja cancelar esta apólice?")) return;
+    if (!confirm("Tem certeza que deseja cancelar esta apólice?")) return;
 
-        fetch(`/apolice/${id}/inativarApolice`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': 'Bearer ' + token
+    const token = localStorage.getItem("token");
+    const botao = event.target; // captura o botão clicado
+
+    // estado de loading
+    botao.disabled = true;
+    const textoOriginal = botao.innerHTML;
+    botao.innerHTML = '<span class="spinner"></span> Cancelando...';
+    botao.style.opacity = "0.7";
+    botao.style.cursor = "not-allowed";
+
+    // spinner CSS (adiciona dinamicamente se ainda não existir)
+    if (!document.getElementById("spinnerStyle")) {
+        const style = document.createElement("style");
+        style.id = "spinnerStyle";
+        style.textContent = `
+            .spinner {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                border: 2px solid white;
+                border-top: 2px solid transparent;
+                border-radius: 50%;
+                animation: spin 0.7s linear infinite;
+                margin-right: 8px;
+                vertical-align: middle;
             }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Erro ao cancelar apólice");
-            alert("Apólice cancelada com sucesso.");
-            location.reload();
-        })
-        .catch(error => {
-            console.error(error);
-            alert("Erro ao cancelar apólice.");
-        });
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     }
+
+    // chamada da API
+    fetch(`/apolice/${id}/inativarApolice`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Erro ao cancelar apólice");
+        alert("Apólice cancelada com sucesso.");
+        location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+        alert("Erro ao cancelar apólice.");
+        botao.disabled = false;
+        botao.innerHTML = textoOriginal;
+        botao.style.opacity = "1";
+        botao.style.cursor = "pointer";
+    });
+}
 
     fecharModal.onclick = () => {
         modal.style.display = "none";
