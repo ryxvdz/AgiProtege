@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Sinistros</title>
     <style>
         * {
@@ -140,6 +140,28 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @media (max-width: 768px) {
+    h2 {
+        margin-top: 70px; /* desce o título no celular */
+        font-size: 28px;  /* ajusta tamanho da fonte */
+    }
+
+    #openMenuBtn {
+        top: 15px; /* sobe um pouco o botão */
+        left: 15px;
+        padding: 8px 12px;
+        font-size: 26px; /* deixa a seta proporcional */
+    }
+
+    body {
+        padding: 20px; /* reduz espaço lateral */
+    }
+
+    .card {
+        width: 90%; /* ocupa mais espaço no mobile */
+    }
+}
     </style>
 </head>
 <body>
@@ -255,7 +277,29 @@
                     }
 
                     if (sinistro.documento) {
-                        detalhes += `<p><strong>Documento:</strong> <a href="${sinistro.documento}" target="_blank">📄 Ver Documento</a></p>`;
+                        detalhes += `
+  <p>
+    <strong>Documento:</strong>
+    <a href="${sinistro.documento}" target="_blank"
+      style="
+        display: inline-block;
+        margin-left: 10px;
+        padding: 8px 14px;
+        background-color: #0D47A1;
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      "
+      onmouseover="this.style.backgroundColor='#1565C0'; this.style.transform='scale(1.05)'"
+      onmouseout="this.style.backgroundColor='#0D47A1'; this.style.transform='scale(1)'"
+    >
+      📄 Ver Documento
+    </a>
+  </p>
+`;
+
                     }
 
                     conteudoModal.innerHTML = detalhes;
