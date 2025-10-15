@@ -253,6 +253,9 @@ public class ClienteService {
                 cliente.getTelefone(),
                 cliente.getIdade(),
                 cliente.getEstadoCivil(),
+                cliente.getEndereco().getBairro(),
+                cliente.getEndereco().getLogradouro(),
+                cliente.getEndereco().getNumero(),
                 token
         );
     }

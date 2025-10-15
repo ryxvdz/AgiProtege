@@ -130,6 +130,21 @@
         <span id="estadoCivil"></span>
     </div>
 
+    <div class="info">
+        <label>Bairro:</label>
+        <span id="bairro"></span>
+    </div>
+
+    <div class="info">
+        <label>Logradouro:</label>
+        <span id="logradouro"></span>
+    </div>
+
+    <div class="info">
+        <label>Numero:</label>
+        <span id="numero"></span>
+    </div>
+
     <div style="margin-top: 20px; display: flex; gap: 10px;">
         <button
                 id="btnEditar"
@@ -243,6 +258,9 @@
     document.getElementById("sexo").textContent = cliente.sexo;
     document.getElementById("telefone").textContent = cliente.telefone;
     document.getElementById("estadoCivil").textContent = cliente.estadoCivil;
+    document.getElementById("bairro").textContent = cliente.bairro;
+    document.getElementById("logradouro").textContent = cliente.logradouro;
+    document.getElementById("numero").textContent = cliente.numero;
 
     if (cliente.idade) {
         const dataNascimento = new Date(cliente.idade);
