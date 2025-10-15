@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AgiProtege</title>
+    <title>Login</title>
     <style>
 
         * {
@@ -13,11 +13,26 @@
         }
 
         body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            min-height: 100vh;
             background: linear-gradient(to right, #0D47A1, #1976D2);
+            overflow-y: auto; /* permite rolar no mobile */
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            margin-bottom: 40px
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
         }
 
         .login-container {
@@ -27,12 +42,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             width: 100%;
             max-width: 400px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #0D47A1;
+            margin: auto;
         }
 
         label {
@@ -93,9 +103,16 @@
             margin-top: 10px;
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
             .login-container {
-                padding: 30px 20px;
+                padding: 20px 15px;
+                width: 95%;
+                max-width: none;
+                box-shadow: none;
+            }
+
+            header h2 {
+                font-size: 50px;
             }
         }
 
@@ -114,38 +131,15 @@
             background-color: #1976D2;
         }
 
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to right, #0D47A1, #1976D2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .pagina-login {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .titulo h1 {
-            font-size: 46px;
-            margin-bottom: 20px;
-        }
-
     </style>
 </head>
 <body>
 
-<div class="pagina-login">
-    <div class="titulo">
-        <h1>
-            <span style="color: white;">Agi</span><span style="color: #4CAF50;">Protege</span>
-        </h1>
-    </div>
+<header>
+    <h2>Login</h2>
+</header>
 
     <div class="login-container">
-        <h2>Login</h2>
 
         <form id="loginForm">
             <label for="cpf">CPF:</label>
@@ -165,7 +159,6 @@
 
         <p id="mensagemErro"></p>
     </div>
-</div>
 
 <script>
     const cpfInput = document.getElementById('cpf');

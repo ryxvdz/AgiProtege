@@ -11,17 +11,27 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        header {
+            text-align: center;
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            margin-bottom: 10px
+        }
+
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
+        }
+
         body {
             min-height: 100vh;
             background: linear-gradient(to right, #0D47A1, #1976D2);
-            padding: 40px;
             color: #333;
-        }
-
-        h2 {
-            text-align: center;
-            color: #0D47A1;
-            margin-bottom: 25px;
         }
 
         .form-container {
@@ -129,13 +139,28 @@
             cursor: pointer;
             margin-left: 10px;
         }
+
+        @media (max-width: 600px) {
+            header h2 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 20px 15px;
+                width: 95%;
+                max-width: none; /* permite ocupar quase toda a tela */
+                box-shadow: none; /* opcional: remove sombra no mobile */
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-
+<header>
     <h2>Seguro Automóvel</h2>
+</header>
+
+<div class="form-container">
 
     <div class="form-group">
         <label for="placa">Placa do Veículo:</label>

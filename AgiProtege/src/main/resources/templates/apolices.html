@@ -11,17 +11,49 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        #openMenuBtn {
+            position: absolute;
+            left: 20px;
+            background-color: #0D47A1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        header {
+            width: 100%;
+            animation: fadeIn 1.2s ease-in-out;
+            background-color: #fff;
+            border-bottom: 5px solid #4CAF50;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* centraliza o título horizontalmente */
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center; /* Alinha botão e título verticalmente */
+            gap: 15px;           /* Espaço entre botão e título */
+        }
+
         body {
             min-height: 100vh;
             background: linear-gradient(to right, #0D47A1, #1976D2);
-            padding: 40px;
         }
 
-        h2 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 40px;
+        header h2 {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            color: #0D47A1;
         }
 
         .container {
@@ -97,23 +129,29 @@
         }
 
         @media (max-width: 768px) {
-    h2 {
-        margin-top: 70px; /* desce o título no celular */
-        font-size: 28px;  /* deixa o texto mais proporcional */
-    }
+            header h2 {
+                font-size: 28px;
+            }
 
-    #openMenuBtn {
-        top: 15px; /* opcional: sobe um pouquinho no mobile */
-        left: 15px;
-        padding: 8px 12px;
-        font-size: 24px;
-    }
+            .header-content {
+                gap: 10px;
+            }
 
-    body {
-        padding: 20px; /* reduz a borda lateral para melhor encaixe */
-    }
-}
+            #openMenuBtn {
+                padding: 8px 12px;
+                font-size: 24px;
+            }
 
+            .cards-container, .container {
+                padding: 20px 10px;
+                gap: 15px;
+            }
+
+               .card {
+                padding: 20px 15px;
+                font-size: 14px;
+            }
+        }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -183,22 +221,25 @@
 </head>
 <body>
 
-<button id="openMenuBtn" style="position: fixed; top: 20px; left: 20px; z-index: 11; background-color: #0D47A1; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 28px;">
-    ☰
-</button>
+<header>
+    <div>
+        <button id="openMenuBtn">
+            ☰
+        </button>
+        <h2>Meus contratos</h2>
+    </div>
 
-<div id="sidebar" style="height: 100%; width: 0; position: fixed; z-index: 12; top: 0; left: 0; background-color: #0D47A1; overflow-x: hidden; transition: 0.3s; padding-top: 60px;">
-    <a href="javascript:void(0)" onclick="closeSidebar()" style="position: absolute; top: 20px; right: 20px; font-size: 36px; color: white; text-decoration: none;">&times;</a>
-    <a href="/cadastrarSeguroVida" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro de Vida</a>
-    <a href="/cadastrarSeguroAutomovel" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Automóvel</a>
-    <a href="/cadastrarSeguroDespesa" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Despesas</a>
-    <a href="/MeusSinistros" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Sinistros</a>
-    <a href="/perfil" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Perfil</a>
-    <a href="/login" onclick="logout()" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Logout</a>
+    <div id="sidebar" style="height: 100%; width: 0; position: fixed; z-index: 12; top: 0; left: 0; background-color: #0D47A1; overflow-x: hidden; transition: 0.3s; padding-top: 60px;">
+        <a href="javascript:void(0)" onclick="closeSidebar()" style="position: absolute; top: 20px; right: 20px; font-size: 36px; color: white; text-decoration: none;">&times;</a>
+        <a href="/cadastrarSeguroVida" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro de Vida</a>
+        <a href="/cadastrarSeguroAutomovel" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Automóvel</a>
+        <a href="/cadastrarSeguroDespesa" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Contratar seguro Despesas</a>
+        <a href="/MeusSinistros" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Sinistros</a>
+        <a href="/perfil" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Perfil</a>
+        <a href="/login" onclick="logout()" style="padding: 10px 30px; text-decoration: none; color: white; display: block;">Logout</a>
+    </div>
+</header>
 
-</div>
-
-<h2>Meus Contratos</h2>
 
 <div class="container" id="cardsContainer"></div>
 
