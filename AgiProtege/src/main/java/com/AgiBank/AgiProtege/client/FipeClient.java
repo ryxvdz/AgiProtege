@@ -39,7 +39,7 @@ public class FipeClient {
                                 httpsConnection.setHostnameVerifier((hostname, session) -> true);
 
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                throw new RuntimeException("Erro ao se conectar com a API da tabela FIPE!");
                             }
                         }
                         super.prepareConnection(connection, httpMethod);

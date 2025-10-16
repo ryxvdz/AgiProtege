@@ -363,8 +363,15 @@
             contador = 0;
             setTimeout(() => (window.location.href = "/apolices"), 1500);
         } else {
-            mensagem.textContent = "❌ Erro ao criar o seguro.";
-            mensagem.style.color = "red";
+            let erro;
+        try {
+            erro = await response.json();
+        } catch {
+            erro = {};
+        }
+
+        mensagem.textContent = erro.message || erro.mensagem || "❌ Erro ao criar o seguro.";
+        mensagem.style.color = "red";
         }
     } catch (error) {
         console.error(error);

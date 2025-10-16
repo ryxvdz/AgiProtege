@@ -4,6 +4,7 @@ import com.AgiBank.AgiProtege.dto.ClienteRequestDTO;
 import com.AgiBank.AgiProtege.dto.ClienteResponseDTO;
 import com.AgiBank.AgiProtege.dto.LoginRequestDTO;
 import com.AgiBank.AgiProtege.service.ClienteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/cadastrar")
-    public ClienteResponseDTO cadastrar(@RequestBody ClienteRequestDTO dto) {
+    public ClienteResponseDTO cadastrar(@Valid @RequestBody ClienteRequestDTO dto) {
         return clienteService.cadastrarCliente(dto);
     }
 

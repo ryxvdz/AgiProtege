@@ -199,7 +199,15 @@
                 localStorage.setItem("token", dados.token);
                 window.location.href = "/apolices";
             } else {
-                mensagemErro.textContent = "CPF ou senha inválidos!";
+                let erro;
+        try {
+            erro = await response.json();
+        } catch {
+            erro = {};
+        }
+
+        mensagemErro.textContent = erro.message || erro.mensagem || "CPF ou senha inválidos!";
+        mensagemErro.style.color = "red";
             }
         } catch (error) {
             mensagemErro.textContent = "Erro ao tentar fazer login. Tente novamente.";

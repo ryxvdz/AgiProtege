@@ -184,9 +184,14 @@
                 mensagem.textContent = "✅ Seguro criado com sucesso!";
                 setTimeout(() => window.location.href = "/apolices", 1500);
             } else {
-                const erro = await response.json().catch(() => ({}));
-                mensagem.style.color = "red";
-                mensagem.textContent = erro.message || "❌ Erro ao criar o seguro.";
+                let erro;
+        try {
+            erro = await response.json();
+        } catch {
+            erro = {};
+        }
+        mensagem.style.color = "red";
+        mensagem.textContent = erro.message || erro.mensagem || "❌ Erro ao criar o seguro.";
             }
         } catch (error) {
             console.error(error);

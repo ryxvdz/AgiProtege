@@ -274,7 +274,8 @@
     });
 
     if (!response.ok) {
-        throw new Error("Erro ao carregar perfil");
+        const erro = await response.json();
+        throw new Error(erro.message || erro.mensagem || "Erro ao carregar perfil");
     }
 
     const cliente = await response.json();
@@ -299,7 +300,7 @@
     }
 } catch (error) {
     console.error(error);
-    alert("Erro ao carregar perfil.");
+    alert(error.message);
 } finally {
     loadingOverlay.style.display = "none"; // esconde o loading
 }
@@ -353,16 +354,21 @@
                 body: JSON.stringify(dadosAtualizados)
             });
 
+            let result = {};
+    try {
+        result = await response.json();
+    } catch {}
+
             if (response.ok) {
                 alert("Perfil atualizado com sucesso!");
                 document.getElementById("modalEdicao").style.display = "none";
                 carregarPerfil();
             } else {
-                alert("Erro ao atualizar perfil.");
+                throw new Error(result.mensagem || result.message || "Erro ao atualizar perfil.");
             }
         } catch (error) {
             console.error(error);
-            alert("Erro ao enviar dados.");
+            alert(error.message);
         } finally {
             // Restaura o botão
             btnSalvar.disabled = false;
@@ -397,16 +403,21 @@
                 }
             });
 
+            let result = {};
+    try {
+        result = await response.json();
+    } catch {}
+
             if (response.ok) {
                 alert("Conta inativada com sucesso!");
                 localStorage.removeItem("token");
                 window.location.href = "/login";
             } else {
-                alert("Erro ao inativar conta. Tente novamente.");
+                throw new Error(result.mensagem || result.message || "Erro ao inativar conta.");
             }
         } catch (error) {
             console.error(error);
-            alert("Erro de conexão ao tentar inativar conta.");
+            alert(error.message || "Erro de conexão ao tentar inativar conta.");
         } finally {
             // Caso erro ou falha, restaurar botão
             btnInativar.disabled = false;
