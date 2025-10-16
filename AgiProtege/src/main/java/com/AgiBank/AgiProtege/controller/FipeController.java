@@ -27,9 +27,11 @@ public class FipeController {
         return fipeService.listarModelos(nomeMarca);
     }
 
-    @GetMapping("/anos/{nomeMarca}/{nomeModelo}")
-    public List<Map<String, String>> listarAnos(@PathVariable String nomeMarca, @PathVariable String nomeModelo) {
-        return fipeService.listarAnos(nomeMarca, nomeModelo);
+    @GetMapping("/anos")
+    public List<Map<String, String>> listarAnos(
+            @RequestParam String marca,
+            @RequestParam String modelo) {
+        return fipeService.listarAnos(marca, modelo);
     }
 
     @GetMapping("/detalhes")

@@ -279,28 +279,32 @@
     });
 
     // Ao selecionar modelo, carregar anos
-    modeloSelect.addEventListener("change", () => {
+modeloSelect.addEventListener("change", () => {
     anoSelect.innerHTML = '<option value="">Selecione o ano</option>';
     anoSelect.disabled = true;
     tabelaFipeSpan.textContent = "Tabela FIPE: R$ 0,00";
 
     if (!modeloSelect.value) return;
 
-    fetch(`/fipe/anos/${marcaSelect.value}/${modeloSelect.value}`, { headers: { 'Authorization': 'Bearer ' + token } })
-        .then(res => res.json())
-        .then(anosObj => {
-            const anosArray = Object.values(anosObj); // [{nome:"2016", codigo:"2016-5"}, ...]
-            anosArray.forEach(a => {
-                const option = document.createElement("option");
-                option.value = a.nome;  // <<--- aqui usamos apenas o ano
-                option.textContent = a.nome;
-                anoSelect.appendChild(option);
-            });
-            anoSelect.disabled = false;
+    const marca = encodeURIComponent(marcaSelect.value.trim());
+    const modelo = encodeURIComponent(modeloSelect.value.trim());
+
+    fetch(`/fipe/anos?marca=${marca}&modelo=${modelo}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(res => res.json())
+    .then(anosObj => {
+        const anosArray = Object.values(anosObj);
+        anosArray.forEach(a => {
+            const option = document.createElement("option");
+            option.value = a.nome;
+            option.textContent = a.nome;
+            anoSelect.appendChild(option);
         });
+        anoSelect.disabled = false;
+    })
+    .catch(err => console.error("Erro ao buscar anos FIPE:", err));
 });
-
-
 
     // Ao selecionar ano, buscar valor FIPE
     anoSelect.addEventListener("change", () => {
