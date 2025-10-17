@@ -11,4 +11,3 @@ public class AgiProtegeApplication {
 	}
 
 }
-git pull origin main --rebase
