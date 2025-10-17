@@ -164,7 +164,7 @@
 
     <div class="form-group">
         <label for="placa">Placa do Veículo:</label>
-        <input type="text" id="placa" placeholder="Digite a placa" maxlength="7" required>
+        <input type="text" id="placa" placeholder="Digite a placa" maxlength="7" required />
     </div>
 
     <div class="form-group">
@@ -321,41 +321,50 @@ modeloSelect.addEventListener("change", () => {
 
 
     // Botão cadastrar
-    document.getElementById("btnCadastrar").addEventListener("click", () => {
+document.getElementById("btnCadastrar").addEventListener("click", () => {
+    const btnCadastrar = document.getElementById("btnCadastrar");
+    const placa = document.getElementById("placa").value.trim();
 
-        btnCadastrar.disabled = true;
-        btnCadastrar.classList.add('loading');
-        btnCadastrar.innerHTML = '<span class="spinner"></span>Criando seguro...';
+    // Validação da placa obrigatória
+    if (placa === "") {
+        alert("Por favor, preencha a placa do veículo antes de prosseguir.");
+        return; // bloqueia o envio
+    }
 
-        const payload = {
-            placa: document.getElementById("placa").value,
-            marca: marcaSelect.value,
-            modelo: modeloSelect.value,
-            ano: parseInt(anoSelect.value),
-            categoria: document.getElementById("categoria").value,
-            asistencia24: document.getElementById("assistencia24").checked,
-            carroReserva: document.getElementById("carroReserva").checked,
-            desastresNaturais: document.getElementById("desastresNaturais").checked
-        };
+    btnCadastrar.disabled = true;
+    btnCadastrar.classList.add('loading');
+    btnCadastrar.innerHTML = '<span class="spinner"></span>Criando seguro...';
 
-        fetch("/SeguroAutomovel", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(`Seguro contratado com sucesso!`);
-            window.location.href = "/apolices";
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Erro ao cadastrar seguro!");
-        });
+    const payload = {
+        placa: document.getElementById("placa").value,
+        marca: marcaSelect.value,
+        modelo: modeloSelect.value,
+        ano: parseInt(anoSelect.value),
+        categoria: document.getElementById("categoria").value,
+        asistencia24: document.getElementById("assistencia24").checked,
+        carroReserva: document.getElementById("carroReserva").checked,
+        desastresNaturais: document.getElementById("desastresNaturais").checked
+    };
+
+    fetch("/SeguroAutomovel", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(`Seguro contratado com sucesso!`);
+        window.location.href = "/apolices";
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erro ao cadastrar seguro!");
     });
+});
+
 </script>
 
 </body>
